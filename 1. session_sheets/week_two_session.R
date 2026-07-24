@@ -157,6 +157,6 @@ library(readr) # You need to do this every time you start R
 
 # Using the inbuilt load function (which uses readr) ----> 
 
-# You 
+# You can copy and paste the output here: 
 
-iris <- read_csv("data/iris.csv") # This will
+iris <- read_csv("data/iris.csv") 

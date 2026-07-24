@@ -18,4 +18,3 @@ contributes:
       # (toc, code-fold, self-contained, warning/message, ...). Anything you
       # leave unset is omitted so Quarto's own default applies.
       toc: true
-      toc-depth: 3

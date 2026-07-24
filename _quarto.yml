@@ -11,10 +11,7 @@ website:
         text: Timetable
 
 format:
-  html:
-    theme:
-      - cosmo
-      - brand
+  lshtm-mrcg-html:
     css: styles.css
     toc: true
 
