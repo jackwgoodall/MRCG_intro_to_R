@@ -1,5 +1,3 @@
-# MRCG Intro to R for Statistics
-
 ## Who is this for?
 
 This is an introductory course on how to use the [R programming language](https://www.r-project.org/).
@@ -116,10 +114,3 @@ The confirmed plan for the next two weeks will be show on my GitHub page, along 
 - RStudio Projects and `here()` for portable file paths; sensible folder structure
 - Reproducibility: `sessionInfo()`, and a first look at git/GitHub for version control
 - A small end-to-end capstone (import → clean → visualise → model → render a report)
-
-# Weekly Timetable
-
-| Session | Date | Materials | Homework | Answers |
-|---------------|---------------|---------------|---------------|---------------|
-| Introduction | 3rd August 2026 | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/1.%20session_sheets/week_one_session.R) | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/2.%20homework_questions/week_one_homework.R) | - |
-| How to get data into R | 10th August 2026 | \- | \- | \- |

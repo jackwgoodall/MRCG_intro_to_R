@@ -1,0 +1,22 @@
+project:
+  type: website
+
+website:
+  title: "MRCG intro to R"
+  navbar:
+    left:
+      - href: index.qmd
+        text: About
+      - href: timetable.qmd
+        text: Timetable
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    css: styles.css
+    toc: true
+
+editor: visual
+
