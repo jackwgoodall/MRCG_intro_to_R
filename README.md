@@ -121,5 +121,5 @@ The confirmed plan for the next two weeks will be show on my GitHub page, along 
 
 | Session | Date | Materials | Homework | Answers |
 |---------------|---------------|---------------|---------------|---------------|
-| Introduction | 3rd August 2026 | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/1.%20session_sheets/week_one_session.R) | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/2.%20homework_questions/week_one_homework.R") | - |
+| Introduction | 3rd August 2026 | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/1.%20session_sheets/week_one_session.R) | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/2.%20homework_questions/week_one_homework.R) | - |
 | How to get data into R | 10th August 2026 | \- | \- | \- |
