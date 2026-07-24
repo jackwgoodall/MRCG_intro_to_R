@@ -121,5 +121,5 @@ The confirmed plan for the next two weeks will be show on my GitHub page, along 
 
 | Session | Date | Materials | Homework | Answers | 
 | ------- | ---- | ---- | ---- | ---- | 
-| Introduction | TBC | - | - | - | 
+| Introduction | 3rd August 2026 | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/session_sheets/week_one_session.R) | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/homework_questions/week_one_homework.R) | - | 
 | How to get data into R | TBC | - | - | - | 
