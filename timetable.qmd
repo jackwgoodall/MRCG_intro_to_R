@@ -4,8 +4,7 @@ format: lshtm-mrcg-html
 
 # Weekly Timetable
 
-| Session | Date | Materials | Homework | Answers |
-|---------------|---------------|---------------|---------------|---------------|
-| Introduction | 3rd August 2026 | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/1.%20session_sheets/week_one_session.R) | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/2.%20homework_questions/week_one_homework.R) | - |
-| Object types and getting data into R | 10th August 2026 | \- | \- | \- |
-
+| Session | Date | Scripts | Data | Homework | Answers |
+|--------------------------|------------|------------|------------|------------|------------|
+| Introduction | 3rd August | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/1.%20session_sheets/week_one_session.R) | \- | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/2.%20homework_questions/week_one_homework.R) | \- |
+| Object types and getting data into R | 10th August | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/1.%20session_sheets/week_two_session.R) | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/1.%20session_sheets/week_two_session.R) | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/2.%20homework_questions/week_two_homework.R) |  |

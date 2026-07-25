@@ -2,8 +2,6 @@
 # - Week one homework ----------
 # ------------------------------
 
-# Maths 
-
 # Question 1 
 # Calculate 3 to the power of 5
 # Save the answer as an object `three_power_five`

@@ -26,27 +26,25 @@ The confirmed plan for the next two weeks will be show on my GitHub page, along 
 
 - A guided tour of R studio and how to customise it
 
-- Object types and why you would use them
+- R as a fancy calculator
 
-  - Vectors
+- Introduction to objects and vectors 
 
-  - Matrices
-
-  - Dataframes
-
-  - Lists
-
-- Selecting, changing items in base R
-
-- Introduction to markdown (we will use this throughout for the homework)
 
 ### Week 2: How to get data into R
+
+- More objects: matrices, dataframes and lists
+
+- Selecting and changing items in base R
+
+- A brief into to packages
 
 - Accessing data
 
   - Importing for excel/csv
+  
 
-  - Creating 'synthetic data' (and why you might want to do this...)
+### Week 3: Datacleaning and the tidyverse
 
 - Basic tools for data cleaning
 
@@ -56,16 +54,13 @@ The confirmed plan for the next two weeks will be show on my GitHub page, along 
 
   - Correcting errors safely
 
-### Week 3: R packages and the tidyverse
-
-- Installing and version controlling packages (introduction to CRAN and `pacman::p_load()`)
 - Introduction to the tidyverse
-- The power of the pipe `(|> / %>%)` and why it helps makes code readable
-- The core dplyr verbs: `filter`, `select`, `mutate`, `arrange`, `summarise`, `group_by`
-- The concept of tidy data (one variable per column, one observation per row)
-- Reshaping with `pivot_longer` / `pivot_wider`
-- Joining tables with `left_join` (research data almost always spans multiple files)
-- Handling categorical variables with factors (forcats)
+  - The power of the pipe `(|> / %>%)` and why it helps makes code readable
+  - The core dplyr verbs: `filter`, `select`, `mutate`, `arrange`, `summarise`, `group_by`
+  - The concept of tidy data (one variable per column, one observation per row)
+  - Reshaping with `pivot_longer` / `pivot_wider`
+  - Joining tables with `left_join` (research data almost always spans multiple files)
+  - Handling categorical variables with factors (forcats)
 
 ### Week 4: Visualisation with ggplot2
 

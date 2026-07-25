@@ -1,17 +1,17 @@
-
 # -----------------------------------
 # Introduction to R - Week 2 --------
 # -----------------------------------
 
-# ---------------------------------------------------
-## Part 1 - Matrices, dataframes and lists (oh my)---
-# ---------------------------------------------------
+# ----------------------------------------------------
+## Part 1 - Matrices, dataframes and lists (oh my) ---
+# ----------------------------------------------------
 
 # Vectors are *one dimensional*, matrices are *two dimensional*
 # There are two ways to make a matrix
 # The first is to write a vector and tell R to break it into two (or)
 # more columns.
-# This has the form: matrix(data, nrow, ncol) <- you can supply either nrow, ncol or both 
+# This has the form: matrix(data, nrow, ncol) <- you can supply 
+# either nrow, ncol or both 
   
 my_matrix <- matrix(1:10, ncol = 2)
 
@@ -61,12 +61,20 @@ clear_matrix[2,1] <- "B1 modified"
 
 clear_matrix
 
+# To rename an object just define a new object as the old object 
+# eg: 
+
+new_matrix <- clear_matrix
+
+# You might (or might not) want to get rid of the old object
+
+rm(clear_matrix)
+
 # Question 3
 # Add 2 to every item in `my_matrix`
 # ----------------------------------------
 my_matrix
 
-my_matrix * my_matrix
 
 # ----------------------------------------
 
@@ -131,12 +139,12 @@ data.frame(col1 = c("A", "B", "C"),
 my_list <- list(item1 = c("A", "B", "C"),
      item2 = 1:10)
 
-# You can then retrive them with the dollar operator 
+# You can then retrieve them with the dollar operator 
 
 my_list$item1
 
 # ---------------------------------------
-## Part 2 - Intro to packages ---------
+## Part 2 - Intro to packages -----------
 # ---------------------------------------
 
 # There are a lot: https://cran.r-project.org/web/packages/available_packages_by_name.html
@@ -159,4 +167,54 @@ library(readr) # You need to do this every time you start R
 
 # You can copy and paste the output here: 
 
-iris <- read_csv("data/iris.csv") 
+iris <- read_csv("data/iris.csv") # this will only work if you have save this is a folder called `data`
+
+# Click on the iris.xlsx to see how this can be done the same with a excel 
+# file (just with a different packahge)
+
+# We can look at the first few rows using `head()`
+
+head(iris)
+
+# Or the bottom few rows with `tail()`
+
+tail(iris)
+
+# We can change how many we see by changing `head(df, n = x)`
+
+head(iris, n = 10)
+
+# Question 6 
+# Can you select the `Sepal.Length` column three other ways? 
+# ----------------------------------------
+# 1st way
+
+
+# 2nd way
+
+
+# 3rd way
+
+
+# ----------------------------------------
+
+# If we ask R whether a condition is met it will reply with TRUE/FALSE
+# The most useful here are `==` (exactly equal to), > (greater than) or < (less than)
+# eg 
+
+4 < 5
+
+# We can use this to make a vector of TRUEs and FALSEs 
+# eg 
+
+iris$Species == "versicolor"
+
+# We see here that the middle chunk are all "veriscolor" (look at the dataframe in the viewer
+# to confirm this)
+
+# We can use this to subset our dataframe to only the "versicolor" species
+# eg 
+
+iris[(iris$Species == "versicolor"), ]    # Note I've wrapped the `iris$Species == "versicolor"` in brackets 
+                                          # These aren't actually needed here - I've used them to make the
+                                          # code easier to read

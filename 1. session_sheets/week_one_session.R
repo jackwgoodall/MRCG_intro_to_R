@@ -1,6 +1,6 @@
 
 # -----------------------------------
-# Introduction to R - Week 1 -----
+# Introduction to R - Week 1 --------
 # -----------------------------------
 
 # --------------------------------------------
@@ -8,7 +8,7 @@
 # --------------------------------------------
 
 # R will function very well as a calculator. 
-# You have all the standard tools :
+# You have all the standard tools:
 # + is add; - is subtract 
 # * is multiply;  / is divide
 # ^ raises to a power
@@ -102,7 +102,7 @@ rm(no_gaps)
 
 # Question 3 
 # How would you confirm that 'no_gaps' has been removed 
-# (Without just looking at the enviroment)
+# (Without just looking at the environment)
 # ----------------------------------------
 
 
