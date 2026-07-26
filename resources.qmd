@@ -1,7 +1,6 @@
 ---
 title: ""
 format: lshtm-mrcg-html
-toc: false 
 ---
 
 # Resources 

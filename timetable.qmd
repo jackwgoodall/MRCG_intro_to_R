@@ -6,7 +6,6 @@ page-layout: full
 
 # Weekly Timetable
 
-
 | Session | Date | Venue | Scripts | Data | Recordings | Homework | Answers |
 |---------|---------|---------|---------|---------|---------|---------|---------|
 | Introduction | 3rd August | F001 | [download](1.%20session_sheets/week_one_session.R){download="week_one_session.R"} | \- | \- | \- | \- |
