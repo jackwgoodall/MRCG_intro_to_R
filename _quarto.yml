@@ -1,5 +1,11 @@
 project:
   type: website
+  
+  resources:
+    - "1. session_sheets/*.R"
+    - "2. homework_questions/*.R"
+    - "3. homework_answers/*"
+    - "data/**"
 
 website:
   title: "MRCG intro to R"
