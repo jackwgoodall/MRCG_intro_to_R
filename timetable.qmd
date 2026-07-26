@@ -5,8 +5,6 @@ toc: false
 
 # Weekly Timetable
 
-Links marked *download* save the file straight to your computer. Open the `.R` files in RStudio, and put the data files in a `data/` folder inside your project.
-
 | Session | Date | Venue | Scripts | Data | Homework | Answers |
 |-----------|----------|----------|----------|----------|----------|----------|
 | Introduction | 3rd August | F001 | [download](1.%20session_sheets/week_one_session.R){download="week_one_session.R"} | \- | [download](2.%20homework_questions/week_one_homework.R){download="week_one_homework.R"} | \- |
