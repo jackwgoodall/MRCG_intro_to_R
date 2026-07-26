@@ -4,12 +4,6 @@ subtitle: "Session 1 — 3rd August 2026"
 format: lshtm-mrcg-revealjs
 ---
 
-# Introduction
-
-- Course overview
-- Session structure
-- Providing anonymous feedback
-
 # What is R?
 
 - Programming *language*
@@ -32,6 +26,10 @@ format: lshtm-mrcg-revealjs
 - Answers will be uploaded to the website
 - Troubleshoot in the next session
 - Sessions will be recorded for playback
+
+# LLMs
+
+Try to resist their siren call... 
 
 # Feedback option
 
