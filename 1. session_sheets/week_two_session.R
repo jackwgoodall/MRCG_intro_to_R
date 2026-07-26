@@ -28,7 +28,7 @@ cbind(vector_one, vector_two)
 # `rbind` is the "row bind" equivalent
 # What does using rbind on these two vectors do? 
 # ----------------------------------------
-
+rbind(vector_one, vector_two)
 
 # ----------------------------------------
 
@@ -47,7 +47,7 @@ print(clear_matrix)
 clear_matrix[2,1]
 
 # Question 2 
-# How would you pick out "D3"?
+# How would you pick out "D2"?
 # ----------------------------------------
 clear_matrix[ , ]
 
