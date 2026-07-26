@@ -1,0 +1,253 @@
+/*-- scss:defaults --*/
+
+// ── Brand colours ────────────────────────────────────────────────────────────
+// Kept in sync with resources/theme.scss. If .install_theme() rewrites the
+// colours there, mirror the same four values here.
+$dept-primary:     #0D5257;
+$dept-light:       #568689;
+$dept-pale:        #E2EAEB;
+$dept-header-text: #FFFFFF;
+
+$dept-white: #ffffff;
+$dept-text:  #212529;
+
+// ── Reveal.js theme variables ────────────────────────────────────────────────
+// These are the documented knobs of Quarto's revealjs SCSS layer:
+// https://quarto.org/docs/presentations/revealjs/themes.html#sass-variables
+$body-bg:    $dept-white;
+$body-color: $dept-text;
+
+$link-color:       $dept-primary;
+$link-color-hover: $dept-light;
+
+$selection-bg: $dept-pale;
+$selection-color: $dept-text;
+
+$presentation-heading-color:       $dept-primary;
+$presentation-heading-font-weight: 700;
+$presentation-font-size-root:      34px;
+
+$code-block-bg:     #f8f9fa;
+$code-block-border-color: $dept-pale;
+
+// Height of the branded footer strip. Referenced in several rules below, and
+// exposed as a CSS custom property so a deck can override it per-file.
+$dept-strip-height: 62px;
+
+/*-- scss:rules --*/
+
+:root {
+  --dept-strip-height: #{$dept-strip-height};
+  --dept-primary: #{$dept-primary};
+}
+
+// ── Branded footer strip ─────────────────────────────────────────────────────
+// The MRCG/LSHTM logo is white on a transparent background, so on the default
+// white slide it is invisible. This lays a solid brand-coloured band across the
+// bottom of every slide for the logo and footer text to sit on.
+//
+// Attached to .reveal-viewport (not .reveal) and fixed-position so it stays put
+// regardless of reveal's slide transforms, and so it is painted once rather
+// than per-slide.
+.reveal-viewport::after {
+  content:          "";
+  position:         fixed;
+  left:             0;
+  right:            0;
+  bottom:           0;
+  height:           var(--dept-strip-height);
+  background-color: $dept-primary;
+  z-index:          5;
+  // Must not swallow clicks on reveal's controls, which sit in this corner.
+  pointer-events:   none;
+}
+
+// Logo and footer must sit above the strip, not behind it.
+.reveal .slide-logo {
+  position:   fixed !important;
+  bottom:     11px !important;
+  right:      26px !important;
+  max-height: 40px !important;
+  height:     auto !important;
+  width:      auto !important;
+  z-index:    6;
+}
+
+.reveal .footer {
+  position:    fixed;
+  bottom:      0;
+  left:        0;
+  // Leave room for the logo on the right.
+  right:       240px;
+  height:      var(--dept-strip-height);
+  margin:      0;
+  padding:     0 0 0 30px;
+  display:     flex;
+  align-items: center;
+  text-align:  left;
+  font-size:   0.5em;
+  color:       $dept-header-text;
+  z-index:     6;
+
+  p,
+  a {
+    margin: 0;
+    color:  $dept-header-text;
+  }
+}
+
+// Keep slide content clear of the strip. Reveal sizes the slide area itself, so
+// this pads the content box rather than resizing the stage.
+.reveal .slides > section,
+.reveal .slides > section > section {
+  padding-bottom: calc(var(--dept-strip-height) + 10px);
+  box-sizing:     border-box;
+}
+
+// The title slide is already brand-coloured, so the strip would read as a seam
+// against it. Hide it there and let the slide run full-bleed.
+.reveal-viewport:has(#title-slide.present)::after {
+  display: none;
+}
+
+// ── Title slide ──────────────────────────────────────────────────────────────
+// The background colour itself is set via `title-slide-attributes` in
+// _extension.yml — reveal.js paints slide backgrounds in a separate DOM layer,
+// so setting it from CSS here is unreliable. These rules only recolour the text
+// that sits on top of it.
+#title-slide,
+.reveal section#title-slide {
+  .title {
+    color:       $dept-header-text;
+    font-weight: 700;
+  }
+
+  .subtitle,
+  .quarto-title-author,
+  .author,
+  .date,
+  .institute {
+    color: mix($dept-header-text, $dept-primary, 80%);
+  }
+}
+
+// ── Section headings ─────────────────────────────────────────────────────────
+// Underline mirrors the h1/h2 rule in the website theme.
+.reveal h1,
+.reveal h2 {
+  color:          $dept-primary;
+  border-bottom:  2px solid $dept-pale;
+  padding-bottom: 0.15em;
+  margin-bottom:  0.5em;
+}
+
+.reveal h3,
+.reveal h4 {
+  color: $dept-light;
+}
+
+// ── Bulleted lists ───────────────────────────────────────────────────────────
+.reveal ul li::marker {
+  color: $dept-light;
+}
+
+.reveal ul,
+.reveal ol {
+  margin-left: 0.5em;
+}
+
+// ── Links ────────────────────────────────────────────────────────────────────
+.reveal a {
+  color: $dept-primary;
+
+  &:hover {
+    color: $dept-light;
+  }
+}
+
+// ── Code ─────────────────────────────────────────────────────────────────────
+.reveal pre code {
+  background-color: $code-block-bg;
+  border-left:      4px solid $dept-primary;
+  border-radius:    3px;
+  padding:          0.6em 0.8em;
+}
+
+// Literal value rather than darken(), which Dart Sass deprecated and which
+// makes Quarto emit warnings on every render.
+.reveal code {
+  color: #0a4145;
+}
+
+// ── Tables ───────────────────────────────────────────────────────────────────
+.reveal table thead {
+  background-color: $dept-primary;
+  color:            $dept-header-text;
+}
+
+.reveal table tbody tr:nth-child(even) {
+  background-color: $dept-pale;
+}
+
+// ── Blockquotes / callouts ───────────────────────────────────────────────────
+.reveal blockquote {
+  border-left: 5px solid $dept-primary;
+  background:  $dept-pale;
+  padding:     0.5em 1em;
+  box-shadow:  none;
+  font-style:  normal;
+}
+
+// ── Progress bar, controls, slide number ─────────────────────────────────────
+// All three of these live in the bottom edge by default, which is now occupied
+// by the brand strip. Each needs lifting above it or moving out of its way.
+
+// Sits on top of the strip, so the fill must contrast with teal, not with white.
+.reveal .progress {
+  z-index: 7;
+  color:   $dept-pale;
+  height:  4px;
+}
+
+// Nudged up so the arrows clear the strip entirely.
+.reveal .controls {
+  z-index: 7;
+  color:   $dept-primary;
+  bottom:  calc(var(--dept-strip-height) + 8px);
+}
+
+// Default position is bottom-right, which is where the logo now sits. Move it
+// to the right-hand end of the strip, inboard of the logo.
+.reveal .slide-number {
+  z-index:          7;
+  background-color: transparent;
+  color:            $dept-header-text;
+  bottom:           0;
+  right:            auto;
+  left:             0;
+  height:           var(--dept-strip-height);
+  display:          flex;
+  align-items:      center;
+  padding-left:     30px;
+  font-size:        0.55em;
+}
+
+// With the slide number occupying the left of the strip, shift footer text
+// clear of it.
+.reveal .footer:not(:empty) {
+  padding-left: 96px;
+}
+
+// ── Utility: centred image with sane sizing ──────────────────────────────────
+// Used for the R logo on the title slide. Markdown images get no size control
+// by default, so this gives a class to hang one off.
+.reveal .logo-image img,
+.reveal img.logo-image {
+  display:      block;
+  margin:       0.5em auto;
+  max-height:   45vh;
+  width:        auto;
+  border:       none;
+  background:   none;
+  box-shadow:   none;
+}

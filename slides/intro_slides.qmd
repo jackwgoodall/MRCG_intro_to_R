@@ -1,0 +1,38 @@
+---
+title: "Welcome to The Introduction to R"
+subtitle: "Session 1 — 3rd August 2026" 
+format: lshtm-mrcg-revealjs
+---
+
+# Introduction
+
+- Course overview
+- Session structure
+- Providing anonymous feedback
+
+# What is R?
+
+- Programming *language*
+- Designed for people like you
+- Powerful, but easy to go astray
+
+# Flow...
+
+# Course overview
+
+- Ten week sessions
+- Exact content will be dynamic based on our progress
+- The plan is on the "About" tab of website
+- The 'locked in' sessions on the "Timetable" tab
+
+# Each Session
+
+- We will work through a worksheet together
+- Homework questions to be worked through
+- Answers will be uploaded to the website
+- Troubleshoot in the next session
+- Sessions will be recorded for playback
+
+# Feedback option
+
+- There is a link for anonymous feedback on the website

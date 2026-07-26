@@ -1,0 +1,9 @@
+---
+title: "Resources"
+format: lshtm-mrcg-html
+toc: false 
+---
+
+[Anonymous Feedback Link](https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=oaKtcild7U6xlPh0V3cUnuSVmI9t539Mu7XmsjCdKGdUQ1k3WFdINTBZMFdUSTEwVkJaNFJIOFczNS4u)
+
+[Introductory slides](slides/intro_slides.qmd)
