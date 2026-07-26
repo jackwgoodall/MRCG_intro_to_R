@@ -9,6 +9,8 @@ website:
         text: About
       - href: timetable.qmd
         text: Timetable
+      - href: resources.qmd
+        text: Resources
 
 format:
   lshtm-mrcg-html:
