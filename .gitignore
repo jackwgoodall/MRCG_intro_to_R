@@ -7,3 +7,5 @@
 **/*.quarto_ipynb
 .DS_Store
 _site
+README_files/
+README.html
