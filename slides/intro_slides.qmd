@@ -12,6 +12,8 @@ format: lshtm-mrcg-revealjs
 
 # Flow...
 
+<iframe src="https://giphy.com/embed/b0wjZ76XPA5lC" width="889.2" height="498.3225" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/monterey-bay-aquarium-open-sea-exhibit-pacific-mackerel-b0wjZ76XPA5lC"></a></p>
+
 # Course overview
 
 - Ten week sessions
@@ -29,7 +31,13 @@ format: lshtm-mrcg-revealjs
 
 # LLMs
 
+::: {#fig-elephants layout-ncol=2}
+
 Try to resist their siren call... 
+
+<iframe src="https://giphy.com/embed/SnbwVKTj0vBQSK47us" width="327" height="480" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/glitch-ai-2023-SnbwVKTj0vBQSK47us"></a></p>
+
+:::
 
 # Feedback option
 
