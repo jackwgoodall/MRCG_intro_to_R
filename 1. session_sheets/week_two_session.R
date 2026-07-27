@@ -157,6 +157,26 @@ installed.packages("readr") # You only need to do this once
 
 library(readr) # You need to do this every time you start R
 
+# putting a question mark first will tell you what the package is 
+# in the help -----> 
+
+?readr 
+
+# `vignette()` will give you some examples about how this is used
+# (note the quotation marks)
+vignette("readr")
+
+# Putting two colons after it will bring up a list of all of the functions 
+# that package contains (useful if you forget the exact name of the function
+# you need!)
+# Type two colons after this:
+
+readr
+
+# Typing a question mark before the function tells you how to use it
+
+?read_csv
+
 # ---------------------------------------
 ## Part 3 - Getting data into R ---------
 # ---------------------------------------
@@ -167,7 +187,7 @@ library(readr) # You need to do this every time you start R
 
 # You can copy and paste the output here: 
 
-iris <- read_csv("data/iris.csv") # this will only work if you have save this is a folder called `data`
+iris <- read_csv(file = "data/iris.csv") # this will only work if you have save this is a folder called `data`
 
 # Click on the iris.xlsx to see how this can be done the same with a excel 
 # file (just with a different packahge)
