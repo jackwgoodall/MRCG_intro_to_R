@@ -108,5 +108,5 @@ The confirmed plan for the next two weeks will be show on my GitHub page, along 
 
 - Quarto (a markdown engine) in more depth: parameters, cross-references, figures and tables in one document
 - RStudio Projects and `here()` for portable file paths; sensible folder structure
-- Reproducibility: `sessionInfo()`, and a first look at git/GitHub for version control
+- Reproducibility: `sessionInfo()`
 - A small end-to-end capstone (import → clean → visualise → model → render a report)
