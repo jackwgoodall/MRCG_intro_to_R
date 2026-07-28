@@ -1,5 +1,7 @@
 install.packages("readr")
 install.packages("tidyverse")
+library(tidyverse)
+library(readr)
 
 # -----------------------------------
 # Introduction to R - Week 3 --------
@@ -104,9 +106,12 @@ boxplot(iris[, c('Petal.Width', 'Petal.Length')])
 
 library("tidyverse")
 
-iris_1 <- iris |>                         # 'assign' (<-) new output to iris_1
+iris_1 <- iris |>                         # 'assign' (<-) new output to iris_1, |> means 'pipe'
               filter(Sepal.Length > 5.5)|> # filtering for variables with sepal length > 5.5
               group_by(Species)             # grouping the filtered variables by species
+
+iris_2 <- iris |>
+              filter(Species == "versicolor", Petal.Length > 1.2) #note the == is a logical = 
 
 iris_summary <- iris_1 |> 
                 summarise(
