@@ -14,7 +14,8 @@
 # ^ raises to a power
 # sqrt() is the square roots 
 # log() is the natural log; exp() is the exponent
-
+# log10() (or indeed any other number) will give you that log
+ 
 # Round brackets can be used (remember BODMAS?) 
 
 # Run this to see what you get:
@@ -190,8 +191,19 @@ my_numbers_big[3]
 
 my_numbers_big[c(3,5)]
 
+# The other major data type is 'Boolean'/logical which is TRUE/FALSE data (must be capitalised)
+# eg. 
+
+my_boolean_vector <- c(FALSE, FALSE, TRUE, FALSE, TRUE)
+
+str(my_boolean_vector)
+
 # You can also specify whether to pick a number with TRUE/FALSE 
 # (You will see why this is so useful later...)
 
 my_numbers_big[c(FALSE, FALSE, TRUE, FALSE, TRUE)]
+
+# or
+
+my_numbers_big[my_boolean_vector]
 

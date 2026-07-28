@@ -1,0 +1,44 @@
+---
+title: "Welcome to The Introduction to R"
+subtitle: "Session 1 — 3rd August 2026" 
+format: lshtm-mrcg-revealjs
+---
+
+# What is R?
+
+- Programming *language*
+- Designed for people like you
+- Powerful, but easy to go astray
+
+# Flow...
+
+<iframe src="https://giphy.com/embed/b0wjZ76XPA5lC" width="889.2" height="498.3225" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/monterey-bay-aquarium-open-sea-exhibit-pacific-mackerel-b0wjZ76XPA5lC"></a></p>
+
+# Course overview
+
+- Ten week sessions
+- Exact content will be dynamic based on our progress
+- The plan is on the "About" tab of website
+- The 'locked in' sessions on the "Timetable" tab
+
+# Each Session
+
+- We will work through a worksheet together
+- Homework questions to be worked through
+- Answers will be uploaded to the website
+- Troubleshoot in the next session
+- Sessions will be recorded for playback
+
+# LLMs
+
+::: {#fig-elephants layout-ncol=2}
+
+Try to resist their siren call... 
+
+<iframe src="https://giphy.com/embed/SnbwVKTj0vBQSK47us" width="327" height="480" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/glitch-ai-2023-SnbwVKTj0vBQSK47us"></a></p>
+
+:::
+
+# Feedback option
+
+- There is a link for anonymous feedback on the website

@@ -184,6 +184,31 @@ thead {
   color:            $dept-header-text;
 }
 
+table {
+  // Fill whatever column width the page layout gives us, rather than shrinking
+  // to fit content.
+  width: 100%;
+}
+
+th,
+td {
+  // Top-align so short cells ("-") don't float in the middle of a row whose
+  // height is set by a long wrapped session title.
+  vertical-align: top;
+  padding:        6px 10px;
+}
+
+// Zebra striping in the pale brand tint aids scanning across a wide table.
+table tbody tr:nth-child(even) {
+  background-color: $dept-pale;
+}
+
+// Keep short link labels ("download", "csv / xlsx") on one line — they are the
+// narrowest columns and are the first thing to wrap into unreadable stacks.
+td a {
+  white-space: nowrap;
+}
+
 // ── Misc utility ─────────────────────────────────────────────────────────────
 .upset-note {
   font-size:     0.85em;

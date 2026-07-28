@@ -37,7 +37,7 @@ The confirmed plan for the next two weeks will be show on my GitHub page, along 
 
 - Selecting and changing items in base R
 
-- A brief into to packages
+- An into to packages
 
 - Accessing data
 
@@ -50,36 +50,37 @@ The confirmed plan for the next two weeks will be show on my GitHub page, along 
 
   - Data summarise
 
-  - Basic visualisations for outliers
+  - Basic visualisations for outliers and data structure
 
   - Correcting errors safely
 
 - Introduction to the tidyverse
+  - The concept of tidy data (one variable per column, one observation per row)
   - The power of the pipe `(|> / %>%)` and why it helps makes code readable
   - The core dplyr verbs: `filter`, `select`, `mutate`, `arrange`, `summarise`, `group_by`
-  - The concept of tidy data (one variable per column, one observation per row)
+
+### Week 4: More tidyverse and basic statistical analysis
+
+- Tidyverse
   - Reshaping with `pivot_longer` / `pivot_wider`
   - Joining tables with `left_join` (research data almost always spans multiple files)
   - Handling categorical variables with factors (forcats)
 
-### Week 4: Visualisation with ggplot2
+- Basic statistical analysis
+  - T-test
+  - Chi-squared test
+  - Alternatives
+
+### Week 5: Visualisation with ggplot2
 
 - The grammar of graphics: data → aesthetics → geoms
 - Common "geoms" (point, line, histogram, boxplot) and mapping colour/fill/group
 - Faceting for subgroups Scales, labels, and themes to get to publication-ready
 - `ggsave()` with sensible dimensions/DPI for journal submission
 
-### Week 5: Basic statistical analysis
-
-- Using tables, summaries and visualisation to check we are doing the right analysis
-- T-test
-- Chi-squared test
-- Alternatives
-
 ### Week 6: Consolidation and a gentle introduction to functions
 
 - Recap and catch-up on weeks 1–5\
-- Control the flow: if/else Iteration: for loops, then `across()` / `purrr::map()` as the tidy alternative
 - Writing your own functions (the DRY principle: don't repeat yourself)
 - A short combined practical: import → clean → plot, end-to-end
 
@@ -107,5 +108,5 @@ The confirmed plan for the next two weeks will be show on my GitHub page, along 
 
 - Quarto (a markdown engine) in more depth: parameters, cross-references, figures and tables in one document
 - RStudio Projects and `here()` for portable file paths; sensible folder structure
-- Reproducibility: `sessionInfo()`, and a first look at git/GitHub for version control
+- Reproducibility: `sessionInfo()`
 - A small end-to-end capstone (import → clean → visualise → model → render a report)
