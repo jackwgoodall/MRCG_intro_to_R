@@ -1,15 +1,17 @@
 ---
 format: lshtm-mrcg-html
 toc: false
+page-layout: full
 ---
 
 # Weekly Timetable
 
-| Session | Date | Venue | Scripts | Data | Homework | Answers |
-|--------------------------|-------------|-----------|------------|------------|------------|------------|
-| Introduction | 3rd August | F001 | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/1.%20session_sheets/week_one_session.R) | \- | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/2.%20homework_questions/week_one_homework.R) | \- |
-| Object types and getting data into R | 10th August | Rees | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/1.%20session_sheets/week_two_session.R) | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/data/week_two/) | [link](https://github.com/jackwgoodall/MRCG_intro_to_R/blob/main/2.%20homework_questions/week_two_homework.R) | \- |
-| Data cleaning and the tidyverse | 17th August | Rees | \- | \- | \- | \- |
-| Visulisation with ggplot | 24th August | Rees | \- | \- | \- | \- |
-| Basic statistical analysis | 31st August | Rees | \- | \- | \- | \- |
-| Break (7th & 14th September) | ====== | ====== | ====== | ====== | ====== | ====== |
+| Session | Date | Venue | Scripts | Data | Recordings | Homework | Answers |
+|---------|---------|---------|---------|---------|---------|---------|---------|
+| Introduction | 3rd August | F001 | [download](1.%20session_sheets/week_one_session.R){download="week_one_session.R"} | \- | \- | \- | \- |
+| Object types and getting data into R | 10th August | Rees | [download](1.%20session_sheets/week_two_session.R){download="week_two_session.R"} | [csv](data/week_two/iris.csv){download="iris.csv"} / [xlsx](data/week_two/iris.xlsx){download="iris.xlsx"} | \- | [download](2.%20homework_questions/week_two_homework.R){download="week_two_homework.R"} | \- |
+| Data cleaning and the tidyverse | 17th August | Rees | \- | \- | \- | \- | \- |
+| Visulisation with ggplot | 24th August | Rees | \- | \- | \- | \- | \- |
+| Basic statistical analysis | 31st August | Rees | \- | \- | \- | \- | \- |
+| Break (7th & 14th September) | ======== | ====== | ======= | ====== | ======= | ======== | ======= |
+
