@@ -47,9 +47,9 @@ print(clear_matrix)
 clear_matrix[2,1]
 
 # Question 2 
-# How would you pick out "D3"?
+# How would you pick out "D2"?
 # ----------------------------------------
-clear_matrix[ , ]
+
 
 # ----------------------------------------
 
@@ -73,7 +73,7 @@ rm(clear_matrix)
 # Question 3
 # Add 2 to every item in `my_matrix`
 # ----------------------------------------
-my_matrix
+
 
 
 # ----------------------------------------
@@ -101,7 +101,7 @@ colnames(my_data_frame)
 colnames(my_data_frame)[2]
 
 # Question 4
-# Rename `col2` and `column_two`
+# Rename `col2` as `column_two`
 # ----------------------------------------
 
 

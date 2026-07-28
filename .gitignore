@@ -7,5 +7,7 @@
 **/*.quarto_ipynb
 .DS_Store
 _site
+.positai
+my_test.R
 README_files/
 README.html
