@@ -47,9 +47,9 @@ print(clear_matrix)
 clear_matrix[2,1]
 
 # Question 2 
-# How would you pick out "D2"?
+# Modify this code to pick out "D2"?
 # ----------------------------------------
-
+clear_matrix[ ]
 
 # ----------------------------------------
 
@@ -58,6 +58,8 @@ clear_matrix[2,1]
 # Look at the before and after here
 
 clear_matrix[2,1] <- "B1 modified"
+
+# See what has changed:
 
 clear_matrix
 
@@ -88,7 +90,9 @@ my_data_frame <- data.frame(col1 = c("A", "B", "C", "D", "E", "F"),
 
 # Or by coercing a matrix 
 
-as.data.frame(my_matrix) # note this doesn't have any column names as matrices never do.... 
+data_frame_from_matrix <- as.data.frame(my_matrix) 
+
+data_frame_from_matrix # note this doesn't have any column names as matrices never do.... 
 
 # You can see the column names with colnames()
 
@@ -187,7 +191,9 @@ readr
 
 # You can copy and paste the output here: 
 
-iris <- read_csv(file = "data/iris.csv") # this will only work if you have save this is a folder called `data`
+iris <- read_csv(file = "data/iris.csv") # this will only work if you have save this is a folder called `data`.  
+                                         # getwd() tells you where your project is located (if this isn't working you might not
+                                         # be where you think you are!)
 
 # Click on the iris.xlsx to see how this can be done the same with a excel 
 # file (just with a different packahge)

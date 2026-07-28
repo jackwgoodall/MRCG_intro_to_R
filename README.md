@@ -20,7 +20,7 @@ We will meet once a week for 60-90 minutes where we will work through some inter
 
 The course will be dynamically structured around the needs and proficiency of those who attend, however a rough outline is provided below.
 
-The confirmed plan for the next two weeks will be show on my GitHub page, along with the answers to the previous homework exercises: [here](https://github.com/jackwgoodall/MRCG_intro_to_R).
+The confirmed plan for the upcoming two weeks will be show on the [Timetable page](timetable.qmd), along with the answers to the previous homework exercises and the session recordings.
 
 ### Week 1: Introduction
 

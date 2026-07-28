@@ -9,3 +9,8 @@ format: lshtm-mrcg-html
 
 [Introductory slides](slides/intro_slides.qmd)
 
+## Figures
+
+[The ggplot2 page](https://ggplot2.tidyverse.org/articles/ggplot2.html)
+[Colourkit - for aesthetically pleasing pallettes](https://colorkit.co/palettes/)
+[IWantHue - for picking contrasting colours for k objects](https://medialab.github.io/iwanthue/)

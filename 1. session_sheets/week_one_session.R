@@ -207,3 +207,7 @@ my_numbers_big[c(FALSE, FALSE, TRUE, FALSE, TRUE)]
 
 my_numbers_big[my_boolean_vector]
 
+# You can tell how long a vector is with `length()`
+# This tells you how many seperate items the vector contains 
+
+length(my_numbers_big)
