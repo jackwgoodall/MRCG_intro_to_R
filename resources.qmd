@@ -17,5 +17,7 @@ format: lshtm-mrcg-html
 ## Figures
 
 [The ggplot2 page](https://ggplot2.tidyverse.org/articles/ggplot2.html)
-[Colourkit - for aesthetically pleasing pallettes](https://colorkit.co/palettes/)
-[IWantHue - for picking contrasting colours for k objects](https://medialab.github.io/iwanthue/)
+
+[Colourkit](https://colorkit.co/palettes/) - for aesthetically pleasing pallettes
+
+[IWantHue](https://medialab.github.io/iwanthue/) - for picking contrasting colours for k objects
