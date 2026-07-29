@@ -1,5 +1,5 @@
-install.packages("readr")
-install.packages("tidyverse")
+# install.packages("readr") # <- uncomment these if you need to install it
+# install.packages("tidyverse") # <- uncomment these if you need to install it
 library(tidyverse)
 library(readr)
 
@@ -24,9 +24,9 @@ library(readr)
 # load the iris dataset to your environment
 iris <- read_csv("data/iris.csv") 
 
-# --------------------------------------------
+# ----------------------------------------------
 ## Part 1 - Getting acquainted with your data! -
-# --------------------------------------------
+# ----------------------------------------------
 
 # Click on the iris dataset in the environment, this will open the dataset 
 # in a new tab above the script where you can view the dataset
@@ -51,13 +51,13 @@ nrow(iris)
 ncol(iris)
 
 #Aggregations
-sum(iris$Sepal.Length)           			      # Sum 
-max(iris$Sepal.Length)               			    # Max value 
-min(iris$Sepal.Length)               			    # Min value 
-range(iris$Sepal.Length)         			      # Min and max 
+sum(iris$Sepal.Length)           			       # Sum 
+max(iris$Sepal.Length)               			   # Max value 
+min(iris$Sepal.Length)               			   # Min value 
+range(iris$Sepal.Length)         			       # Min and max 
 mean(iris$Sepal.Length, na.rm = TRUE)        # Mean 
 median(iris$Sepal.Length, na.rm = TRUE)      # Median 
-quantile(iris$Sepal.Length, probs = 0:20/20) # Quantiles 
+quantile(iris$Sepal.Length, probs = seq(0, 1, by = 0.05)) # Quantiles 
 
 
 # to summarise the dataset we use summary()
@@ -147,7 +147,8 @@ iris_multi_sort <- iris |>          # 2-step arrange, descending sepal length bu
 iris_mutated <- iris |> 
   mutate(Petal.Length.mm = Petal.Length * 10)
 
-iris_mutated <- iris_mutated |> relocate(Petal.Length.mm, .after = Petal.Length)
+iris_mutated <- iris_mutated |> 
+  relocate(Petal.Length.mm, .after = Petal.Length)
 # relocating the new column after the original to aid comparison
 
 
@@ -161,7 +162,7 @@ iris_mutated <- iris_mutated |> relocate(Petal.Length.mm, .after = Petal.Length)
 # we can use the command pivot_longer() to switch to long format
 
 iris_id <- iris |> 
-  mutate(flower_id = row_number(), .before = Sepal.Length) #adding a unique id for each observation
+  mutate(flower_id = row_number(), .before = Sepal.Length) # adding a unique id for each observation
 
 iris_long <- iris_id |> 
   pivot_longer(

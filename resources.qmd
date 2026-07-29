@@ -4,6 +4,11 @@ format: lshtm-mrcg-html
 ---
 
 # Resources 
+
+## Setup
+[Download R](https://cran.r-project.org/)
+[Download R Studio](https://posit.co/downloads)
+
 ## General
 [Anonymous Feedback Link](https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=oaKtcild7U6xlPh0V3cUnuSVmI9t539Mu7XmsjCdKGdUQ1k3WFdINTBZMFdUSTEwVkJaNFJIOFczNS4u)
 
