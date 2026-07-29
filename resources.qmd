@@ -3,14 +3,18 @@ title: ""
 format: lshtm-mrcg-html
 ---
 
-# Resources 
+# Resources
 
 ## Setup
+
+[Setup Video](https://lshtm.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=6aa307c8-f329-486c-8194-b4960091f4cf)
+
 [Download R](https://cran.r-project.org/)
 
 [Download R Studio](https://posit.co/downloads)
 
 ## General
+
 [Anonymous Feedback Link](https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=oaKtcild7U6xlPh0V3cUnuSVmI9t539Mu7XmsjCdKGdUQ1k3WFdINTBZMFdUSTEwVkJaNFJIOFczNS4u)
 
 [Introductory slides](slides/intro_slides.qmd)
