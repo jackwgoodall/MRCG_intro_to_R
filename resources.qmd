@@ -7,6 +7,7 @@ format: lshtm-mrcg-html
 
 ## Setup
 [Download R](https://cran.r-project.org/)
+
 [Download R Studio](https://posit.co/downloads)
 
 ## General
