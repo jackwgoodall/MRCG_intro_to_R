@@ -14,8 +14,6 @@
 # Layers get progressively added to a base to 'finesse' your image 
 # The ggplot2 userguide is excellent: https://ggplot2.tidyverse.org/articles/ggplot2.html
 
-# I'm calling these "steps" 
-
 # --------------------------------
 ## Step 1 - prepare your data ----
 # --------------------------------
@@ -233,6 +231,16 @@ my_plot + # You could type out the whole plot above - this is just a way to keep
                 fill = Species), 
             position = "fill") + 
    labs(y = "Proportion")
+ 
+ # We might now want our axis to reflect a percentage rather than a number
+ # We can achieve this with scales_y_continuous and calling "percent" from the scales package
+ ggplot(data = iris) + 
+    geom_bar(aes(x = Sepal.Width.cat,
+                 fill = Species), 
+             position = "fill") + 
+    labs(y = "Percentage") + 
+    scale_y_continuous(labels = scales::percent)
+ 
 
  # You can choose the colours with scale_fill_ ... 
  # There are some "presets" (just type `scale_fill` and the options will show)

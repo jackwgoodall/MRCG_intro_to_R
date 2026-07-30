@@ -17,6 +17,8 @@ website:
         text: Timetable
       - href: resources.qmd
         text: Resources
+      - href: stats_explained.qmd
+        text: Statistics Refresher
 
 format:
   lshtm-mrcg-html:

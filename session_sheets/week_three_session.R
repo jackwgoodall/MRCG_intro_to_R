@@ -1,8 +1,3 @@
-# install.packages("readr") # <- uncomment these if you need to install it
-# install.packages("tidyverse") # <- uncomment these if you need to install it
-library(tidyverse)
-library(readr)
-
 # -----------------------------------
 # Introduction to R - Week 3 --------
 # -----------------------------------
@@ -15,7 +10,7 @@ library(readr)
 # Both in base R and tidyverse
 
 # Question 1
-# Install and load tidyverse (Hint: see week 2 notes:installing readr)
+# Install and load the tidyverse package (Hint: see week 2 notes:installing readr)
 # ----------------------------------------
 
 
@@ -43,7 +38,7 @@ iris <- read_csv("data/iris.csv")
 # we can explore the structure of the dataset using str() function
 str(iris)
 
-# the structure should be summarised in the console (types of variables/factors etc)
+# the structure should be summarised in the console (types of variables and their first few entries)
 
 # We can explore the dimensions (rows and columns) of a dataset individually too
 dim(iris)
@@ -69,18 +64,23 @@ summary(iris)
 
 # ----------------------------------------
 
+# Mean = 
+
+# Median = 
+
+# How many species: 
 
 # ----------------------------------------
 
 # This data exploration is very useful as it allows us to identify potential errors
-# This step should always be supplemented with visual/grahical exploration
+# This step should always be supplemented with visual/graphical exploration
 
 # Summary() works well for numeric variables but for character variables
 # unique() and table() are helpful
 unique(iris$Species)
 table(iris$Species)
 
-# It is likely that Setosi is a typo of setosa ... lets correct that!
+# It is likely that "Setosi" is a typo of "setosa" ... lets correct that!
 iris$Species[iris$Species %in% c('Setosi')] <- 'setosa' #some of this code may be familiar from end of session 2
 
 # Plotting the data
@@ -90,9 +90,11 @@ plot(iris$Petal.Width~iris$Petal.Length)
 boxplot(iris[, c('Petal.Width', 'Petal.Length')])
 
 # Handling errors:
-# If you have access to the original data you can correct the value from this
-# Team iris have not shared their OG data with us, so we need to remove this value
+# Rather than going back and meddling with a redcap download etc, R can provide
+# a transparent way to correct errors such as this. eg. we could write:
 
+
+# JG 17/08/2026 - spotted implausble value, unable to confirm original so changed to NA:
 iris$Petal.Length[iris$Petal.Length == '69'] <- NA
 
 # rechecking our dataset
@@ -100,31 +102,37 @@ plot(iris$Petal.Length)
 plot(iris$Petal.Width~iris$Petal.Length)
 boxplot(iris[, c('Petal.Width', 'Petal.Length')])
 
-# --------------------------------------------
-## Part 2 - Getting acquainted with your data in Tidyverse (filter, group_by, summarise, arrange, mutate, select)
-# --------------------------------------------
+# ---------------------------------------------------
+## Part 2 - Getting acquainted with your data in ----
+#           Tidyverse (filter, group_by, summarise, -
+#           arrange, mutate, select)                -
+# ---------------------------------------------------
 
 library("tidyverse")
 
-iris_1 <- iris |>                         # 'assign' (<-) new output to iris_1, |> means 'pipe'
-              filter(Sepal.Length > 5.5)|> # filtering for variables with sepal length > 5.5
-              group_by(Species)             # grouping the filtered variables by species
+iris_long_sepal <- iris |>                             # 'assign' (<-) new output to iris_1, |> means 'pipe'
+              filter(Sepal.Length > 5.5)      # filtering for variables with sepal length > 5.5
 
-iris_2 <- iris |>
-              filter(Species == "versicolor", Petal.Length > 1.2) #note the == is a logical = 
+iris_long_petal_versicolor <- iris |>
+              filter(Species == "versicolor" & Petal.Length > 1.2) #note the == is a logical = 
 
-iris_summary <- iris_1 |> 
+iris_summary <- iris |> 
+                group_by(Species) |>
                 summarise(
-                avg_sepal_length = mean(Sepal.Length),
-                sample_count = n())
+                      avg_sepal_length = mean(Sepal.Length),
+                      sample_count = n())
 
 print(iris_summary) #The above code creates a new dataframe in the environment
                     #this code prints it out in the console
 
 # Question 4
-# Comparing the original iris data and iris_1 which species has the smallest sepals?
-
+# Can you modify this code so that it excludes all the `virginica`?
 # ----------------------------------------
+iris_summary_no_virginica <- iris |> 
+                             group_by(Species) |>
+                             summarise(
+                                    avg_sepal_length = mean(Sepal.Length),
+                                    sample_count = n())
 
 # ----------------------------------------
 
@@ -133,7 +141,7 @@ print(iris_summary) #The above code creates a new dataframe in the environment
 iris_sorted <- iris |>      #arranging the dataset by ascending order of sepal length
   arrange(Sepal.Length)
 
-iris_sorted_desc <- iris |>    #arranging the dataset by descending order of sepal lenght
+iris_sorted_desc <- iris |>    #arranging the dataset by descending order of sepal length
   arrange(desc(Sepal.Length))
 
 iris_multi_sort <- iris |>          # 2-step arrange, descending sepal length but within species
@@ -153,7 +161,7 @@ iris_mutated <- iris_mutated |>
 
 
 # --------------------------------------------
-## Part 3 - Pivoting data and joining data
+## Part 3 - Pivoting data --------------------
 # --------------------------------------------
 
 # data set will either be in "long" or "wide" format, depending on how the original
@@ -183,16 +191,65 @@ iris_wide <- iris_long |>
 # Generally pivot_longer() arranges a data set with more rows and fewer columns,
 # pivot_wider() arranges data sets to fewer rows and more columns
 
+
+# ---------------------------------------- 
+## Part 4 - joint dataframes together ----
+# ----------------------------------------
+
 # For our research studies we often have multiple data sets that need combining
 # To join data from 2 or more sources you need a matching key across all data sets
 # This may be the unique participant id or a date etc
 
 species_info <- tibble(
-  Species = c("setosa", "versicolor", "virginica"),
-  Common_Name = c("Bristle-pointed Iris", "Blue Flag Iris", "Virginia Iris"),
-  Native_Climate = c("Subarctic", "Temperate", "Subtropical")
+  Species = c("setosa", "virginica", "sibirica"),
+  Common_Name = c("Bristle-pointed Iris", "Virginia Iris", "Siberian Iris"),
+  Native_Climate = c("Subarctic", "Subtropical", "Subarctic")
 )
 
-iris_joined <- iris |>
+# There are a few types of join we can do 
+# First look at the iris dataset and check how many columns it has:
+# ----------------------------------------
+
+
+# ----------------------------------------
+
+## LEFT JOIN 
+# This takes dataset (A) and joins dataset (B) onto it by any of a specified column(s)
+# It retains all of dataset (A) and only those of (B) which have a match in (A)
+# Try this and check the number of rows and the count of species
+# ----------------------------------------
+iris_left_joined <- iris |>
   left_join(species_info, by = "Species")
 
+
+# ----------------------------------------
+
+## RIGHT JOIN 
+# This does the same but now all of (B) is retained
+# Try this and check the number of rows and count of species
+# ----------------------------------------
+iris_right_joined <- iris |>
+  right_join(species_info, by = "Species")
+
+table(iris_right_joined$Species)
+# ----------------------------------------
+
+## INNER JOIN
+# This joins only when the joining column features in *both* dataframes
+# Try this and check the number of rows and count of species
+# ----------------------------------------
+iris_inner_joined <- iris |>
+  inner_join(species_info, by = "Species")
+
+table(iris_inner_joined$Species)
+# ----------------------------------------
+
+## FULL JOIN 
+# This joins where it is able but retains all columns from both datasets 
+# Try this and check the number of rows and count of species
+# ----------------------------------------
+iris_full_joined <- iris |>
+  full_join(species_info, by = "Species")
+
+table(iris_full_joined$Species)
+# ----------------------------------------

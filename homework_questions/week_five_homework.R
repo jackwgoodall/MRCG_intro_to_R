@@ -77,7 +77,7 @@ petal_plot <-
 
 # Question 8
 # Layer the individual points on top of that box plot using geom_jitter()
-# Stop the box plot drawing its outliers, so points aren't plotted twice
+# Stop the box plot drawing its outliers, so outlying points aren't plotted twice
 # Only let the points move sideways, not up and down - and not too far
 # ----------------------------------------
 
@@ -97,17 +97,25 @@ petal_plot <-
 
 # Question 10
 # A tricky one to end with!
-# We are going to use one of R's bundled datasets - air quality measurements
-# taken in New York, one row per day:
+# We are going to use and air quality dataset taken in New York, one row per day
+# Download this from week 5 data: https://jackwgoodall.github.io/MRCG_intro_to_R/timetable.html
+# Add it to your `data/` folder 
+# Use `readr` to import it as `air`
+# ----------------------------------------
+air <- 
 
-air <- datasets::airquality
+  
+# ----------------------------------------
 
 # Filter it to just Month 5, then use pivot_longer() on the four measurement
 # columns c("Ozone", "Solar.R", "Wind", "Temp") so you get one row per
 # measurement, with the measurement name in a column called `measure` and the
 # number in a column called `value`
+# Complete this code:
 # ----------------------------------------
-air_longer <-
+air_longer <- air %>%
+  filter( ) %>%
+  pivot_longer( )
 
 # ----------------------------------------
 
@@ -115,7 +123,7 @@ air_longer <-
 # for each `measure`
 # ----------------------------------------
 
-
+ 
 # ----------------------------------------
 
 # You should find that plot is fairly useless - the four measures are on wildly

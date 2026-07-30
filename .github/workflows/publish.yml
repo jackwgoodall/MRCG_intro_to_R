@@ -23,6 +23,32 @@ jobs:
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          # stats_explained.qmd also renders to PDF, which needs a LaTeX
+          # installation. Without this the build fails at the PDF step.
+          tinytex: true
+
+      # stats_explained.qmd contains live R chunks, so the runner needs R and
+      # the packages those chunks use. use-public-rspm pulls pre-built binaries
+      # rather than compiling from source, which takes the install from ~20
+      # minutes down to ~2.
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Install R packages
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::knitr
+            any::rmarkdown
+            any::ggplot2
+            any::dplyr
+            any::tidyr
+            any::broom
+            any::scales
+            any::patchwork
 
       - name: Render site
         uses: quarto-dev/quarto-actions/render@v2

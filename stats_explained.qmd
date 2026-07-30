@@ -1,0 +1,1153 @@
+---
+title: ""
+author: Jack Goodall
+format:
+  lshtm-mrcg-html:
+    code-fold: true
+    code-summary: "Show the code"
+    fig-width: 7
+    fig-height: 4.2
+  pdf:
+    fig-width: 6.5
+    fig-height: 3.9
+    fig-format: pdf
+    geometry:
+      - top=25mm
+      - bottom=25mm
+      - left=22mm
+      - right=22mm
+toc: true
+toc-depth: 3
+execute:
+  echo: true
+  warning: false
+  message: false
+  fig-align: center
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(broom)
+library(knitr)
+
+# Show the code in HTML (where it is collapsed behind "Show the code"), but
+# never in PDF or any other output. This has to be done here rather than in the
+# YAML, because Quarto has no way to set `echo` per output format.
+knitr::opts_chunk$set(echo = knitr::is_html_output())
+
+theme_set(
+  theme_minimal(base_size = 12) +
+    theme(
+      plot.title    = element_text(face = "bold", colour = "#0D5257"),
+      plot.subtitle = element_text(colour = "#568689"),
+      panel.grid.minor = element_blank()
+    )
+)
+
+teal   <- "#0D5257"
+mid    <- "#568689"
+pale   <- "#E2EAEB"
+accent <- "#621244"
+trio   <- c("#0D5257", "#568689", "#621244")
+
+# The clean, built-in copy - identical to the course data once the `Setosi`
+# typo has been corrected
+iris <- datasets::iris
+
+# --- small helpers so the tables below read consistently -------------------
+
+fmt_p <- function(p) {
+  ifelse(p < 0.001, "< 0.001", sprintf("%.3f", p))
+}
+
+# Pull the useful parts out of any t-test into one tidy row
+t_row <- function(tt, label) {
+  est <- if (length(tt$estimate) == 2) {
+    unname(tt$estimate[1] - tt$estimate[2])
+  } else {
+    unname(tt$estimate)
+  }
+  data.frame(
+    Comparison        = label,
+    Estimate          = round(est, 3),
+    `Lower 95%`       = round(tt$conf.int[1], 3),
+    `Upper 95%`       = round(tt$conf.int[2], 3),
+    `t`               = round(unname(tt$statistic), 2),
+    `df`              = round(unname(tt$parameter), 1),
+    `p-value`         = fmt_p(tt$p.value),
+    check.names = FALSE,
+    row.names = NULL
+  )
+}
+```
+
+# Statistics Refresher
+
+This page is the **why** behind the week 4 session sheet. It is a companion to
+that sheet, and definitely not a statistics course in itself. There are proper refresher links
+on the [Resources](resources.qmd) page.
+
+I have hidden the R code here deliberately, this is about the stats not about R, however if you are curious you can click the `show the code` buttons to see the code I used.
+
+There are also some call out boxes below, which can be safely skipped if you are after the refresher, but which 
+might tempt you in if you want some more depth. 
+
+If you prefer a hard copy you can download a PDF on right hand side. 
+
+::: {.callout-warning}
+## A warning about stats in R
+
+R will run almost any test you ask it to, on any data, without complaint. It has
+no idea whether the test suits your question. If you are using statistical tests in your analyses
+I urge you to really understand how they work, whether they are right for your data and how they should be reported.
+:::
+
+---
+
+## Frequentist Statistics
+
+There are two major statistical schools: frequentists and Bayesian.   Although there are some fundamental differences
+much of the mathematical concepts and procedures overalap.  The test procedures discussed here are specifically ***frequentist***. 
+
+Every test on this page works the same basic way:
+
+1. Assume nothing interesting is going on. This is the **null hypothesis**.
+2. Work out what your data would typically look like if this null hypothesis were true.
+3. See how far your actual data sits from that.
+4. If it sits somewhere very unlikely, doubt the assumption in step 1.
+
+The output of step 4 is the **p-value**.
+
+### What a p-value actually is
+
+A p-value is the probability of getting a result at least as extreme as yours,
+**assuming the null hypothesis is true**.
+
+
+```{r}
+#| label: fig-pvalue
+#| fig-cap: "The p-value is the shaded area — the proportion of possible results at least as extreme as the one you got. Here the observed statistic is 2.1, with 20 degrees of freedom."
+x    <- seq(-4, 4, length.out = 600)
+df_t <- data.frame(x = x, y = dt(x, df = 20))
+obs  <- 2.1
+
+ggplot(df_t, aes(x, y)) +
+  geom_area(data = subset(df_t, x >=  obs), fill = teal, alpha = 0.75) +
+  geom_area(data = subset(df_t, x <= -obs), fill = teal, alpha = 0.75) +
+  geom_line(linewidth = 0.9, colour = "grey25") +
+  geom_vline(xintercept = c(-obs, obs), linetype = "dashed", colour = accent) +
+  annotate("text", x =  3.1, y = 0.06, label = "p/2", colour = teal, fontface = "bold") +
+  annotate("text", x = -3.1, y = 0.06, label = "p/2", colour = teal, fontface = "bold") +
+  annotate("text", x = 0, y = 0.2,
+           label = "what we'd expect\nif nothing were going on",
+           colour = "grey35", size = 3.4) +
+  labs(title = "A p-value is an area under a curve",
+       x = "some test statistic", y = "probability density")
+```
+
+**It is not** the probability that your hypothesis is wrong. It is not the
+probability the result was chance. And it is definitely not a measure of how big or
+important the effect is; with a large enough sample, a trivially small
+difference earns a tiny p-value, and a really important result can hide within noisy data.
+
+There is an [excellent paper](https://link.springer.com/article/10.1007/s10654-016-0149-3) on how p-values are misinterpreted that you might enjoy. 
+
+### Confidence intervals are usually more useful
+
+A p-value gives you one number about *surprise*. A confidence interval gives you
+a *plausible range for the actual answer*, in the units you measured. For most
+reporting, this interval is more informative.
+
+Every test below that can give you one, does.
+
+::: {.callout-note collapse="true"}
+## For the pedants: a much longer discussion of the confidence interval
+
+"A plausible range for the answer" I've used above is the standard hand-wave description of a confidence, 
+and it is loose enough to be wrong in a fundamental way.
+
+Imagine the true parameter value you are after - say the mean
+sepal length of *every* iris in the world. That number exists, it is fixed, and
+you will never know it.
+
+You run a study on 150 flowers and calculate an interval. Now imagine running
+that same study again, and again, on fresh samples of 150 flowers. Each study
+gives a slightly different sample, so each one produces a slightly different confidence
+interval. The true value never budges; the intervals jump around it based on the nature of your sample.
+
+> A 95% confidence intervals implies that across all those repeated
+> studies, 95% of the intervals it produces would contain the true value.
+
+Notice that this describes **the long-run
+behaviour of the method**, not the particular interval sitting in your results
+table.
+
+**The three to note:**
+
+***The interval moves, the truth doesn't.*** Your interval is calculated from your
+data, so it varies from study to study. The true value is a fixed property of
+the world. The statement is about how often the interval **lands on** the true
+value, not about the true value falling inside your interval. Those might sound like
+the same sentence, and they are not.
+
+***It has to work whatever the truth happens to be.*** The 95% guarantee must hold
+regardless of what the true value is and you don't get to know it in
+order to check.
+
+*Once you've calculated it, the probability has gone.* Your interval came out as
+5.71 to 5.98. Every number there is now fixed, and so is the truth. The true
+mean is either in that range or it isn't. The probability is 100% or 0%, and you have no way of
+knowing which.
+
+You will often see the line in papers: *"There is a 95% probability the
+true mean lies between 5.71 and 5.98."* As I hope I have convinced you, this is false. It is a probability statement
+about the true value, and in this framework the true value isn't random — it's
+just unknown. That sentence describes a Bayesian **credible interval**, which is
+a genuinely different thing and requires you to specify prior beliefs before you
+start. (If you ask me the Bayesian approach is almost invariably more useful, but that is a story for another day).
+
+The 95% belongs to the **procedure**, not to your interval.
+
+::: {.callout-tip}
+## An analogy
+
+You are throwing hoops at a peg in the ground, blindfolded.
+
+The peg does not move: that's the true value. The hoops land in different
+places every throw: those are your intervals. "95% confidence" means that
+across many throws, 95% of hoops ring the peg.
+
+Taking the blindfold off after a single throw and the question "what is the
+probability this hoop ringed the peg?" no longer makes sense. It did or it
+didn't. The 95% was always a statement about the quality of your throwing in the longrun, not about that
+particular hoop.
+:::
+
+```{r}
+#| label: fig-coverage
+#| fig-height: 6
+#| fig-cap: "100 samples drawn from a population whose mean really is 5. Each horizontal line is one study's 95% confidence interval."
+set.seed(2024)
+n_sim <- 100
+n_obs <- 20
+mu    <- 5
+
+sims <- do.call(rbind, lapply(seq_len(n_sim), function(i) {
+  s  <- rnorm(n_obs, mean = mu, sd = 1)
+  ci <- t.test(s)$conf.int
+  data.frame(i = i, lo = ci[1], hi = ci[2], est = mean(s))
+}))
+sims$covers <- sims$lo <= mu & sims$hi >= mu
+
+ggplot(sims, aes(y = i)) +
+  geom_vline(xintercept = mu, colour = accent, linewidth = 0.9) +
+  geom_linerange(aes(xmin = lo, xmax = hi, colour = covers), linewidth = 0.45) +
+  geom_point(aes(x = est, colour = covers), size = 0.8) +
+  scale_colour_manual(
+    values = c("TRUE" = teal, "FALSE" = accent),
+    labels = c("TRUE" = "contains the true mean", "FALSE" = "misses it"),
+    breaks = c("TRUE", "FALSE")
+  ) +
+  labs(title = "The 95% belongs to the procedure, not to your interval",
+       subtitle = sprintf("%d of these %d intervals miss the true value of %g",
+                          sum(!sims$covers), n_sim, mu),
+       x = "estimated mean", y = "simulated study", colour = NULL) +
+  theme(legend.position = "bottom",
+        axis.text.y = element_blank(),
+        panel.grid.major.y = element_blank())
+```
+
+Look at any single line in that figure. Is *it* one of the 95%? There is no way
+to tell from the interval itself — which is precisely why the probability
+statement cannot be attached to it.
+
+**The 95% CI is intrinsically linked to the p value** as it is exactly
+the set of values that your data would *not* have rejected, had you tested each
+one as a null hypothesis at p = 0.05.
+
+Take any number inside your interval, test it as a null hypothesis, and you get
+p > 0.05. Take any number outside, and you get p < 0.05. 
+:::
+
+---
+
+## t-tests
+
+A t-test asks whether two means are far enough apart that chance is an
+unconvincing explanation.
+
+"Far enough apart" is doing some heavy lifting, and the output of your t-test depends on three things:
+
+- how big the difference is
+- how spread out the data is
+- and how much data you have
+
+```{r}
+#| label: fig-signal-noise
+#| fig-cap: "The same difference in means can be convincing or unconvincing depending entirely on the spread. Both panels have true means of 5 and 6./n (Remember that the central line in a box plot shows the *median* not the *mean*."
+set.seed(42)
+nn <- 60
+tight <- data.frame(
+  g = rep(c("A", "B"), each = nn),
+  v = c(rnorm(nn, 5, 0.4), rnorm(nn, 6, 0.4)),
+  panel = "Tight spread — convincing"
+)
+wide <- data.frame(
+  g = rep(c("A", "B"), each = nn),
+  v = c(rnorm(nn, 5, 2.5), rnorm(nn, 6, 2.5)),
+  panel = "Wide spread — unconvincing"
+)
+
+ggplot(rbind(tight, wide), aes(x = g, y = v, fill = g)) +
+  geom_boxplot(alpha = 0.65, outlier.shape = NA, width = 0.55) +
+  geom_jitter(width = 0.12, alpha = 0.35, size = 1) +
+  facet_wrap(~panel) +
+  scale_fill_manual(values = c(teal, mid)) +
+  labs(title = "Same difference, different verdict",
+       subtitle = "A difference is only impressive relative to the noise around it",
+       x = NULL, y = "measurement") +
+  theme(legend.position = "none")
+```
+
+This is why the t-statistic is essentially the *difference in means* divided by
+*how variable the data is*. A large difference in noisy data can score the same
+as a small difference in tidy data.
+
+### Flavour 1: one sample
+
+*Is this mean different from some specific number?*
+
+Taking the iris data: is mean sepal length different from 5.5 cm?
+
+```{r}
+#| label: tbl-onesample
+#| tbl-cap: "One-sample t-test of mean sepal length against 5.5 cm. The estimate here is the observed mean itself."
+tt1 <- t.test(iris$Sepal.Length, mu = 5.5)
+kable(t_row(tt1, "Mean sepal length vs 5.5 cm"), align = "lrrrrrr")
+```
+
+```{r}
+#| label: fig-onesample
+#| fig-cap: "The observed mean and its confidence interval, against the value being tested."
+ggplot(iris, aes(x = Sepal.Length)) +
+  geom_histogram(bins = 24, fill = pale, colour = "white") +
+  annotate("rect", xmin = tt1$conf.int[1], xmax = tt1$conf.int[2],
+           ymin = -Inf, ymax = Inf, fill = accent, alpha = 0.18) +
+  geom_vline(xintercept = 5.5, colour = "black", linewidth = 1, linetype = "dashed") +
+  geom_vline(xintercept = mean(iris$Sepal.Length), colour = accent, linewidth = 1) +
+  annotate("text", x = 5.5, y = 18, label = "tested value (5.5)",
+           colour = "black", hjust = 1.05, size = 3.4) +
+  annotate("text", x = mean(iris$Sepal.Length)+0.05, y = 18,
+           label = "observed mean\n+ 95% CI (shaded)",
+           colour = accent, hjust = -0.05, size = 3.4) +
+  labs(title = "Is mean sepal length different from 5.5 cm?",
+       x = "Sepal length (cm)", y = "count") + 
+  ylim(c(0,22))
+```
+
+The interval sits clear of 5.5, which is the same information the p-value gives
+you, just expressed in centimetres rather than probability.
+
+### Flavour 2: two independent samples
+
+*Do these two separate groups differ?*
+
+```{r}
+#| label: tbl-twosample
+#| tbl-cap: "Two-sample t-test comparing mean sepal length between two species. The estimate is the difference between the group means."
+two_species <- iris |>
+  filter(Species %in% c("setosa", "versicolor")) |>
+  droplevels()
+
+tt2 <- t.test(Sepal.Length ~ Species, data = two_species)
+kable(t_row(tt2, "setosa − versicolor"), align = "lrrrrrr")
+```
+
+```{r}
+#| label: fig-twosample
+#| fig-cap: "The distributions barely overlap, which is what a very small p-value looks like."
+ggplot(two_species, aes(x = Sepal.Length, fill = Species)) +
+  geom_density(alpha = 0.55, colour = NA) +
+  geom_vline(data = two_species |>
+               group_by(Species) |>
+               summarise(m = mean(Sepal.Length), .groups = "drop"),
+             aes(xintercept = m, colour = Species),
+             linewidth = 1, linetype = "dashed", show.legend = FALSE) +
+  scale_fill_manual(values = c(teal, accent)) +
+  scale_colour_manual(values = c(teal, accent)) +
+  labs(title = "Sepal length: setosa vs versicolor",
+       subtitle = "Dashed lines are the group means",
+       x = "Sepal length (cm)", y = "density")
+```
+
+The difference is about 0.93 cm, and the interval says the true difference is
+somewhere between roughly 0.81 and 1.06 cm. Note how much more that tells you
+than "p < 0.001".
+
+### Variation: Welch's or Student's?
+
+The classic [**Student's**](https://www.physoc.org/magazine-articles/the-strange-origins-of-the-students-t-test/) t-test assumes both groups have the same variance.
+**Welch's** version does not, and adjusts the degrees of freedom to compensate.
+Welch's is the sensible default: it costs almost nothing when variances really
+are equal, and saves you when they are not.
+
+```{r}
+#| label: tbl-welch
+#| tbl-cap: "The same comparison run both ways. The estimate and interval barely move; the degrees of freedom are the giveaway."
+tt2s <- t.test(Sepal.Length ~ Species, data = two_species, var.equal = TRUE)
+kable(rbind(
+  t_row(tt2,  "Welch (default)"),
+  t_row(tt2s, "Student (equal variance assumed)")
+), align = "lrrrrrr")
+```
+
+
+::: {.callout-note collapse="true"}
+## Welch's handing of degrees of freedom
+
+Degrees of freedom can be a bit slippery.  They essentially equates to how many independent pieces of information you have
+in your sample.  This isn't *quite* your sample size, as once you have estimated your parameters, some of the information in the sample is no longer independent. 
+(Think if you have 10 random numbers, and you know 9 of them AND the mean of the sample, then you can also figure out what the 10th - it isn't independent). 
+
+A t test does just that - estimates the mean. So the degrees of freedom for a single sample t test is N - 1, 
+and for a two sample t test it is N - 2.
+
+Welch's test cacluates degrees of freedom by performing an adjustment to this 
+which is a weighted compromise between the two group sizes and variance. 
+
+```{r}
+#| label: fig-welch
+#| fig-cap: "Welch's correction reduces the degrees of freedom, which widens the distribution slightly and makes the test appropriately more cautious."
+data.frame(
+  test = c("Welch (default)", "Student (equal variance)"),
+  df   = c(unname(tt2$parameter), unname(tt2s$parameter))
+) |>
+  ggplot(aes(x = reorder(test, df), y = df, fill = test)) +
+  geom_col(width = 0.55) +
+  geom_text(aes(label = round(df, 1)), hjust = -0.15, colour = "grey25") +
+  coord_flip() +
+  scale_fill_manual(values = c(mid, teal)) +
+  ylim(0, 115) +
+  labs(title = "Degrees of freedom: Welch vs Student",
+       x = NULL, y = "degrees of freedom") +
+  theme(legend.position = "none")
+```
+:::
+
+### Variation: one-sided or two-sided?
+
+By default a t-test asks "is there *any* difference". A one-sided test asks "is
+A specifically **less** than B" — and earns a smaller p-value for it, because it
+only counts extreme results in one direction.
+
+```{r}
+#| label: fig-sided
+#| fig-cap: "Two-sided tests count extreme results in both tails; one-sided tests count only one. This is why a one-sided p-value is half the size."
+mk <- function(side) {
+  d <- data.frame(x = x, y = dt(x, 20))
+  keep <- if (side == "Two-sided") subset(d, x >= obs | x <= -obs) else subset(d, x <= -obs)
+  keep$panel <- side
+  # The two tails are disjoint. Without a grouping variable the shading geom
+  # joins them into a single polygon straight across the middle of the curve,
+  # so label which tail each point belongs to.
+  keep$tail  <- ifelse(keep$x < 0, "left", "right")
+  d$panel <- side
+  list(all = d, shade = keep)
+}
+a <- mk("Two-sided"); b <- mk("One-sided (less)")
+
+# Two-sided first: it is the default, and the one-sided panel reads as
+# "the same thing, but only counting one end"
+lev     <- c("Two-sided", "One-sided (less)")
+all_d   <- rbind(a$all,   b$all)
+shade_d <- rbind(a$shade, b$shade)
+all_d$panel   <- factor(all_d$panel,   levels = lev)
+shade_d$panel <- factor(shade_d$panel, levels = lev)
+
+ggplot(all_d, aes(x, y)) +
+  geom_ribbon(data = shade_d, aes(ymin = 0, ymax = y, group = tail),
+              fill = teal, alpha = 0.75) +
+  geom_line(colour = "grey25", linewidth = 0.9) +
+  facet_wrap(~panel) +
+  labs(title = "Where the p-value comes from",
+       x = "test statistic", y = "density")
+```
+
+Only ever use a one-sided test if you decided the direction **before** looking at
+the data. Choosing afterwards is how you talk yourself into a result.
+
+### Flavour 3: paired
+
+*Do two measurements on the **same** subjects differ?*
+
+The `sleep` data is the original dataset Student used in 1908: ten patients,
+each of whom tried two different drugs.
+
+```{r}
+#| label: fig-paired
+#| fig-cap: "Left: treating the groups as unrelated hides the pattern. Right: joining each patient's two measurements shows that nearly every individual improved."
+p1 <- ggplot(sleep, aes(x = group, y = extra, fill = group)) +
+  geom_boxplot(alpha = 0.6, width = 0.5, outlier.shape = NA) +
+  geom_jitter(width = 0.08, size = 2, alpha = 0.7) +
+  scale_fill_manual(values = c(teal, mid)) +
+  labs(title = "Ignoring the pairing", x = "drug", y = "extra hours of sleep") +
+  theme(legend.position = "none")
+
+p2 <- ggplot(sleep, aes(x = group, y = extra)) +
+  geom_line(aes(group = ID), colour = "grey65") +
+  geom_point(aes(colour = group), size = 2.5) +
+  scale_colour_manual(values = c(teal, mid)) +
+  labs(title = "Respecting the pairing", x = "drug", y = NULL) +
+  theme(legend.position = "none")
+
+patchwork_available <- requireNamespace("patchwork", quietly = TRUE)
+if (patchwork_available) {
+  print(patchwork::wrap_plots(p1, p2, nrow = 1))
+} else {
+  print(p1); print(p2)
+}
+```
+
+The boxplots overlap heavily and look unconvincing. But almost every individual
+line slopes upwards — the *within-patient* change is remarkably consistent. It is
+simply swamped by the fact that some people naturally sleep far more than others.
+
+Pairing removes that between-patient variation entirely:
+
+```{r}
+sleep_wide <- sleep %>%
+  pivot_wider(values_from = extra,
+              names_from = group)
+
+colnames(sleep_wide) <- c("ID", "drug_1", "drug_2")
+
+#| label: tbl-paired
+#| tbl-cap: "Identical numbers, analysed two ways. Pairing turns an unconvincing result into a clear one."
+kable(rbind(
+  t_row(t.test(sleep_wide$drug_1, sleep_wide$drug_2, data = sleep_wide, paired = TRUE),  "Paired (correct here)"),
+  t_row(t.test(sleep_wide$drug_1, sleep_wide$drug_2, data = sleep_wide, paired = FALSE), "Unpaired (ignores patient)")
+), align = "lrrrrrr")
+```
+
+---
+
+## When the assumptions look shaky
+
+t-tests assume roughly normally distributed data. The way to check is to look.
+
+A **qq plot** sorts your data from smallest to largest and plots each value
+against the value you would have expected in that position if the data really
+were normal. If the two agree, the points sit on a straight line. The reference
+line is drawn through the quartiles, so it is fixed by the middle of your data —
+which means the tails are free to wander off it, and that is exactly what you
+are looking for.
+
+::: {.callout-important}
+## Check each group separately, not the pooled data
+
+The t-test assumes normality **within each group being compared**, not of
+everything lumped together. Pooling groups that genuinely differ produces a
+mixture, and a mixture is never normal — so a pooled check can condemn data that
+is perfectly fine for the test you are about to run.
+
+The middle panel below is exactly that mistake.
+:::
+
+```{r}
+#| label: fig-qq
+#| fig-height: 3.6
+#| fig-cap: "Three qq plots. Left: a single species, behaving itself. Middle: the same measurement pooled across all three species — the S-shape is the mixture, not a problem with the data. Right: genuinely skewed data."
+set.seed(7)
+
+qq_dat <- rbind(
+  data.frame(value = iris$Sepal.Length[iris$Species == "setosa"],
+             which = "1. One species — normal"),
+  data.frame(value = iris$Sepal.Length,
+             which = "2. All three pooled — a mixture"),
+  data.frame(value = rexp(150, rate = 0.4),
+             which = "3. Skewed data — not normal")
+)
+
+ggplot(qq_dat, aes(sample = value)) +
+  stat_qq(colour = teal, alpha = 0.55, size = 1.3) +
+  stat_qq_line(colour = accent, linewidth = 0.8) +
+  facet_wrap(~which, scales = "free", nrow = 1) +
+  labs(title = "Reading a qq plot",
+       x = "expected if normal", y = "observed value")
+```
+
+Each panel has its own signature worth learning:
+
+**Left: on the line.** Setosa sepal length. Minor wobble in the tails is normal
+in a sample of 50; you are looking for systematic curvature, not perfection.
+
+**Middle: a gentle S.** The same measurement pooled across all three species.
+Points sit above the line at the bottom and below it at the top, meaning both
+tails are *shorter* than a normal distribution would give. That is the
+fingerprint of a mixture: three overlapping humps make the middle broad and the
+extremes scarce. Nothing is wrong with the data — the wrong thing was pooling it.
+
+**Right: an upward curve.** Values bunched at the bottom and a long tail
+stretching up. This is right skew, and it is the pattern that should make you
+reach for a rank-based test or a transformation.
+
+There are formal normality tests, but treat them with suspicion: they are
+over-sensitive in large samples and under-sensitive in small ones, which is
+precisely backwards from what you want. Your eyes are better.
+
+### The rank-based twins
+
+When normality looks doubtful, the non-parametric versions throw away the actual
+values and use only their **order**.
+
+```{r}
+#| label: fig-ranks
+#| fig-cap: "Ranking pulls extreme values back into line. The outlier at 40 becomes simply 'the largest', which is why rank-based tests are robust to it."
+set.seed(3)
+raw <- c(rnorm(11, 10, 1.5), 40)
+rk  <- data.frame(
+  value = c(raw, rank(raw)),
+  panel = rep(c("Original values", "Ranks"), each = 12),
+  y = 1
+)
+
+ggplot(rk, aes(x = value, y = y)) +
+  geom_point(colour = teal, size = 3, alpha = 0.75) +
+  facet_wrap(~panel, scales = "free_x", ncol = 1) +
+  labs(title = "What ranking does to an outlier", x = NULL, y = NULL) +
+  theme(axis.text.y = element_blank(), panel.grid.major.y = element_blank())
+```
+
+| If you would have used… | …use this instead | It compares |
+|---|---|---|
+| Two-sample t-test | Wilcoxon rank-sum (Mann–Whitney U) | Medians |
+| Paired t-test | Wilcoxon signed-rank | Median of the differences |
+| ANOVA | Kruskal–Wallis | Medians across 3+ groups |
+| Pearson correlation | Spearman correlation | Ranks rather than values |
+
+The trade-off: these are more robust, but they discard information, so when the
+data really is normal they are slightly less able to detect a real difference.
+
+---
+
+## Comparing more than two groups
+
+### Why not just run lots of t-tests?
+
+Because every test you run gets its own fresh chance to throw up a false
+positive. Run enough and you are nearly guaranteed one (this is **very** common in papers reporting
+RNAseq data...)
+
+```{r}
+#| label: fig-familywise
+#| fig-cap: "Probability of at least one false positive when running multiple independent tests at the 5% level. By 14 comparisons it is more likely than not."
+fw <- data.frame(n = 1:20)
+fw$p <- 1 - 0.95^fw$n
+
+ggplot(fw, aes(n, p)) +
+  geom_hline(yintercept = 0.05, linetype = "dashed", colour = "grey55") +
+  geom_line(colour = teal, linewidth = 1) +
+  geom_point(colour = teal, size = 2) +
+  annotate("text", x = 16.5, y = 0.10, label = "the 5% you thought you had",
+           colour = "grey45", size = 3.3) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1),
+                     limits = c(0, 1)) +
+  labs(title = "The multiple comparisons problem",
+       subtitle = "Three groups means three pairwise tests; ten groups means forty-five",
+       x = "number of tests run", y = "chance of at least one false positive")
+```
+
+### ANOVA
+
+ANOVA asks a single question instead: *is **any** group different?* It does this
+by splitting the total variation in the data into two parts.
+
+```{r}
+#| label: fig-anova
+#| fig-cap: "ANOVA compares the spread of the group means around the grand mean (between-group) against the spread of points around their own group mean (within-group)."
+grand <- mean(iris$Sepal.Length)
+gm <- iris |>
+  group_by(Species) |>
+  summarise(m = mean(Sepal.Length), .groups = "drop")
+
+set.seed(11)
+iris_j <- iris
+iris_j$xj <- as.numeric(iris_j$Species) + runif(nrow(iris_j), -0.18, 0.18)
+iris_j <- left_join(iris_j, gm, by = "Species")
+
+ggplot(iris_j, aes(x = xj, y = Sepal.Length)) +
+  geom_segment(aes(xend = xj, yend = m), colour = "grey80", linewidth = 0.3) +
+  geom_point(aes(colour = Species), alpha = 0.6, size = 1.6) +
+  geom_hline(yintercept = grand, linetype = "dashed", colour = accent, linewidth = 0.9) +
+  geom_segment(data = gm,
+               aes(x = as.numeric(Species) - 0.3, xend = as.numeric(Species) + 0.3,
+                   y = m, yend = m),
+               colour = "grey20", linewidth = 1.1, inherit.aes = FALSE) +
+  annotate("text", x = 0, y = grand, label = "grand mean",
+           colour = accent, size = 3.3, hjust = 0, vjust = -0.6) +
+  scale_x_continuous(breaks = 1:3, labels = levels(iris$Species)) +
+  scale_colour_manual(values = trio) +
+  labs(title = "What ANOVA is actually comparing",
+       subtitle = "Grey lines = within-group variation. \nDistance of black bars from the dashed line = between-group variation",
+       x = NULL, y = "Sepal length (cm)") +
+  theme(legend.position = "none") 
+```
+
+If the between-group variation is large relative to the within-group variation,
+the groups are probably genuinely different. That ratio is the **F statistic**.
+
+```{r}
+#| label: tbl-anova
+#| tbl-cap: "ANOVA of sepal length across the three species. `Species` is the between-group row; `Residuals` is the within-group variation left over."
+iris_aov <- aov(Sepal.Length ~ Species, data = iris)
+
+tidy(iris_aov) |>
+  transmute(
+    Source       = ifelse(term == "Species", "Between species", "Within species (residual)"),
+    df           = df,
+    `Sum of sq`  = round(sumsq, 2),
+    `Mean sq`    = round(meansq, 3),
+    `F`          = ifelse(is.na(statistic), "", sprintf("%.1f", statistic)),
+    `p-value`    = ifelse(is.na(p.value), "", fmt_p(p.value))
+  ) |>
+  kable(align = "lrrrrr")
+```
+
+### Tukey: but *which* groups?
+
+A significant ANOVA tells you something differs, not what. Tukey's test makes all
+the pairwise comparisons and widens the intervals to pay for having made them.
+
+Each row is **one pair of group means subtracted from each other** not a
+comparison against the grand mean.
+
+```{r}
+#| label: tbl-tukey
+#| tbl-cap: "Tukey pairwise comparisons. Every interval is clear of zero, so all three species differ from each other."
+tk <- as.data.frame(TukeyHSD(iris_aov)$Species)
+tk$comparison <- rownames(tk)
+
+tk |>
+  transmute(
+    Comparison  = gsub("-", " − ", comparison, fixed = TRUE),
+    Difference  = round(diff, 3),
+    `Lower 95%` = round(lwr, 3),
+    `Upper 95%` = round(upr, 3),
+    `p (adjusted)` = fmt_p(`p adj`)
+  ) |>
+  kable(align = "lrrrr")
+```
+
+```{r}
+#| label: fig-tukey
+#| fig-cap: "Any interval clear of the dashed zero line is a difference worth believing. All three are the same width here because the groups are equal sizes."
+ggplot(tk, aes(x = diff, y = comparison)) +
+  geom_vline(xintercept = 0, linetype = "dashed", colour = accent, linewidth = 0.9) +
+  geom_linerange(aes(xmin = lwr, xmax = upr), colour = mid, linewidth = 1.2) +
+  geom_point(colour = teal, size = 3.5) +
+  geom_text(aes(label = round(diff, 2)), vjust = -1.1, colour = "grey30", size = 3.3) +
+  labs(title = "Which species actually differ?",
+       subtitle = "Difference in mean sepal length, with family-wise 95% intervals",
+       x = "difference (cm)", y = NULL)
+```
+
+**"Family-wise"** means the 95% applies to all three intervals *jointly*. Three
+separate 95% intervals would only have about a 0.95³ ≈ 86% chance of all being
+right at once. Tukey widens them so the guarantee covers the whole set — which is
+why a Tukey interval is wider than an ordinary t-test interval for the same pair.
+
+---
+
+## Categorical data
+
+When the outcome is a count in a category rather than a number, we compare the
+counts we **observed** against the counts we would **expect** if the two
+variables were unrelated.
+
+A table of counts like this is called a **contingency table**. The totals down
+the edges — the **margins** — are where everything starts.
+
+```{r}
+#| label: tbl-observed
+#| tbl-cap: "Observed counts: car transmission type against number of cylinders, with row and column totals."
+mtcars_tab <- table(
+  Transmission = ifelse(mtcars$am == 1, "Manual", "Automatic"),
+  Cylinders    = mtcars$cyl
+)
+kable(as.data.frame.matrix(addmargins(mtcars_tab)), align = "rrrr")
+```
+
+### Where the "expected" counts come from
+
+The margins tell us two things on their own, before we look inside the table at
+all. Of the 32 cars, 13 are manual. And 11 of them have four cylinders.
+
+Now suppose transmission and cylinder count were **completely unrelated** —
+knowing one tells you nothing about the other. Then the manual cars should be
+spread across the cylinder groups in the same proportions as everything else.
+
+13 of 32 cars are manual, so 40.6% of cars overall are manual. If cylinder count
+is irrelevant, then 40.6% of the eleven four-cylinder cars should be manual too:
+
+> 11 four-cylinder cars × 40.6% manual = **4.47 cars**
+
+Which is the same as saying:
+
+> expected count = (row total × column total) ÷ grand total
+
+That is all an expected count is. It is the count you would get if the **only**
+things driving the table were the margins — the overall number of manuals and
+the overall number of four-cylinder cars — with no relationship between them.
+
+Doing that for every cell gives the expected table:
+
+```{r}
+#| label: tbl-expected-margins
+#| tbl-cap: "Expected counts if transmission and cylinder count were unrelated. Note the margins are identical to the observed table — that is the point."
+cs <- suppressWarnings(chisq.test(mtcars_tab))
+kable(round(as.data.frame.matrix(addmargins(as.table(cs$expected))), 2),
+      align = "rrrr")
+```
+
+Two things are worth noticing.
+
+**The margins have not changed.** Expected counts are not a different dataset;
+they are the *same* totals redistributed as evenly as those totals allow. All
+the chi-squared test ever does is ask whether the actual arrangement inside the
+table could plausibly have come from that even redistribution.
+
+**Expected counts need not be whole numbers.** 4.47 cars is not a car. It is an
+average over the many ways 32 cars could have fallen into the table, which is
+exactly what we want to compare against.
+
+Seen as percentages, the claim being tested becomes obvious:
+
+```{r}
+#| label: tbl-pct
+#| tbl-cap: "If the two variables were unrelated, the percentage of manual cars would be the same in every column. It is not remotely the same."
+pct <- prop.table(mtcars_tab, margin = 2) * 100
+overall <- 100 * sum(mtcars_tab["Manual", ]) / sum(mtcars_tab)
+
+data.frame(
+  Cylinders                 = colnames(mtcars_tab),
+  `Cars in group`           = as.integer(colSums(mtcars_tab)),
+  `% manual observed`       = sprintf("%.1f%%", pct["Manual", ]),
+  `% manual if unrelated`   = sprintf("%.1f%%", overall),
+  check.names = FALSE
+) |>
+  kable(align = "rrrr")
+```
+
+```{r}
+#| label: fig-chisq
+#| fig-cap: "Observed counts against those expected if transmission and cylinder count were unrelated. Chi-squared measures the total size of those gaps."
+obs <- as.data.frame(mtcars_tab)
+names(obs) <- c("am", "cyl", "n")
+obs$type <- "Observed"
+
+exp_df <- as.data.frame(as.table(cs$expected))
+names(exp_df) <- c("am", "cyl", "n")
+exp_df$type <- "Expected if unrelated"
+
+ggplot(rbind(obs, exp_df), aes(x = cyl, y = n, fill = type)) +
+  geom_col(position = position_dodge(width = 0.8), width = 0.7) +
+  facet_wrap(~am) +
+  scale_fill_manual(values = c(pale, teal)) +
+  labs(title = "Observed vs expected counts",
+       x = "cylinders", y = "number of cars", fill = NULL) +
+  theme(legend.position = "bottom")
+```
+
+### Turning the gaps into one number
+
+For each cell, take the gap between observed and expected, square it so
+over- and under-shoots don't cancel out, then divide by the expected count —
+because being 3 cars out matters far more in a cell expecting 4 than in one
+expecting 40.
+
+Add those up across every cell and you have the chi-squared statistic.
+
+```{r}
+#| label: tbl-contrib
+#| tbl-cap: "Each cell's contribution to the chi-squared statistic. The four-cylinder column dominates, which matches what the percentages showed."
+contrib <- cs$residuals^2
+
+kable(round(as.data.frame.matrix(addmargins(as.table(contrib))), 2),
+      align = "rrrr")
+```
+
+The bottom-right corner is the chi-squared statistic itself,
+`r sprintf("%.2f", unname(cs$statistic))`. This table is useful in its own right:
+it tells you **which cells** are driving a significant result, which the p-value
+alone never will.
+
+### The small-counts problem
+
+Notice that the rule of thumb is about the **expected** counts, not the observed
+ones. It is the expected count that sits on the bottom of each cell's
+contribution, and dividing by a small number is what makes the whole thing
+unstable.
+
+Looking back at the expected table, `r sum(cs$expected < 5)` of the
+`r length(cs$expected)` cells fall below 5:
+
+```{r}
+#| label: tbl-expected
+#| tbl-cap: "The expected counts again, with any cell below 5 flagged. These are the cells that make the chi-squared approximation unreliable here."
+exp_flag <- round(as.data.frame.matrix(cs$expected), 2)
+exp_flag[] <- lapply(exp_flag, function(col) {
+  ifelse(col < 5, paste0(sprintf("%.2f", col), " ⚠"), sprintf("%.2f", col))
+})
+kable(exp_flag, align = "rrr")
+```
+
+Fisher's exact test is the usual resort. Rather than approximating, it works out
+the probability of every possible table with these same margins and counts how
+many are as extreme as the one you got. 
+However many people (me included) are quite critical of it.  It assumes fixed margins, which are implausible outside of
+experimental data, making the results imprecise. 
+
+```{r}
+#| label: tbl-chisq-fisher
+#| tbl-cap: "The same table tested two ways. Fisher's exact test computes the probability directly instead of approximating it, so it stays valid with small counts."
+ft <- fisher.test(mtcars_tab)
+
+data.frame(
+  Test      = c("Chi-squared (approximate)", "Fisher's exact"),
+  Statistic = c(sprintf("%.2f", unname(cs$statistic)), "—"),
+  df        = c(as.character(unname(cs$parameter)), "—"),
+  `p-value` = c(fmt_p(cs$p.value), fmt_p(ft$p.value)),
+  check.names = FALSE
+) |>
+  kable(align = "lrrr")
+```
+
+
+---
+
+## Correlation
+
+*Do two continuous variables move together?* Correlation runs from −1 to +1.
+
+```{r}
+#| label: fig-corr-scale
+#| fig-cap: "What different correlation coefficients actually look like."
+set.seed(19)
+mk_cor <- function(r, n = 120) {
+  x1 <- rnorm(n); x2 <- rnorm(n)
+  y  <- r * x1 + sqrt(max(0, 1 - r^2)) * x2
+  data.frame(x = x1, y = y,
+             lab = paste0("r = ", sprintf("%.2f", cor(x1, y))))
+}
+cors <- do.call(rbind, lapply(c(-0.9, -0.4, 0, 0.4, 0.9, 0.99), mk_cor))
+cors$lab <- factor(cors$lab, levels = unique(cors$lab))
+
+ggplot(cors, aes(x, y)) +
+  geom_point(colour = teal, alpha = 0.5, size = 1.3) +
+  facet_wrap(~lab, nrow = 2) +
+  labs(title = "A tour of correlation coefficients", x = NULL, y = NULL) +
+  theme(axis.text = element_blank())
+```
+
+### Always plot it first
+
+Anscombe's quartet is four datasets built to make exactly this point. All four
+have almost identical means, variances, correlations and fitted lines.
+
+```{r}
+#| label: fig-anscombe
+#| fig-cap: "Anscombe's quartet. Identical summary statistics, wildly different data. Only the first is a sensible candidate for a correlation coefficient."
+ans <- data.frame(
+  set = rep(paste("Dataset", 1:4), each = 11),
+  x = c(anscombe$x1, anscombe$x2, anscombe$x3, anscombe$x4),
+  y = c(anscombe$y1, anscombe$y2, anscombe$y3, anscombe$y4)
+)
+
+ans_lab <- ans |>
+  group_by(set) |>
+  summarise(r = cor(x, y), .groups = "drop") |>
+  mutate(lab = paste0("r = ", sprintf("%.2f", r)))
+
+ggplot(ans, aes(x, y)) +
+  geom_smooth(method = "lm", se = FALSE, colour = accent, linewidth = 0.8) +
+  geom_point(colour = teal, size = 2.2, alpha = 0.85) +
+  geom_text(data = ans_lab, aes(x = 12.5, y = 4.5, label = lab),
+            inherit.aes = FALSE, colour = "grey30", size = 3.4) +
+  facet_wrap(~set) +
+  labs(title = "Why you plot your data first",
+       subtitle = "All four have the same correlation and the same fitted line")
+```
+
+Dataset 2 is a perfect curve. Dataset 3 is a perfect straight line spoiled by one
+outlier. Dataset 4 is a single influential point doing all the work. A
+correlation coefficient hides all three.
+
+### Pearson or Spearman?
+
+**Pearson** measures *straight-line* association. **Spearman** ranks the data
+first, so it detects any consistently increasing relationship even when curved.
+
+```{r}
+#| label: fig-pearson-spearman
+#| fig-cap: "A perfectly monotonic but curved relationship. Pearson under-reports it because it is not a straight line; Spearman sees it clearly."
+set.seed(5)
+cd <- data.frame(x = 1:60)
+cd$y <- exp(cd$x / 12) + rnorm(60, sd = 1.2)
+
+ggplot(cd, aes(x, y)) +
+  geom_point(colour = teal, alpha = 0.75, size = 2) +
+  geom_smooth(method = "lm", se = FALSE, colour = accent, linewidth = 0.8) +
+  labs(title = "A relationship a straight line cannot capture",
+       x = NULL, y = NULL)
+```
+
+```{r}
+#| label: tbl-corr
+#| tbl-cap: "The same curved data measured both ways. Spearman is close to 1 because the relationship is perfectly increasing, even though it is not a straight line."
+cp <- cor.test(cd$x, cd$y, method = "pearson")
+csp <- suppressWarnings(cor.test(cd$x, cd$y, method = "spearman"))
+
+data.frame(
+  Method        = c("Pearson (linear)", "Spearman (rank)"),
+  Coefficient   = c(sprintf("%.3f", unname(cp$estimate)),
+                    sprintf("%.3f", unname(csp$estimate))),
+  `p-value`     = c(fmt_p(cp$p.value), fmt_p(csp$p.value)),
+  check.names = FALSE
+) |>
+  kable(align = "lrr")
+```
+
+A correlation of zero means no *linear* relationship. It does not mean no
+relationship — which is, again, why you plot first.
+
+---
+
+## Linear regression
+
+Correlation says *these move together*. Regression says *how much y changes per
+unit of x*.  It also lets you add more explanatory variables.
+
+Many books have been written about linear regression; this is a quick outline.
+
+The basic idea is that you have plotted one variable on the x axis, one on the y.  Your computer then tries to draw a line which minimises the *sum* of all of the *square* of the distances between the actual points and the line. 
+
+On the image below: 
+
+- The green points are the real data 
+- The purple line is the 'best fit' line
+- the thin grey lines are the differences
+
+```{r}
+#| label: fig-regression
+#| fig-cap: "The fitted line is the one that makes the total of the squared vertical distances (grey) as small as possible. Those distances are the residuals."
+iris_lm  <- lm(Petal.Length ~ Sepal.Length, data = iris)
+iris_fit <- iris
+iris_fit$pred <- predict(iris_lm)
+
+ggplot(iris_fit, aes(Sepal.Length, Petal.Length)) +
+  geom_segment(aes(xend = Sepal.Length, yend = pred),
+               colour = "grey75", linewidth = 0.4) +
+  geom_point(colour = teal, alpha = 0.6, size = 1.8) +
+  geom_line(aes(y = pred), colour = accent, linewidth = 1.1) +
+  labs(title = "Least squares",
+       subtitle = sprintf("Slope: %.2f cm of petal length per cm of sepal length",
+                          coef(iris_lm)[2]),
+       x = "Sepal length (cm)", y = "Petal length (cm)")
+```
+
+```{r}
+#| label: tbl-regression
+#| tbl-cap: "Regression of petal length on sepal length."
+tidy(iris_lm, conf.int = TRUE) |>
+  transmute(
+    Term        = ifelse(term == "(Intercept)", "Intercept", "Sepal length"),
+    Estimate    = round(estimate, 3),
+    `Std error` = round(std.error, 3),
+    `Lower 95%` = round(conf.low, 3),
+    `Upper 95%` = round(conf.high, 3),
+    `p-value`   = fmt_p(p.value)
+  ) |>
+  kable(align = "lrrrrr")
+```
+
+Reading that table:
+
+- **Intercept**: predicted petal length when sepal length is zero. Often
+  meaningless in itself; there is no flower with zero sepal length.
+- **Sepal length**: the slope. Petal length changes by this much for every extra
+  centimetre of sepal length.
+- **p-value**: for the null hypothesis that the slope is zero (i.e. one variable is not associated with the other)
+
+The model explains about `r sprintf("%.0f%%", 100 * summary(iris_lm)$r.squared)`
+of the variation in petal length. That figure is **R-squared**, and it is a
+better guide to whether a model is *useful* than any p-value.
+
+### Adding a grouping variable
+
+```{r}
+#| label: tbl-regression2
+#| tbl-cap: "Adding species to the model. `setosa` is the baseline, so the other two rows are differences relative to it."
+iris_lm2 <- lm(Petal.Length ~ Sepal.Length + Species, data = iris)
+
+tidy(iris_lm2, conf.int = TRUE) |>
+  transmute(
+    Term = recode(term,
+                  "(Intercept)"       = "Intercept (setosa)",
+                  "Sepal.Length"      = "Sepal length",
+                  "Speciesversicolor" = "versicolor vs setosa",
+                  "Speciesvirginica"  = "virginica vs setosa"),
+    Estimate    = round(estimate, 3),
+    `Lower 95%` = round(conf.low, 3),
+    `Upper 95%` = round(conf.high, 3),
+    `p-value`   = fmt_p(p.value)
+  ) |>
+  kable(align = "lrrrr")
+```
+
+There is no row for setosa because setosa **is** the reference point. Every
+categorical variable in a model works this way: one level becomes the baseline,
+and the others are reported as differences from it.
+
+```{r}
+#| label: fig-regression-species
+#| fig-cap: "Left: one line for everyone. Right: a separate line per species — each much shallower than the overall line."
+q1 <- ggplot(iris, aes(Sepal.Length, Petal.Length)) +
+  geom_point(alpha = 0.55, colour = teal, size = 1.7) +
+  geom_smooth(method = "lm", se = FALSE, colour = accent) +
+  labs(title = "Ignoring species", x = "Sepal length (cm)", y = "Petal length (cm)")
+
+q2 <- ggplot(iris, aes(Sepal.Length, Petal.Length, colour = Species)) +
+  geom_point(alpha = 0.7, size = 1.7) +
+  geom_smooth(method = "lm", se = FALSE) +
+  scale_colour_manual(values = trio) +
+  labs(title = "Splitting by species", x = "Sepal length (cm)", y = NULL) +
+  theme(legend.position = "bottom")
+
+if (patchwork_available) {
+  print(patchwork::wrap_plots(q1, q2, nrow = 1))
+} else {
+  print(q1); print(q2)
+}
+```
+
+This is worth staring at. The overall line is much steeper than any of the three
+individual lines, because it is partly measuring the fact that the species differ
+from each other rather than the relationship within any of them. When a
+relationship changes (or reverses) once you account for a group, that is
+**Simpson's paradox**, and it is one of the most common ways to be badly wrong
+with a perfectly valid p-value.
+
+---
+
+## A closing warning
+
+Every figure and table on this page was produced without a murmur of complaint.
+The same software would equally happily have run a paired test on unpaired data,
+a t test on highly skewed data, or a correlation on Anscombe's fourth
+dataset.
+
+Choosing the test is your job. The coding was never the hard part.
