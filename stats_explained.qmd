@@ -87,11 +87,11 @@ t_row <- function(tt, label) {
 
 # Statistics Refresher
 
-This page is the **why** behind the week 4 session sheet. It is a companion to
-that sheet, and definitely not a statistics course in itself. There are proper refresher links
-on the [Resources](resources.qmd) page.
+This page is the **why** behind the week 4 (basic statistical tests) and week 7 (linear regression).  It is designed a companion to
+those sessions, and definitely not a substitute for a statistics course. 
+There are some more in depth resources on the [Resources](resources.qmd) page.
 
-I have hidden the R code here deliberately, this is about the stats not about R, however if you are curious you can click the `show the code` buttons to see the code I used.
+I have hidden the R code here deliberately, this is about the stats not about R. However, if you are curious you can click the `show the code` buttons to see the code I used.
 
 There are also some call out boxes below, which can be safely skipped if you are after the refresher, but which 
 might tempt you in if you want some more depth. 

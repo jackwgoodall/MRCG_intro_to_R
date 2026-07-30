@@ -28,8 +28,7 @@ The confirmed plan for the upcoming two weeks will be show on the [Timetable pag
 
 - R as a fancy calculator
 
-- Introduction to objects and vectors 
-
+- Introduction to objects and vectors
 
 ### Week 2: How to get data into R
 
@@ -42,7 +41,6 @@ The confirmed plan for the upcoming two weeks will be show on the [Timetable pag
 - Accessing data
 
   - Importing for excel/csv
-  
 
 ### Week 3: Datacleaning and the tidyverse
 
@@ -55,21 +53,19 @@ The confirmed plan for the upcoming two weeks will be show on the [Timetable pag
   - Correcting errors safely
 
 - Introduction to the tidyverse
+
   - The concept of tidy data (one variable per column, one observation per row)
   - The power of the pipe `(|> / %>%)` and why it helps makes code readable
   - The core dplyr verbs: `filter`, `select`, `mutate`, `arrange`, `summarise`, `group_by`
-
-### Week 4: More tidyverse and basic statistical analysis
-
-- Tidyverse
   - Reshaping with `pivot_longer` / `pivot_wider`
   - Joining tables with `left_join` (research data almost always spans multiple files)
-  - Handling categorical variables with factors (forcats)
 
-- Basic statistical analysis
-  - T-test
-  - Chi-squared test
-  - Alternatives
+### Week 4: Basic statistical analysis
+
+- T-test
+- Chi-squared test
+- Correlation
+- Non-parametric tests
 
 ### Week 5: Visualisation with ggplot2
 
