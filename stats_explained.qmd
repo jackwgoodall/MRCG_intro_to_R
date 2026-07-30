@@ -34,9 +34,6 @@ library(tidyr)
 library(broom)
 library(knitr)
 
-# Show the code in HTML (where it is collapsed behind "Show the code"), but
-# never in PDF or any other output. This has to be done here rather than in the
-# YAML, because Quarto has no way to set `echo` per output format.
 knitr::opts_chunk$set(echo = knitr::is_html_output())
 
 theme_set(
