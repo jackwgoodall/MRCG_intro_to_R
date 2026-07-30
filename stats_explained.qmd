@@ -314,6 +314,533 @@ This is why the t-statistic is essentially the *difference in means* divided by
 *how variable the data is*. A large difference in noisy data can score the same
 as a small difference in tidy data.
 
+### Try it yourself
+
+::: {.content-visible when-format="html"}
+
+Below are two groups of 50 observations each. Drag the sliders to change how far
+apart the groups means really are, and how variable the measurements are, then watch
+what happens to the p-value.
+
+Three things are worth doing deliberately:
+
+- Leave the **difference in means** at 1 and wind the **spread** up to 4. Watch a
+  real difference become unconvincing. Remember the groups still differ by
+  exactly as much as before (because you have set this) — the test simply can no
+  longer tell.
+- Now the reverse: a **small difference** with a **tight spread**. A gap far too
+  small to care about becomes overwhelmingly *statistically* significant.
+- While doing either, keep an eye on the **observed difference** in the readout.
+  It moves only slightly, while the p-value swings from < 0.001 to nothing at
+  all. The size of the difference is not what a p-value measures.
+
+The tick marks along the bottom are the 50 actual observations in each group.
+The curves are a smoothed summary of the distribution of those values, not the data itself.
+
+::: {.callout-note collapse="true"}
+## Why the two sliders feel like they do a similar job
+
+Because, as far as the test is concerned, they do.
+
+For two groups of equal size, the t statistic is the difference in means divided
+by the spread, multiplied by a constant that depends only on the sample size. So
+the p-value responds only to the **ratio** of the two sliders. A difference of 2
+with a spread of 2 gives exactly the same p-value as a difference of 1 with a
+spread of 1.
+
+That is not a quirk of this widget — it is the whole idea of a t-test, and it is
+why "the groups differ by 3 units" is a claim no p-value can assess on its own.
+You always need to know 3 units *relative to what*.
+
+What the two sliders do change independently is the **picture**: the difference
+slider slides the curves apart, while the spread slider makes them either tall
+and narrow or low and wide. The x-axis here is deliberately held fixed so that
+you can see this. Allowed to rescale itself to the data, it would hide the
+distinction completely and the two sliders would look identical.
+:::
+
+```{=html}
+<div id="ttest-widget">
+  <div class="tw-controls">
+    <div class="tw-control">
+      <label for="tw-diff">True difference in means
+        <span class="tw-val" id="tw-diff-val">1.0</span></label>
+      <input type="range" id="tw-diff" min="0" max="3" step="0.05" value="1">
+    </div>
+    <div class="tw-control">
+      <label for="tw-sd">Standard deviation of each group
+        <span class="tw-val" id="tw-sd-val">1.0</span></label>
+      <input type="range" id="tw-sd" min="0.3" max="4" step="0.05" value="1">
+    </div>
+  </div>
+
+  <svg id="tw-chart" viewBox="0 0 720 380" preserveAspectRatio="xMidYMid meet"
+       role="img" aria-label="Overlapping density curves for two groups with their means marked"></svg>
+
+  <div class="tw-readout">
+    <div class="tw-stat"><span class="tw-lab">Observed difference</span><span class="tw-num" id="tw-obsdiff">–</span></div>
+    <div class="tw-stat"><span class="tw-lab">t statistic</span><span class="tw-num" id="tw-t">–</span></div>
+    <div class="tw-stat"><span class="tw-lab">degrees of freedom</span><span class="tw-num" id="tw-df">–</span></div>
+    <div class="tw-stat tw-p"><span class="tw-lab">p-value</span><span class="tw-num" id="tw-p">–</span></div>
+  </div>
+
+  <p class="tw-verdict" id="tw-verdict"></p>
+</div>
+
+<style>
+#ttest-widget {
+  border: 1px solid #E2EAEB;
+  border-radius: 6px;
+  padding: 18px 20px 14px;
+  margin: 1.5em 0;
+  background: #fdfdfd;
+}
+#ttest-widget .tw-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+#ttest-widget .tw-control { flex: 1 1 240px; }
+#ttest-widget label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0D5257;
+  margin-bottom: 4px;
+}
+#ttest-widget .tw-val {
+  float: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 400;
+  color: #568689;
+}
+#ttest-widget input[type=range] { width: 100%; accent-color: #0D5257; }
+#ttest-widget svg { width: 100%; height: auto; display: block; }
+#ttest-widget .tw-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+#ttest-widget .tw-stat {
+  flex: 1 1 130px;
+  background: #E2EAEB;
+  border-radius: 4px;
+  padding: 7px 10px;
+}
+#ttest-widget .tw-stat.tw-p { background: #0D5257; }
+#ttest-widget .tw-stat.tw-p .tw-lab,
+#ttest-widget .tw-stat.tw-p .tw-num { color: #fff; }
+#ttest-widget .tw-lab {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #4a5a5c;
+}
+#ttest-widget .tw-num {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0D5257;
+  font-variant-numeric: tabular-nums;
+}
+#ttest-widget .tw-verdict {
+  margin: 10px 2px 0;
+  font-size: 0.9rem;
+  color: #333;
+  min-height: 2.4em;
+}
+</style>
+
+<script>
+(function () {
+  var SVG_NS = "http://www.w3.org/2000/svg";
+  var N = 50;                       // per group
+  var TEAL = "#0D5257", PLUM = "#621244";
+  var W = 720, H = 380;
+  var M = { top: 34, right: 22, bottom: 46, left: 48 };
+  var IW = W - M.left - M.right;
+  var IH = H - M.top - M.bottom;
+
+  // ---- statistics helpers -------------------------------------------------
+
+  function logGamma(x) {
+    var c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028,
+             771.32342877765313, -176.61502916214059, 12.507343278686905,
+             -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+    if (x < 0.5) {
+      return Math.log(Math.PI / Math.sin(Math.PI * x)) - logGamma(1 - x);
+    }
+    x -= 1;
+    var a = c[0], t = x + 7 + 0.5;
+    for (var i = 1; i < 9; i++) a += c[i] / (x + i);
+    return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+  }
+
+  // Continued fraction for the incomplete beta function (Lentz's method)
+  function betacf(a, b, x) {
+    var MAXIT = 300, EPS = 3e-14, FPMIN = 1e-300;
+    var qab = a + b, qap = a + 1, qam = a - 1;
+    var c = 1, d = 1 - qab * x / qap;
+    if (Math.abs(d) < FPMIN) d = FPMIN;
+    d = 1 / d;
+    var h = d, m, m2, aa, del;
+    for (m = 1; m <= MAXIT; m++) {
+      m2 = 2 * m;
+      aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+      d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+      c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+      d = 1 / d; h *= d * c;
+      aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+      d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+      c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+      d = 1 / d;
+      del = d * c; h *= del;
+      if (Math.abs(del - 1) < EPS) break;
+    }
+    return h;
+  }
+
+  // Regularised incomplete beta I_x(a,b)
+  function ibeta(a, b, x) {
+    if (x <= 0) return 0;
+    if (x >= 1) return 1;
+    var bt = Math.exp(logGamma(a + b) - logGamma(a) - logGamma(b) +
+                      a * Math.log(x) + b * Math.log(1 - x));
+    if (x < (a + 1) / (a + b + 2)) return bt * betacf(a, b, x) / a;
+    return 1 - bt * betacf(b, a, 1 - x) / b;
+  }
+
+  // Two-sided p-value: P(|T| > |t|) = I_{df/(df+t^2)}(df/2, 1/2)
+  function tTwoSidedP(t, df) {
+    if (!isFinite(t) || !isFinite(df) || df <= 0) return NaN;
+    return ibeta(df / 2, 0.5, df / (df + t * t));
+  }
+
+  function mean(v) {
+    var s = 0; for (var i = 0; i < v.length; i++) s += v[i];
+    return s / v.length;
+  }
+  function variance(v) {
+    var m = mean(v), s = 0;
+    for (var i = 0; i < v.length; i++) s += (v[i] - m) * (v[i] - m);
+    return s / (v.length - 1);
+  }
+
+  // ---- reproducible standard normal draws --------------------------------
+  // The z-scores are held fixed while the sliders move, so a slider changes the
+  // picture smoothly instead of resampling everything on every pixel of drag.
+
+  function mulberry32(seed) {
+    return function () {
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function standardNormals(n, seed) {
+    var rand = mulberry32(seed), out = [], i;
+    for (i = 0; i < n; i += 2) {
+      var u1 = Math.max(rand(), 1e-12), u2 = rand();
+      var r = Math.sqrt(-2 * Math.log(u1));
+      out.push(r * Math.cos(2 * Math.PI * u2));
+      out.push(r * Math.sin(2 * Math.PI * u2));
+    }
+    return out.slice(0, n);
+  }
+
+  var zA = [], zB = [];
+  function reseed(seed) {
+    zA = standardNormals(N, seed);
+    zB = standardNormals(N, seed + 99991);
+  }
+  reseed(20260729);
+
+  // ---- drawing helpers ----------------------------------------------------
+
+  function el(name, attrs, text) {
+    var node = document.createElementNS(SVG_NS, name);
+    for (var k in attrs) {
+      if (Object.prototype.hasOwnProperty.call(attrs, k)) {
+        node.setAttribute(k, attrs[k]);
+      }
+    }
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  // Quantile of a sorted array, type 7 — the definition R's quantile() uses
+  function quantileSorted(sorted, p) {
+    var n = sorted.length;
+    if (n === 0) return NaN;
+    var h = (n - 1) * p;
+    var lo = Math.floor(h), hi = Math.ceil(h);
+    return sorted[lo] + (h - lo) * (sorted[hi] - sorted[lo]);
+  }
+
+  // Silverman's rule of thumb — this is exactly R's bw.nrd0(), so the curves
+  // here match what density() would draw in the session sheet
+  function bwNrd0(values) {
+    var n = values.length;
+    var sorted = values.slice().sort(function (x, y) { return x - y; });
+    var sd = Math.sqrt(variance(values));
+    var iqr = quantileSorted(sorted, 0.75) - quantileSorted(sorted, 0.25);
+    var lo = Math.min(sd, iqr / 1.349);
+    if (!(lo > 0)) lo = sd || Math.abs(values[0]) || 1;
+    return 0.9 * lo * Math.pow(n, -0.2);
+  }
+
+  // Gaussian kernel density estimate evaluated on a grid
+  function kde(values, grid, h) {
+    var n = values.length;
+    var norm = 1 / (n * h * Math.sqrt(2 * Math.PI));
+    return grid.map(function (x) {
+      var s = 0, u;
+      for (var i = 0; i < n; i++) {
+        u = (x - values[i]) / h;
+        s += Math.exp(-0.5 * u * u);
+      }
+      return s * norm;
+    });
+  }
+
+  function fmtP(p) {
+    if (!isFinite(p)) return "–";
+    if (p < 0.001) return "< 0.001";
+    return p.toFixed(3);
+  }
+
+  // ---- the main render ----------------------------------------------------
+
+  var svg = document.getElementById("tw-chart");
+  var elDiff = document.getElementById("tw-diff");
+  var elSd = document.getElementById("tw-sd");
+
+  function render() {
+    var diff = parseFloat(elDiff.value);
+    var sd = parseFloat(elSd.value);
+
+    document.getElementById("tw-diff-val").textContent = diff.toFixed(2);
+    document.getElementById("tw-sd-val").textContent = sd.toFixed(2);
+
+    // Group A is centred on 0, group B on the chosen difference
+    var a = zA.map(function (z) { return 0 + sd * z; });
+    var b = zB.map(function (z) { return diff + sd * z; });
+
+    var mA = mean(a), mB = mean(b);
+    var vA = variance(a), vB = variance(b);
+
+    // Welch's two-sample t-test
+    var seA = vA / N, seB = vB / N;
+    var se = Math.sqrt(seA + seB);
+    var t = (mB - mA) / se;
+    var df = (seA + seB) * (seA + seB) /
+             ((seA * seA) / (N - 1) + (seB * seB) / (N - 1));
+    var p = tTwoSidedP(t, df);
+
+    // --- density estimates
+    var hA = bwNrd0(a), hB = bwNrd0(b);
+
+    // The x-axis is deliberately FIXED rather than fitted to the data. If it
+    // rescales, the picture depends only on the ratio of difference to spread,
+    // and the two sliders become visually indistinguishable. Holding the axis
+    // still means the difference slider slides the curves apart while the
+    // spread slider makes them tall and narrow or low and wide.
+    var lo = -11, hi = 14;
+
+    var NG = 220, grid = [], i;
+    for (i = 0; i < NG; i++) grid.push(lo + (hi - lo) * i / (NG - 1));
+
+    var dA = kde(a, grid, hA);
+    var dB = kde(b, grid, hB);
+    var maxD = Math.max(Math.max.apply(null, dA), Math.max.apply(null, dB));
+    if (!(maxD > 0)) maxD = 1;
+
+    function X(v) { return M.left + (v - lo) / (hi - lo) * IW; }
+    function Y(d) { return M.top + IH - (d / maxD) * IH; }
+
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+    // --- axes
+    svg.appendChild(el("line", {
+      x1: M.left, y1: M.top + IH, x2: M.left + IW, y2: M.top + IH,
+      stroke: "#b9c6c7", "stroke-width": 1
+    }));
+
+    var ticks = 6, tv, tx;
+    for (i = 0; i <= ticks; i++) {
+      tv = lo + (hi - lo) * i / ticks;
+      tx = X(tv);
+      svg.appendChild(el("line", {
+        x1: tx, y1: M.top + IH, x2: tx, y2: M.top + IH + 5,
+        stroke: "#b9c6c7", "stroke-width": 1
+      }));
+      svg.appendChild(el("text", {
+        x: tx, y: M.top + IH + 18, "text-anchor": "middle",
+        "font-size": 11, fill: "#5a6b6c"
+      }, tv.toFixed(1)));
+    }
+    svg.appendChild(el("text", {
+      x: M.left + IW / 2, y: H - 8, "text-anchor": "middle",
+      "font-size": 12, fill: "#40514f"
+    }, "measured value"));
+
+    var ynum = 4, yv;
+    for (i = 0; i <= ynum; i++) {
+      yv = maxD * i / ynum;
+      svg.appendChild(el("line", {
+        x1: M.left, y1: Y(yv), x2: M.left + IW, y2: Y(yv),
+        stroke: "#eef2f2", "stroke-width": 1
+      }));
+      svg.appendChild(el("text", {
+        x: M.left - 8, y: Y(yv) + 4, "text-anchor": "end",
+        "font-size": 11, fill: "#5a6b6c"
+      }, yv.toFixed(2)));
+    }
+    svg.appendChild(el("text", {
+      x: 12, y: M.top + IH / 2, "text-anchor": "middle",
+      "font-size": 12, fill: "#40514f",
+      transform: "rotate(-90 12 " + (M.top + IH / 2) + ")"
+    }, "density"));
+
+    // --- density curves, filled and semi-transparent so the overlap shows
+    function areaPath(dens) {
+      var d = "M " + X(grid[0]) + " " + (M.top + IH);
+      for (var k = 0; k < grid.length; k++) {
+        d += " L " + X(grid[k]).toFixed(2) + " " + Y(dens[k]).toFixed(2);
+      }
+      d += " L " + X(grid[grid.length - 1]) + " " + (M.top + IH) + " Z";
+      return d;
+    }
+    function linePath(dens) {
+      var d = "M " + X(grid[0]).toFixed(2) + " " + Y(dens[0]).toFixed(2);
+      for (var k = 1; k < grid.length; k++) {
+        d += " L " + X(grid[k]).toFixed(2) + " " + Y(dens[k]).toFixed(2);
+      }
+      return d;
+    }
+
+    svg.appendChild(el("path", { d: areaPath(dA), fill: TEAL, "fill-opacity": 0.4 }));
+    svg.appendChild(el("path", { d: areaPath(dB), fill: PLUM, "fill-opacity": 0.4 }));
+    svg.appendChild(el("path", {
+      d: linePath(dA), fill: "none", stroke: TEAL, "stroke-width": 2
+    }));
+    svg.appendChild(el("path", {
+      d: linePath(dB), fill: "none", stroke: PLUM, "stroke-width": 2
+    }));
+
+    // --- rug: the actual observations, so the smoothing stays honest
+    for (i = 0; i < N; i++) {
+      svg.appendChild(el("line", {
+        x1: X(a[i]), y1: M.top + IH, x2: X(a[i]), y2: M.top + IH - 7,
+        stroke: TEAL, "stroke-width": 1, "stroke-opacity": 0.45
+      }));
+      svg.appendChild(el("line", {
+        x1: X(b[i]), y1: M.top + IH, x2: X(b[i]), y2: M.top + IH - 7,
+        stroke: PLUM, "stroke-width": 1, "stroke-opacity": 0.45
+      }));
+    }
+
+    // --- mean lines
+    svg.appendChild(el("line", {
+      x1: X(mA), y1: M.top - 6, x2: X(mA), y2: M.top + IH,
+      stroke: TEAL, "stroke-width": 2.5
+    }));
+    svg.appendChild(el("line", {
+      x1: X(mB), y1: M.top - 6, x2: X(mB), y2: M.top + IH,
+      stroke: PLUM, "stroke-width": 2.5
+    }));
+
+    // --- double-headed arrow between the two means
+    var yArr = M.top + 16;
+    var x1 = X(mA), x2 = X(mB);
+    var left = Math.min(x1, x2), right = Math.max(x1, x2);
+    var head = 7;
+
+    if (right - left > 3) {
+      svg.appendChild(el("line", {
+        x1: left, y1: yArr, x2: right, y2: yArr,
+        stroke: "#333", "stroke-width": 1.5
+      }));
+      svg.appendChild(el("polygon", {
+        points: left + "," + yArr + " " + (left + head) + "," + (yArr - 4.5) +
+                " " + (left + head) + "," + (yArr + 4.5),
+        fill: "#333"
+      }));
+      svg.appendChild(el("polygon", {
+        points: right + "," + yArr + " " + (right - head) + "," + (yArr - 4.5) +
+                " " + (right - head) + "," + (yArr + 4.5),
+        fill: "#333"
+      }));
+    }
+
+    svg.appendChild(el("text", {
+      x: (left + right) / 2, y: yArr - 9, "text-anchor": "middle",
+      "font-size": 12, "font-weight": "bold", fill: "#333"
+    }, "difference = " + (mB - mA).toFixed(2)));
+
+    // --- group labels on the mean lines
+    svg.appendChild(el("text", {
+      x: X(mA), y: M.top + IH + 32, "text-anchor": "middle",
+      "font-size": 11, "font-weight": "bold", fill: TEAL
+    }, "Group A"));
+    svg.appendChild(el("text", {
+      x: X(mB), y: M.top + IH + 32, "text-anchor": "middle",
+      "font-size": 11, "font-weight": "bold", fill: PLUM
+    }, "Group B"));
+
+    // --- readout
+    document.getElementById("tw-obsdiff").textContent = (mB - mA).toFixed(3);
+    document.getElementById("tw-t").textContent = t.toFixed(2);
+    document.getElementById("tw-df").textContent = df.toFixed(1);
+    document.getElementById("tw-p").textContent = fmtP(p);
+
+    var verdict;
+    if (p < 0.001) {
+      verdict = "A difference this large would be very surprising if the two groups " +
+                "were really the same.";
+    } else if (p < 0.05) {
+      verdict = "Reasonably surprising if the groups were really the same — though " +
+                "0.05 is a convention, not a discovery.";
+    } else if (p < 0.2) {
+      verdict = "Not especially surprising. The data are consistent with a real " +
+                "difference and also with none at all.";
+    } else {
+      verdict = "Entirely unremarkable. Chance alone explains this comfortably.";
+    }
+    if (diff > 0 && p >= 0.05) {
+      verdict += " Note that the two groups genuinely do differ here — the test " +
+                 "simply cannot tell, because the spread is too wide for this sample size.";
+    }
+    if (diff === 0 && p < 0.05) {
+      verdict += " Note there is genuinely no difference here — this is a false positive.";
+    }
+    document.getElementById("tw-verdict").textContent = verdict;
+  }
+
+  elDiff.addEventListener("input", render);
+  elSd.addEventListener("input", render);
+
+  render();
+})();
+</script>
+```
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+> An interactive version of this section — where you can drag the difference in
+> means and the spread and watch the p-value respond — is available on the web
+> version of this page.
+
+:::
+
 ### Flavour 1: one sample
 
 *Is this mean different from some specific number?*
@@ -532,7 +1059,7 @@ kable(rbind(
 
 ---
 
-## When the assumptions look shaky
+### When the assumptions look shaky
 
 t-tests assume roughly normally distributed data. The way to check is to look.
 
@@ -544,6 +1071,7 @@ which means the tails are free to wander off it, and that is exactly what you
 are looking for.
 
 ::: {.callout-important}
+
 ## Check each group separately, not the pooled data
 
 The t-test assumes normality **within each group being compared**, not of
@@ -631,9 +1159,9 @@ data really is normal they are slightly less able to detect a real difference.
 
 ---
 
-## Comparing more than two groups
+## ANOVA 
 
-### Why not just run lots of t-tests?
+What do you do when you have multiple groups? Why not just run lots of t-tests?
 
 Because every test you run gets its own fresh chance to throw up a false
 positive. Run enough and you are nearly guaranteed one (this is **very** common in papers reporting
@@ -657,8 +1185,6 @@ ggplot(fw, aes(n, p)) +
        subtitle = "Three groups means three pairwise tests; ten groups means forty-five",
        x = "number of tests run", y = "chance of at least one false positive")
 ```
-
-### ANOVA
 
 ANOVA asks a single question instead: *is **any** group different?* It does this
 by splitting the total variation in the data into two parts.
@@ -759,7 +1285,7 @@ why a Tukey interval is wider than an ordinary t-test interval for the same pair
 
 ---
 
-## Categorical data
+## Chi-squared test
 
 When the outcome is a count in a category rather than a number, we compare the
 counts we **observed** against the counts we would **expect** if the two
@@ -882,7 +1408,7 @@ The bottom-right corner is the chi-squared statistic itself,
 it tells you **which cells** are driving a significant result, which the p-value
 alone never will.
 
-### The small-counts problem
+### Fisher's Exact Test
 
 Notice that the rule of thumb is about the **expected** counts, not the observed
 ones. It is the expected count that sits on the bottom of each cell's
@@ -906,7 +1432,7 @@ Fisher's exact test is the usual resort. Rather than approximating, it works out
 the probability of every possible table with these same margins and counts how
 many are as extreme as the one you got. 
 However many people (me included) are quite critical of it.  It assumes fixed margins, which are implausible outside of
-experimental data, making the results imprecise. 
+experimental data, which can make the results imprecise in an unknowable way. There are often better solutions. 
 
 ```{r}
 #| label: tbl-chisq-fisher
