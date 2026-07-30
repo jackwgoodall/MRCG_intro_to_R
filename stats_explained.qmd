@@ -318,24 +318,28 @@ as a small difference in tidy data.
 
 ::: {.content-visible when-format="html"}
 
-Below are two groups of 50 observations each. Drag the sliders to change how far
+Below are two groups of 20 observations each. Drag the sliders to change how far
 apart the groups means really are, and how variable the measurements are, then watch
 what happens to the p-value.
 
 Three things are worth doing deliberately:
 
-- Leave the **difference in means** at 1 and wind the **spread** up to 4. Watch a
-  real difference become unconvincing. Remember the groups still differ by
-  exactly as much as before (because you have set this) — the test simply can no
-  longer tell.
+- Leave the **difference in means** at 1 and wind the **spread** up. The p-value
+  climbs past 0.05 at around 1.6 and keeps going. Watch a real difference become
+  unconvincing. Remember the groups still differ by exactly as much as before
+  (because you have set this) — the test simply can no longer tell.
 - Now the reverse: a **small difference** with a **tight spread**. A gap far too
   small to care about becomes overwhelmingly *statistically* significant.
-- While doing either, keep an eye on the **observed difference** in the readout.
-  It moves only slightly, while the p-value swings from < 0.001 to nothing at
-  all. The size of the difference is not what a p-value measures.
+- While doing either, keep an eye on the **difference in means** in the readout.
+  It does not change *at all*, while the p-value swings from < 0.001 to nothing.
+  The size of the difference is not what a p-value measures.
 
-The tick marks along the bottom are the 50 actual observations in each group.
+The tick marks along the bottom are the 20 actual observations in each group.
 The curves are a smoothed summary of the distribution of those values, not the data itself.
+
+The two samples are constructed to have exactly the difference and spread you
+set, so that dragging a slider changes only the thing named on it and nothing
+else.
 
 ::: {.callout-note collapse="true"}
 ## Why the two sliders feel like they do a similar job
@@ -365,7 +369,7 @@ distinction completely and the two sliders would look identical.
     <div class="tw-control">
       <label for="tw-diff">True difference in means
         <span class="tw-val" id="tw-diff-val">1.0</span></label>
-      <input type="range" id="tw-diff" min="0" max="3" step="0.05" value="1">
+      <input type="range" id="tw-diff" min="0" max="2.5" step="0.05" value="1">
     </div>
     <div class="tw-control">
       <label for="tw-sd">Standard deviation of each group
@@ -378,7 +382,7 @@ distinction completely and the two sliders would look identical.
        role="img" aria-label="Overlapping density curves for two groups with their means marked"></svg>
 
   <div class="tw-readout">
-    <div class="tw-stat"><span class="tw-lab">Observed difference</span><span class="tw-num" id="tw-obsdiff">–</span></div>
+    <div class="tw-stat"><span class="tw-lab">Difference in means</span><span class="tw-num" id="tw-obsdiff">–</span></div>
     <div class="tw-stat"><span class="tw-lab">t statistic</span><span class="tw-num" id="tw-t">–</span></div>
     <div class="tw-stat"><span class="tw-lab">degrees of freedom</span><span class="tw-num" id="tw-df">–</span></div>
     <div class="tw-stat tw-p"><span class="tw-lab">p-value</span><span class="tw-num" id="tw-p">–</span></div>
@@ -458,7 +462,7 @@ distinction completely and the two sliders would look identical.
 <script>
 (function () {
   var SVG_NS = "http://www.w3.org/2000/svg";
-  var N = 50;                       // per group
+  var N = 20;                       // per group
   var TEAL = "#0D5257", PLUM = "#621244";
   var W = 720, H = 380;
   var M = { top: 34, right: 22, bottom: 46, left: 48 };
@@ -554,10 +558,20 @@ distinction completely and the two sliders would look identical.
     return out.slice(0, n);
   }
 
+  // Rescale a set of draws to have exactly mean 0 and standard deviation 1.
+  // This pins the sample statistics to the slider values, so the readout shows
+  // precisely the difference and spread you asked for. Without it the sampling
+  // noise scales with the spread slider, and the observed difference wanders as
+  // you drag — which muddles the very point the widget is making.
+  function standardise(v) {
+    var m = mean(v), s = Math.sqrt(variance(v));
+    return v.map(function (x) { return (x - m) / s; });
+  }
+
   var zA = [], zB = [];
   function reseed(seed) {
-    zA = standardNormals(N, seed);
-    zB = standardNormals(N, seed + 99991);
+    zA = standardise(standardNormals(N, seed));
+    zB = standardise(standardNormals(N, seed + 99991));
   }
   reseed(20260729);
 
@@ -816,9 +830,6 @@ distinction completely and the two sliders would look identical.
     if (diff > 0 && p >= 0.05) {
       verdict += " Note that the two groups genuinely do differ here — the test " +
                  "simply cannot tell, because the spread is too wide for this sample size.";
-    }
-    if (diff === 0 && p < 0.05) {
-      verdict += " Note there is genuinely no difference here — this is a false positive.";
     }
     document.getElementById("tw-verdict").textContent = verdict;
   }
