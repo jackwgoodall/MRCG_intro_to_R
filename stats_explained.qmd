@@ -84,46 +84,38 @@ t_row <- function(tt, label) {
 
 # Statistics Refresher
 
-This page is the **why** behind the week 4 (basic statistical tests) and week 7 (linear regression).  It is designed a companion to
-those sessions, and definitely not a substitute for a statistics course. 
-There are some more in depth resources on the [Resources](resources.qmd) page.
+This page is the **why** behind the week 4 (basic statistical tests) and week 7 (linear regression). It is designed a companion to those sessions, and definitely not a substitute for a statistics course. There are some more in depth resources on the [Resources](resources.qmd) page.
 
 I have hidden the R code here deliberately, this is about the stats not about R. However, if you are curious you can click the `show the code` buttons to see the code I used.
 
-There are also some call out boxes below, which can be safely skipped if you are after the refresher, but which 
-might tempt you in if you want some more depth. 
+There are also some call out boxes below, which can be safely skipped if you are after the refresher, but which might tempt you in if you want some more depth.
 
-If you prefer a hard copy you can download a PDF on right hand side. 
+If you prefer a hard copy you can download a PDF on right hand side.
 
-::: {.callout-warning}
+::: callout-warning
 ## A warning about stats in R
 
-R will run almost any test you ask it to, on any data, without complaint. It has
-no idea whether the test suits your question. If you are using statistical tests in your analyses
-I urge you to really understand how they work, whether they are right for your data and how they should be reported.
+R will run almost any test you ask it to, on any data, without complaint. It has no idea whether the test suits your question. If you are using statistical tests in your analyses I urge you to really understand how they work, whether they are right for your data and how they should be reported.
 :::
 
----
+------------------------------------------------------------------------
 
 ## Frequentist Statistics
 
-There are two major statistical schools: frequentists and Bayesian.   Although there are some fundamental differences
-much of the mathematical concepts and procedures overalap.  The test procedures discussed here are specifically ***frequentist***. 
+There are two major statistical schools: frequentists and Bayesian. Although there are some fundamental differences much of the mathematical concepts and procedures overalap. The test procedures discussed here are specifically ***frequentist***.
 
 Every test on this page works the same basic way:
 
-1. Assume nothing interesting is going on. This is the **null hypothesis**.
-2. Work out what your data would typically look like if this null hypothesis were true.
-3. See how far your actual data sits from that.
-4. If it sits somewhere very unlikely, doubt the assumption in step 1.
+1.  Assume nothing interesting is going on. This is the **null hypothesis**.
+2.  Work out what your data would typically look like if this null hypothesis were true.
+3.  See how far your actual data sits from that.
+4.  If it sits somewhere very unlikely, doubt the assumption in step 1.
 
 The output of step 4 is the **p-value**.
 
 ### What a p-value actually is
 
-A p-value is the probability of getting a result at least as extreme as yours,
-**assuming the null hypothesis is true**.
-
+A p-value is the probability of getting a result at least as extreme as yours, **assuming the null hypothesis is true**.
 
 ```{r}
 #| label: fig-pvalue
@@ -146,82 +138,49 @@ ggplot(df_t, aes(x, y)) +
        x = "some test statistic", y = "probability density")
 ```
 
-**It is not** the probability that your hypothesis is wrong. It is not the
-probability the result was chance. And it is definitely not a measure of how big or
-important the effect is; with a large enough sample, a trivially small
-difference earns a tiny p-value, and a really important result can hide within noisy data.
+**It is not** the probability that your hypothesis is wrong. It is not the probability the result was chance. And it is definitely not a measure of how big or important the effect is; with a large enough sample, a trivially small difference earns a tiny p-value, and a really important result can hide within noisy data.
 
-There is an [excellent paper](https://link.springer.com/article/10.1007/s10654-016-0149-3) on how p-values are misinterpreted that you might enjoy. 
+There is an [excellent paper](https://link.springer.com/article/10.1007/s10654-016-0149-3) on how p-values are misinterpreted that you might enjoy.
 
 ### Confidence intervals are usually more useful
 
-A p-value gives you one number about *surprise*. A confidence interval gives you
-a *plausible range for the actual answer*, in the units you measured. For most
-reporting, this interval is more informative.
+A p-value gives you one number about *surprise*. A confidence interval gives you a *plausible range for the actual answer*, in the units you measured. For most reporting, this interval is more informative.
 
 Every test below that can give you one, does.
 
-::: {.callout-note collapse="true"}
+:::: {.callout-note collapse="true"}
 ## For the pedants: a much longer discussion of the confidence interval
 
-"A plausible range for the answer" I've used above is the standard hand-wave description of a confidence, 
-and it is loose enough to be wrong in a fundamental way.
+"A plausible range for the answer" I've used above is the standard hand-wave description of a confidence, and it is loose enough to be wrong in a fundamental way.
 
-Imagine the true parameter value you are after - say the mean
-sepal length of *every* iris in the world. That number exists, it is fixed, and
-you will never know it.
+Imagine the true parameter value you are after - say the mean sepal length of *every* iris in the world. That number exists, it is fixed, and you will never know it.
 
-You run a study on 150 flowers and calculate an interval. Now imagine running
-that same study again, and again, on fresh samples of 150 flowers. Each study
-gives a slightly different sample, so each one produces a slightly different confidence
-interval. The true value never budges; the intervals jump around it based on the nature of your sample.
+You run a study on 150 flowers and calculate an interval. Now imagine running that same study again, and again, on fresh samples of 150 flowers. Each study gives a slightly different sample, so each one produces a slightly different confidence interval. The true value never budges; the intervals jump around it based on the nature of your sample.
 
-> A 95% confidence intervals implies that across all those repeated
-> studies, 95% of the intervals it produces would contain the true value.
+> A 95% confidence intervals implies that across all those repeated studies, 95% of the intervals it produces would contain the true value.
 
-Notice that this describes **the long-run
-behaviour of the method**, not the particular interval sitting in your results
-table.
+Notice that this describes **the long-run behaviour of the method**, not the particular interval sitting in your results table.
 
 **The three to note:**
 
-***The interval moves, the truth doesn't.*** Your interval is calculated from your
-data, so it varies from study to study. The true value is a fixed property of
-the world. The statement is about how often the interval **lands on** the true
-value, not about the true value falling inside your interval. Those might sound like
-the same sentence, and they are not.
+***The interval moves, the truth doesn't.*** Your interval is calculated from your data, so it varies from study to study. The true value is a fixed property of the world. The statement is about how often the interval **lands on** the true value, not about the true value falling inside your interval. Those might sound like the same sentence, and they are not.
 
-***It has to work whatever the truth happens to be.*** The 95% guarantee must hold
-regardless of what the true value is and you don't get to know it in
-order to check.
+***It has to work whatever the truth happens to be.*** The 95% guarantee must hold regardless of what the true value is and you don't get to know it in order to check.
 
-*Once you've calculated it, the probability has gone.* Your interval came out as
-5.71 to 5.98. Every number there is now fixed, and so is the truth. The true
-mean is either in that range or it isn't. The probability is 100% or 0%, and you have no way of
-knowing which.
+*Once you've calculated it, the probability has gone.* Your interval came out as 5.71 to 5.98. Every number there is now fixed, and so is the truth. The true mean is either in that range or it isn't. The probability is 100% or 0%, and you have no way of knowing which.
 
-You will often see the line in papers: *"There is a 95% probability the
-true mean lies between 5.71 and 5.98."* As I hope I have convinced you, this is false. It is a probability statement
-about the true value, and in this framework the true value isn't random — it's
-just unknown. That sentence describes a Bayesian **credible interval**, which is
-a genuinely different thing and requires you to specify prior beliefs before you
-start. (If you ask me the Bayesian approach is almost invariably more useful, but that is a story for another day).
+You will often see the line in papers: *"There is a 95% probability the true mean lies between 5.71 and 5.98."* As I hope I have convinced you, this is false. It is a probability statement about the true value, and in this framework the true value isn't random — it's just unknown. That sentence describes a Bayesian **credible interval**, which is a genuinely different thing and requires you to specify prior beliefs before you start. (If you ask me the Bayesian approach is almost invariably more useful, but that is a story for another day).
 
 The 95% belongs to the **procedure**, not to your interval.
 
-::: {.callout-tip}
+::: callout-tip
 ## An analogy
 
 You are throwing hoops at a peg in the ground, blindfolded.
 
-The peg does not move: that's the true value. The hoops land in different
-places every throw: those are your intervals. "95% confidence" means that
-across many throws, 95% of hoops ring the peg.
+The peg does not move: that's the true value. The hoops land in different places every throw: those are your intervals. "95% confidence" means that across many throws, 95% of hoops ring the peg.
 
-Taking the blindfold off after a single throw and the question "what is the
-probability this hoop ringed the peg?" no longer makes sense. It did or it
-didn't. The 95% was always a statement about the quality of your throwing in the longrun, not about that
-particular hoop.
+Taking the blindfold off after a single throw and the question "what is the probability this hoop ringed the peg?" no longer makes sense. It did or it didn't. The 95% was always a statement about the quality of your throwing in the longrun, not about that particular hoop.
 :::
 
 ```{r}
@@ -258,24 +217,18 @@ ggplot(sims, aes(y = i)) +
         panel.grid.major.y = element_blank())
 ```
 
-Look at any single line in that figure. Is *it* one of the 95%? There is no way
-to tell from the interval itself — which is precisely why the probability
-statement cannot be attached to it.
+Look at any single line in that figure. Is *it* one of the 95%? There is no way to tell from the interval itself — which is precisely why the probability statement cannot be attached to it.
 
-**The 95% CI is intrinsically linked to the p value** as it is exactly
-the set of values that your data would *not* have rejected, had you tested each
-one as a null hypothesis at p = 0.05.
+**The 95% CI is intrinsically linked to the p value** as it is exactly the set of values that your data would *not* have rejected, had you tested each one as a null hypothesis at p = 0.05.
 
-Take any number inside your interval, test it as a null hypothesis, and you get
-p > 0.05. Take any number outside, and you get p < 0.05. 
-:::
+Take any number inside your interval, test it as a null hypothesis, and you get p \> 0.05. Take any number outside, and you get p \< 0.05.
+::::
 
----
+------------------------------------------------------------------------
 
 ## t-tests
 
-A t-test asks whether two means are far enough apart that chance is an
-unconvincing explanation.
+A t-test asks whether two means are far enough apart that chance is an unconvincing explanation.
 
 "Far enough apart" is doing some heavy lifting, and the output of your t-test depends on three things:
 
@@ -310,57 +263,33 @@ ggplot(rbind(tight, wide), aes(x = g, y = v, fill = g)) +
   theme(legend.position = "none")
 ```
 
-This is why the t-statistic is essentially the *difference in means* divided by
-*how variable the data is*. A large difference in noisy data can score the same
-as a small difference in tidy data.
+This is why the t-statistic is essentially the *difference in means* divided by *how variable the data is*. A large difference in noisy data can score the same as a small difference in tidy data.
 
 ### Try it yourself
 
-::: {.content-visible when-format="html"}
-
-Below are two groups of 20 observations each. Drag the sliders to change how far
-apart the groups means really are, and how variable the measurements are, then watch
-what happens to the p-value.
+:::: {.content-visible when-format="html"}
+Below are two groups of 20 observations each. Drag the sliders to change how far apart the groups means really are, and how variable the measurements are, then watch what happens to the p-value.
 
 Three things are worth doing deliberately:
 
-- Leave the **difference in means** at 1 and wind the **spread** up. The p-value
-  climbs past 0.05 at around 1.6 and keeps going. Watch a real difference become
-  unconvincing. Remember the groups still differ by exactly as much as before
-  (because you have set this) — the test simply can no longer tell.
-- Now the reverse: a **small difference** with a **tight spread**. A gap far too
-  small to care about becomes overwhelmingly *statistically* significant.
-- While doing either, keep an eye on the **difference in means** in the readout.
-  It does not change *at all*, while the p-value swings from < 0.001 to nothing.
-  The size of the difference is not what a p-value measures.
+- Leave the **difference in means** at 1 and wind the **spread** up. The p-value climbs past 0.05 at around 1.6 and keeps going. Watch a real difference become unconvincing. Remember the groups still differ by exactly as much as before (because you have set this) — the test simply can no longer tell.
+- Now the reverse: a **small difference** with a **tight spread**. A gap far too small to care about becomes overwhelmingly *statistically* significant.
+- While doing either, keep an eye on the **difference in means** in the readout. It does not change *at all*, while the p-value swings from \< 0.001 to nothing. The size of the difference is not what a p-value measures.
 
-The tick marks along the bottom are the 20 actual observations in each group.
-The curves are a smoothed summary of the distribution of those values, not the data itself.
+The tick marks along the bottom are the 20 actual observations in each group. The curves are a smoothed summary of the distribution of those values, not the data itself.
 
-The two samples are constructed to have exactly the difference and spread you
-set, so that dragging a slider changes only the thing named on it and nothing
-else.
+The two samples are constructed to have exactly the difference and spread you set, so that dragging a slider changes only the thing named on it and nothing else.
 
 ::: {.callout-note collapse="true"}
 ## Why the two sliders feel like they do a similar job
 
 Because, as far as the test is concerned, they do.
 
-For two groups of equal size, the t statistic is the difference in means divided
-by the spread, multiplied by a constant that depends only on the sample size. So
-the p-value responds only to the **ratio** of the two sliders. A difference of 2
-with a spread of 2 gives exactly the same p-value as a difference of 1 with a
-spread of 1.
+For two groups of equal size, the t statistic is the difference in means divided by the spread, multiplied by a constant that depends only on the sample size. So the p-value responds only to the **ratio** of the two sliders. A difference of 2 with a spread of 2 gives exactly the same p-value as a difference of 1 with a spread of 1.
 
-That is not a quirk of this widget — it is the whole idea of a t-test, and it is
-why "the groups differ by 3 units" is a claim no p-value can assess on its own.
-You always need to know 3 units *relative to what*.
+That is not a quirk of this widget — it is the whole idea of a t-test, and it is why "the groups differ by 3 units" is a claim no p-value can assess on its own. You always need to know 3 units *relative to what*.
 
-What the two sliders do change independently is the **picture**: the difference
-slider slides the curves apart, while the spread slider makes them either tall
-and narrow or low and wide. The x-axis here is deliberately held fixed so that
-you can see this. Allowed to rescale itself to the data, it would hide the
-distinction completely and the two sliders would look identical.
+What the two sliders do change independently is the **picture**: the difference slider slides the curves apart, while the spread slider makes them either tall and narrow or low and wide. The x-axis here is deliberately held fixed so that you can see this. Allowed to rescale itself to the data, it would hide the distinction completely and the two sliders would look identical.
 :::
 
 ```{=html}
@@ -841,15 +770,10 @@ distinction completely and the two sliders would look identical.
 })();
 </script>
 ```
-
-:::
+::::
 
 ::: {.content-visible when-format="pdf"}
-
-> An interactive version of this section — where you can drag the difference in
-> means and the spread and watch the p-value respond — is available on the web
-> version of this page.
-
+> An interactive version of this section — where you can drag the difference in means and the spread and watch the p-value respond — is available on the web version of this page.
 :::
 
 ### Flavour 1: one sample
@@ -884,8 +808,7 @@ ggplot(iris, aes(x = Sepal.Length)) +
   ylim(c(0,22))
 ```
 
-The interval sits clear of 5.5, which is the same information the p-value gives
-you, just expressed in centimetres rather than probability.
+The interval sits clear of 5.5, which is the same information the p-value gives you, just expressed in centimetres rather than probability.
 
 ### Flavour 2: two independent samples
 
@@ -919,16 +842,11 @@ ggplot(two_species, aes(x = Sepal.Length, fill = Species)) +
        x = "Sepal length (cm)", y = "density")
 ```
 
-The difference is about 0.93 cm, and the interval says the true difference is
-somewhere between roughly 0.81 and 1.06 cm. Note how much more that tells you
-than "p < 0.001".
+The difference is about 0.93 cm, and the interval says the true difference is somewhere between roughly 0.81 and 1.06 cm. Note how much more that tells you than "p \< 0.001".
 
 ### Variation: Welch's or Student's?
 
-The classic [**Student's**](https://www.physoc.org/magazine-articles/the-strange-origins-of-the-students-t-test/) t-test assumes both groups have the same variance.
-**Welch's** version does not, and adjusts the degrees of freedom to compensate.
-Welch's is the sensible default: it costs almost nothing when variances really
-are equal, and saves you when they are not.
+The classic [**Student's**](https://www.physoc.org/magazine-articles/the-strange-origins-of-the-students-t-test/) t-test assumes both groups have the same variance. **Welch's** version does not, and adjusts the degrees of freedom to compensate. Welch's is the sensible default: it costs almost nothing when variances really are equal, and saves you when they are not.
 
 ```{r}
 #| label: tbl-welch
@@ -940,19 +858,14 @@ kable(rbind(
 ), align = "lrrrrrr")
 ```
 
-
 ::: {.callout-note collapse="true"}
 ## Welch's handing of degrees of freedom
 
-Degrees of freedom can be a bit slippery.  They essentially equates to how many independent pieces of information you have
-in your sample.  This isn't *quite* your sample size, as once you have estimated your parameters, some of the information in the sample is no longer independent. 
-(Think if you have 10 random numbers, and you know 9 of them AND the mean of the sample, then you can also figure out what the 10th - it isn't independent). 
+Degrees of freedom can be a bit slippery. They essentially equates to how many independent pieces of information you have in your sample. This isn't *quite* your sample size, as once you have estimated your parameters, some of the information in the sample is no longer independent. (Think if you have 10 random numbers, and you know 9 of them AND the mean of the sample, then you can also figure out what the 10th - it isn't independent).
 
-A t test does just that - estimates the mean. So the degrees of freedom for a single sample t test is N - 1, 
-and for a two sample t test it is N - 2.
+A t test does just that - estimates the mean. So the degrees of freedom for a single sample t test is N - 1, and for a two sample t test it is N - 2.
 
-Welch's test cacluates degrees of freedom by performing an adjustment to this 
-which is a weighted compromise between the two group sizes and variance. 
+Welch's test cacluates degrees of freedom by performing an adjustment to this which is a weighted compromise between the two group sizes and variance.
 
 ```{r}
 #| label: fig-welch
@@ -975,9 +888,7 @@ data.frame(
 
 ### Variation: one-sided or two-sided?
 
-By default a t-test asks "is there *any* difference". A one-sided test asks "is
-A specifically **less** than B" — and earns a smaller p-value for it, because it
-only counts extreme results in one direction.
+By default a t-test asks "is there *any* difference". A one-sided test asks "is A specifically **less** than B" — and earns a smaller p-value for it, because it only counts extreme results in one direction.
 
 ```{r}
 #| label: fig-sided
@@ -1012,15 +923,13 @@ ggplot(all_d, aes(x, y)) +
        x = "test statistic", y = "density")
 ```
 
-Only ever use a one-sided test if you decided the direction **before** looking at
-the data. Choosing afterwards is how you talk yourself into a result.
+Only ever use a one-sided test if you decided the direction **before** looking at the data. Choosing afterwards is how you talk yourself into a result.
 
 ### Flavour 3: paired
 
 *Do two measurements on the **same** subjects differ?*
 
-The `sleep` data is the original dataset Student used in 1908: ten patients,
-each of whom tried two different drugs.
+The `sleep` data is the original dataset Student used in 1908: ten patients, each of whom tried two different drugs.
 
 ```{r}
 #| label: fig-paired
@@ -1047,9 +956,7 @@ if (patchwork_available) {
 }
 ```
 
-The boxplots overlap heavily and look unconvincing. But almost every individual
-line slopes upwards — the *within-patient* change is remarkably consistent. It is
-simply swamped by the fact that some people naturally sleep far more than others.
+The boxplots overlap heavily and look unconvincing. But almost every individual line slopes upwards — the *within-patient* change is remarkably consistent. It is simply swamped by the fact that some people naturally sleep far more than others.
 
 Pairing removes that between-patient variation entirely:
 
@@ -1068,27 +975,18 @@ kable(rbind(
 ), align = "lrrrrrr")
 ```
 
----
+------------------------------------------------------------------------
 
 ### When the assumptions look shaky
 
 t-tests assume roughly normally distributed data. The way to check is to look.
 
-A **qq plot** sorts your data from smallest to largest and plots each value
-against the value you would have expected in that position if the data really
-were normal. If the two agree, the points sit on a straight line. The reference
-line is drawn through the quartiles, so it is fixed by the middle of your data —
-which means the tails are free to wander off it, and that is exactly what you
-are looking for.
+A **qq plot** sorts your data from smallest to largest and plots each value against the value you would have expected in that position if the data really were normal. If the two agree, the points sit on a straight line. The reference line is drawn through the quartiles, so it is fixed by the middle of your data — which means the tails are free to wander off it, and that is exactly what you are looking for.
 
-::: {.callout-important}
-
+::: callout-important
 ## Check each group separately, not the pooled data
 
-The t-test assumes normality **within each group being compared**, not of
-everything lumped together. Pooling groups that genuinely differ produces a
-mixture, and a mixture is never normal — so a pooled check can condemn data that
-is perfectly fine for the test you are about to run.
+The t-test assumes normality **within each group being compared**, not of everything lumped together. Pooling groups that genuinely differ produces a mixture, and a mixture is never normal — so a pooled check can condemn data that is perfectly fine for the test you are about to run.
 
 The middle panel below is exactly that mistake.
 :::
@@ -1118,27 +1016,17 @@ ggplot(qq_dat, aes(sample = value)) +
 
 Each panel has its own signature worth learning:
 
-**Left: on the line.** Setosa sepal length. Minor wobble in the tails is normal
-in a sample of 50; you are looking for systematic curvature, not perfection.
+**Left: on the line.** Setosa sepal length. Minor wobble in the tails is normal in a sample of 50; you are looking for systematic curvature, not perfection.
 
-**Middle: a gentle S.** The same measurement pooled across all three species.
-Points sit above the line at the bottom and below it at the top, meaning both
-tails are *shorter* than a normal distribution would give. That is the
-fingerprint of a mixture: three overlapping humps make the middle broad and the
-extremes scarce. Nothing is wrong with the data — the wrong thing was pooling it.
+**Middle: a gentle S.** The same measurement pooled across all three species. Points sit above the line at the bottom and below it at the top, meaning both tails are *shorter* than a normal distribution would give. That is the fingerprint of a mixture: three overlapping humps make the middle broad and the extremes scarce. Nothing is wrong with the data — the wrong thing was pooling it.
 
-**Right: an upward curve.** Values bunched at the bottom and a long tail
-stretching up. This is right skew, and it is the pattern that should make you
-reach for a rank-based test or a transformation.
+**Right: an upward curve.** Values bunched at the bottom and a long tail stretching up. This is right skew, and it is the pattern that should make you reach for a rank-based test or a transformation.
 
-There are formal normality tests, but treat them with suspicion: they are
-over-sensitive in large samples and under-sensitive in small ones, which is
-precisely backwards from what you want. Your eyes are better.
+There are formal normality tests, but treat them with suspicion: they are over-sensitive in large samples and under-sensitive in small ones, which is precisely backwards from what you want. Your eyes are better.
 
 ### The rank-based twins
 
-When normality looks doubtful, the non-parametric versions throw away the actual
-values and use only their **order**.
+When normality looks doubtful, the non-parametric versions throw away the actual values and use only their **order**.
 
 ```{r}
 #| label: fig-ranks
@@ -1159,24 +1047,21 @@ ggplot(rk, aes(x = value, y = y)) +
 ```
 
 | If you would have used… | …use this instead | It compares |
-|---|---|---|
+|----|----|----|
 | Two-sample t-test | Wilcoxon rank-sum (Mann–Whitney U) | Medians |
 | Paired t-test | Wilcoxon signed-rank | Median of the differences |
 | ANOVA | Kruskal–Wallis | Medians across 3+ groups |
 | Pearson correlation | Spearman correlation | Ranks rather than values |
 
-The trade-off: these are more robust, but they discard information, so when the
-data really is normal they are slightly less able to detect a real difference.
+The trade-off: these are more robust, but they discard information, so when the data really is normal they are slightly less able to detect a real difference.
 
----
+------------------------------------------------------------------------
 
-## ANOVA 
+## ANOVA
 
 What do you do when you have multiple groups? Why not just run lots of t-tests?
 
-Because every test you run gets its own fresh chance to throw up a false
-positive. Run enough and you are nearly guaranteed one (this is **very** common in papers reporting
-RNAseq data...)
+Because every test you run gets its own fresh chance to throw up a false positive. Run enough and you are nearly guaranteed one (this is **very** common in papers reporting RNAseq data...)
 
 ```{r}
 #| label: fig-familywise
@@ -1197,8 +1082,7 @@ ggplot(fw, aes(n, p)) +
        x = "number of tests run", y = "chance of at least one false positive")
 ```
 
-ANOVA asks a single question instead: *is **any** group different?* It does this
-by splitting the total variation in the data into two parts.
+ANOVA asks a single question instead: *is **any** group different?* It does this by splitting the total variation in the data into two parts.
 
 ```{r}
 #| label: fig-anova
@@ -1231,8 +1115,7 @@ ggplot(iris_j, aes(x = xj, y = Sepal.Length)) +
   theme(legend.position = "none") 
 ```
 
-If the between-group variation is large relative to the within-group variation,
-the groups are probably genuinely different. That ratio is the **F statistic**.
+If the between-group variation is large relative to the within-group variation, the groups are probably genuinely different. That ratio is the **F statistic**.
 
 ```{r}
 #| label: tbl-anova
@@ -1253,11 +1136,9 @@ tidy(iris_aov) |>
 
 ### Tukey: but *which* groups?
 
-A significant ANOVA tells you something differs, not what. Tukey's test makes all
-the pairwise comparisons and widens the intervals to pay for having made them.
+A significant ANOVA tells you something differs, not what. Tukey's test makes all the pairwise comparisons and widens the intervals to pay for having made them.
 
-Each row is **one pair of group means subtracted from each other** not a
-comparison against the grand mean.
+Each row is **one pair of group means subtracted from each other** not a comparison against the grand mean.
 
 ```{r}
 #| label: tbl-tukey
@@ -1289,21 +1170,15 @@ ggplot(tk, aes(x = diff, y = comparison)) +
        x = "difference (cm)", y = NULL)
 ```
 
-**"Family-wise"** means the 95% applies to all three intervals *jointly*. Three
-separate 95% intervals would only have about a 0.95³ ≈ 86% chance of all being
-right at once. Tukey widens them so the guarantee covers the whole set — which is
-why a Tukey interval is wider than an ordinary t-test interval for the same pair.
+**"Family-wise"** means the 95% applies to all three intervals *jointly*. Three separate 95% intervals would only have about a 0.95³ ≈ 86% chance of all being right at once. Tukey widens them so the guarantee covers the whole set — which is why a Tukey interval is wider than an ordinary t-test interval for the same pair.
 
----
+------------------------------------------------------------------------
 
 ## Chi-squared test
 
-When the outcome is a count in a category rather than a number, we compare the
-counts we **observed** against the counts we would **expect** if the two
-variables were unrelated.
+When the outcome is a count in a category rather than a number, we compare the counts we **observed** against the counts we would **expect** if the two variables were unrelated.
 
-A table of counts like this is called a **contingency table**. The totals down
-the edges — the **margins** — are where everything starts.
+A table of counts like this is called a **contingency table**. The totals down the edges — the **margins** — are where everything starts.
 
 ```{r}
 #| label: tbl-observed
@@ -1317,15 +1192,11 @@ kable(as.data.frame.matrix(addmargins(mtcars_tab)), align = "rrrr")
 
 ### Where the "expected" counts come from
 
-The margins tell us two things on their own, before we look inside the table at
-all. Of the 32 cars, 13 are manual. And 11 of them have four cylinders.
+The margins tell us two things on their own, before we look inside the table at all. Of the 32 cars, 13 are manual. And 11 of them have four cylinders.
 
-Now suppose transmission and cylinder count were **completely unrelated** —
-knowing one tells you nothing about the other. Then the manual cars should be
-spread across the cylinder groups in the same proportions as everything else.
+Now suppose transmission and cylinder count were **completely unrelated** — knowing one tells you nothing about the other. Then the manual cars should be spread across the cylinder groups in the same proportions as everything else.
 
-13 of 32 cars are manual, so 40.6% of cars overall are manual. If cylinder count
-is irrelevant, then 40.6% of the eleven four-cylinder cars should be manual too:
+13 of 32 cars are manual, so 40.6% of cars overall are manual. If cylinder count is irrelevant, then 40.6% of the eleven four-cylinder cars should be manual too:
 
 > 11 four-cylinder cars × 40.6% manual = **4.47 cars**
 
@@ -1333,9 +1204,7 @@ Which is the same as saying:
 
 > expected count = (row total × column total) ÷ grand total
 
-That is all an expected count is. It is the count you would get if the **only**
-things driving the table were the margins — the overall number of manuals and
-the overall number of four-cylinder cars — with no relationship between them.
+That is all an expected count is. It is the count you would get if the **only** things driving the table were the margins — the overall number of manuals and the overall number of four-cylinder cars — with no relationship between them.
 
 Doing that for every cell gives the expected table:
 
@@ -1349,14 +1218,9 @@ kable(round(as.data.frame.matrix(addmargins(as.table(cs$expected))), 2),
 
 Two things are worth noticing.
 
-**The margins have not changed.** Expected counts are not a different dataset;
-they are the *same* totals redistributed as evenly as those totals allow. All
-the chi-squared test ever does is ask whether the actual arrangement inside the
-table could plausibly have come from that even redistribution.
+**The margins have not changed.** Expected counts are not a different dataset; they are the *same* totals redistributed as evenly as those totals allow. All the chi-squared test ever does is ask whether the actual arrangement inside the table could plausibly have come from that even redistribution.
 
-**Expected counts need not be whole numbers.** 4.47 cars is not a car. It is an
-average over the many ways 32 cars could have fallen into the table, which is
-exactly what we want to compare against.
+**Expected counts need not be whole numbers.** 4.47 cars is not a car. It is an average over the many ways 32 cars could have fallen into the table, which is exactly what we want to compare against.
 
 Seen as percentages, the claim being tested becomes obvious:
 
@@ -1398,10 +1262,7 @@ ggplot(rbind(obs, exp_df), aes(x = cyl, y = n, fill = type)) +
 
 ### Turning the gaps into one number
 
-For each cell, take the gap between observed and expected, square it so
-over- and under-shoots don't cancel out, then divide by the expected count —
-because being 3 cars out matters far more in a cell expecting 4 than in one
-expecting 40.
+For each cell, take the gap between observed and expected, square it so over- and under-shoots don't cancel out, then divide by the expected count — because being 3 cars out matters far more in a cell expecting 4 than in one expecting 40.
 
 Add those up across every cell and you have the chi-squared statistic.
 
@@ -1414,20 +1275,13 @@ kable(round(as.data.frame.matrix(addmargins(as.table(contrib))), 2),
       align = "rrrr")
 ```
 
-The bottom-right corner is the chi-squared statistic itself,
-`r sprintf("%.2f", unname(cs$statistic))`. This table is useful in its own right:
-it tells you **which cells** are driving a significant result, which the p-value
-alone never will.
+The bottom-right corner is the chi-squared statistic itself, `r sprintf("%.2f", unname(cs$statistic))`. This table is useful in its own right: it tells you **which cells** are driving a significant result, which the p-value alone never will.
 
 ### Fisher's Exact Test
 
-Notice that the rule of thumb is about the **expected** counts, not the observed
-ones. It is the expected count that sits on the bottom of each cell's
-contribution, and dividing by a small number is what makes the whole thing
-unstable.
+Notice that the rule of thumb is about the **expected** counts, not the observed ones. It is the expected count that sits on the bottom of each cell's contribution, and dividing by a small number is what makes the whole thing unstable.
 
-Looking back at the expected table, `r sum(cs$expected < 5)` of the
-`r length(cs$expected)` cells fall below 5:
+Looking back at the expected table, `r sum(cs$expected < 5)` of the `r length(cs$expected)` cells fall below 5:
 
 ```{r}
 #| label: tbl-expected
@@ -1439,11 +1293,7 @@ exp_flag[] <- lapply(exp_flag, function(col) {
 kable(exp_flag, align = "rrr")
 ```
 
-Fisher's exact test is the usual resort. Rather than approximating, it works out
-the probability of every possible table with these same margins and counts how
-many are as extreme as the one you got. 
-However many people (me included) are quite critical of it.  It assumes fixed margins, which are implausible outside of
-experimental data, which can make the results imprecise in an unknowable way. There are often better solutions. 
+Fisher's exact test is the usual resort. Rather than approximating, it works out the probability of every possible table with these same margins and counts how many are as extreme as the one you got. However many people (me included) are quite critical of it. It assumes fixed margins, which are implausible outside of experimental data, which can make the results imprecise in an unknowable way. There are often better solutions.
 
 ```{r}
 #| label: tbl-chisq-fisher
@@ -1460,8 +1310,7 @@ data.frame(
   kable(align = "lrrr")
 ```
 
-
----
+------------------------------------------------------------------------
 
 ## Correlation
 
@@ -1489,8 +1338,7 @@ ggplot(cors, aes(x, y)) +
 
 ### Always plot it first
 
-Anscombe's quartet is four datasets built to make exactly this point. All four
-have almost identical means, variances, correlations and fitted lines.
+Anscombe's quartet is four datasets built to make exactly this point. All four have almost identical means, variances, correlations and fitted lines.
 
 ```{r}
 #| label: fig-anscombe
@@ -1516,14 +1364,11 @@ ggplot(ans, aes(x, y)) +
        subtitle = "All four have the same correlation and the same fitted line")
 ```
 
-Dataset 2 is a perfect curve. Dataset 3 is a perfect straight line spoiled by one
-outlier. Dataset 4 is a single influential point doing all the work. A
-correlation coefficient hides all three.
+Dataset 2 is a perfect curve. Dataset 3 is a perfect straight line spoiled by one outlier. Dataset 4 is a single influential point doing all the work. A correlation coefficient hides all three.
 
 ### Pearson or Spearman?
 
-**Pearson** measures *straight-line* association. **Spearman** ranks the data
-first, so it detects any consistently increasing relationship even when curved.
+**Pearson** measures *straight-line* association. **Spearman** ranks the data first, so it detects any consistently increasing relationship even when curved.
 
 ```{r}
 #| label: fig-pearson-spearman
@@ -1555,23 +1400,21 @@ data.frame(
   kable(align = "lrr")
 ```
 
-A correlation of zero means no *linear* relationship. It does not mean no
-relationship — which is, again, why you plot first.
+A correlation of zero means no *linear* relationship. It does not mean no relationship — which is, again, why you plot first.
 
----
+------------------------------------------------------------------------
 
 ## Linear regression
 
-Correlation says *these move together*. Regression says *how much y changes per
-unit of x*.  It also lets you add more explanatory variables.
+Correlation says *these move together*. Regression says *how much y changes per unit of x*. It also lets you add more explanatory variables.
 
 Many books have been written about linear regression; this is a quick outline.
 
-The basic idea is that you have plotted one variable on the x axis, one on the y.  Your computer then tries to draw a line which minimises the *sum* of all of the *square* of the distances between the actual points and the line. 
+The basic idea is that you have plotted one variable on the x axis, one on the y. Your computer then tries to draw a line which minimises the *sum* of all of the *square* of the distances between the actual points and the line.
 
-On the image below: 
+On the image below:
 
-- The green points are the real data 
+- The green points are the real data
 - The purple line is the 'best fit' line
 - the thin grey lines are the differences
 
@@ -1610,15 +1453,11 @@ tidy(iris_lm, conf.int = TRUE) |>
 
 Reading that table:
 
-- **Intercept**: predicted petal length when sepal length is zero. Often
-  meaningless in itself; there is no flower with zero sepal length.
-- **Sepal length**: the slope. Petal length changes by this much for every extra
-  centimetre of sepal length.
+- **Intercept**: predicted petal length when sepal length is zero. Often meaningless in itself; there is no flower with zero sepal length.
+- **Sepal length**: the slope. Petal length changes by this much for every extra centimetre of sepal length.
 - **p-value**: for the null hypothesis that the slope is zero (i.e. one variable is not associated with the other)
 
-The model explains about `r sprintf("%.0f%%", 100 * summary(iris_lm)$r.squared)`
-of the variation in petal length. That figure is **R-squared**, and it is a
-better guide to whether a model is *useful* than any p-value.
+The model explains about `r sprintf("%.0f%%", 100 * summary(iris_lm)$r.squared)` of the variation in petal length. That figure is **R-squared**, and it is a better guide to whether a model is *useful* than any p-value.
 
 ### Adding a grouping variable
 
@@ -1642,9 +1481,7 @@ tidy(iris_lm2, conf.int = TRUE) |>
   kable(align = "lrrrr")
 ```
 
-There is no row for setosa because setosa **is** the reference point. Every
-categorical variable in a model works this way: one level becomes the baseline,
-and the others are reported as differences from it.
+There is no row for setosa because setosa **is** the reference point. Every categorical variable in a model works this way: one level becomes the baseline, and the others are reported as differences from it.
 
 ```{r}
 #| label: fig-regression-species
@@ -1668,20 +1505,12 @@ if (patchwork_available) {
 }
 ```
 
-This is worth staring at. The overall line is much steeper than any of the three
-individual lines, because it is partly measuring the fact that the species differ
-from each other rather than the relationship within any of them. When a
-relationship changes (or reverses) once you account for a group, that is
-**Simpson's paradox**, and it is one of the most common ways to be badly wrong
-with a perfectly valid p-value.
+This is worth staring at. The overall line is much steeper than any of the three individual lines, because it is partly measuring the fact that the species differ from each other rather than the relationship within any of them. When a relationship changes (or reverses) once you account for a group, that is **Simpson's paradox**, and it is one of the most common ways to be badly wrong with a perfectly valid p-value.
 
----
+------------------------------------------------------------------------
 
 ## A closing warning
 
-Every figure and table on this page was produced without a murmur of complaint.
-The same software would equally happily have run a paired test on unpaired data,
-a t test on highly skewed data, or a correlation on Anscombe's fourth
-dataset.
+Every figure and table on this page was produced without a murmur of complaint. The same software would equally happily have run a paired test on unpaired data, a t test on highly skewed data, or a correlation on Anscombe's fourth dataset.
 
 Choosing the test is your job. The coding was never the hard part.

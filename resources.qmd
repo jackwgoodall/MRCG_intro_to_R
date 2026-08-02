@@ -19,10 +19,24 @@ format: lshtm-mrcg-html
 
 [Introductory slides](slides/intro_slides.qmd)
 
-## Figures
+## Statistics
+
+This is not intended as a statistics course - if you are feeling a little rusty on stats here are some suggestions
+
+[Statistics Refresher](stats_explained.qmd) - my short refresher focussed on the statistical concepts used in this course
+
+[StatQuest](https://statquest.org/) a site and YouTube channel with accessible videos on a wide variety of statistical topics
+
+[An Introduction to Statistical Learning](https://www.statlearning.com/) - a book on statistical concepts which provides a relatively maths-free run down of statistical concepts with example in R
+
+[STATSREF: Statistical Analysis Handbook](https://www.statsref.com/) - a free online resource for statistics (again with lots of examples in R
+
+[Statistical Rethinking](https://xcelab.net/rm/) - a lecture series and text book on Bayesian statistics and causal inference.
+
+## Making figures
 
 [The ggplot2 page](https://ggplot2.tidyverse.org/articles/ggplot2.html)
 
-[Colourkit](https://colorkit.co/palettes/) - for aesthetically pleasing pallettes
+[Colourkit](https://colorkit.co/palettes/) - for aesthetically pleasing palettes
 
 [IWantHue](https://medialab.github.io/iwanthue/) - for picking contrasting colours for k objects

@@ -12,7 +12,11 @@ format: lshtm-mrcg-revealjs
 
 # Flow...
 
-<iframe src="https://giphy.com/embed/b0wjZ76XPA5lC" width="889.2" height="498.3225" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/monterey-bay-aquarium-open-sea-exhibit-pacific-mackerel-b0wjZ76XPA5lC"></a></p>
+<iframe src="https://giphy.com/embed/b0wjZ76XPA5lC" width="889.2" height="498.3225" style frameBorder="0" class="giphy-embed" allowFullScreen>
+
+</iframe>
+
+<p><a href="https://giphy.com/gifs/monterey-bay-aquarium-open-sea-exhibit-pacific-mackerel-b0wjZ76XPA5lC"></a></p>
 
 # Course overview
 
@@ -29,14 +33,21 @@ format: lshtm-mrcg-revealjs
 - Troubleshoot in the next session
 - Sessions will be recorded for playback
 
+# What the course is not
+
+- A statistics course
+- A complete demonstration of what R can do
+
 # LLMs
 
-::: {#fig-elephants layout-ncol=2}
+::: {#fig-elephants layout-ncol="2"}
+Try to resist their siren call...
 
-Try to resist their siren call... 
+<iframe src="https://giphy.com/embed/SnbwVKTj0vBQSK47us" width="327" height="480" style frameBorder="0" class="giphy-embed" allowFullScreen>
 
-<iframe src="https://giphy.com/embed/SnbwVKTj0vBQSK47us" width="327" height="480" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/glitch-ai-2023-SnbwVKTj0vBQSK47us"></a></p>
+</iframe>
 
+<p><a href="https://giphy.com/gifs/glitch-ai-2023-SnbwVKTj0vBQSK47us"></a></p>
 :::
 
 # Feedback option

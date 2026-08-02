@@ -19,9 +19,9 @@
 # load the iris dataset to your environment
 iris <- read_csv("data/iris.csv") 
 
-# ----------------------------------------------
-## Part 1 - Getting acquainted with your data! -
-# ----------------------------------------------
+# -------------------------------------------------
+## Part 1 - Getting acquainted with your data! ----
+# -------------------------------------------------
 
 # Click on the iris dataset in the environment, this will open the dataset 
 # in a new tab above the script where you can view the dataset
@@ -52,8 +52,7 @@ min(iris$Sepal.Length)               			   # Min value
 range(iris$Sepal.Length)         			       # Min and max 
 mean(iris$Sepal.Length, na.rm = TRUE)        # Mean 
 median(iris$Sepal.Length, na.rm = TRUE)      # Median 
-quantile(iris$Sepal.Length, probs = seq(0, 1, by = 0.05)) # Quantiles 
-
+quantile(iris$Sepal.Length, probs = seq(from = 0, to = 1, by = 0.05)) # Quantiles 
 
 # to summarise the dataset we use summary()
 summary(iris)
@@ -209,6 +208,7 @@ species_info <- tibble(
 # There are a few types of join we can do 
 # First look at the iris dataset and check how many columns it has:
 # ----------------------------------------
+
 
 
 # ----------------------------------------
