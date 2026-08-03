@@ -180,34 +180,3 @@ all(my_numbers_short == my_numbers_long)
 my_numbers_big <- my_numbers_long * 10
 
 print(my_numbers_big)
-
-# You can select a certain element of a vector using square brackets [ ]
-# To select the 3rd item you can do: 
-
-my_numbers_big[3]
-
-# To select more than one item use the same syntax as before
-# eg,
-
-my_numbers_big[c(3,5)]
-
-# The other major data type is 'Boolean'/logical which is TRUE/FALSE data (must be capitalised)
-# eg. 
-
-my_boolean_vector <- c(FALSE, FALSE, TRUE, FALSE, TRUE)
-
-str(my_boolean_vector)
-
-# You can also specify whether to pick a number with TRUE/FALSE 
-# (You will see why this is so useful later...)
-
-my_numbers_big[c(FALSE, FALSE, TRUE, FALSE, TRUE)]
-
-# or
-
-my_numbers_big[my_boolean_vector]
-
-# You can tell how long a vector is with `length()`
-# This tells you how many seperate items the vector contains 
-
-length(my_numbers_big)

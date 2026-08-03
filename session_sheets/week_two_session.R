@@ -2,8 +2,44 @@
 # Introduction to R - Week 2 --------
 # -----------------------------------
 
+# -----------------------------
+## Part 1 - Selecting items ---
+# -----------------------------
+
+# You can select a certain element of a vector using square brackets [ ]
+# To select the 3rd item you can do: 
+
+my_numbers_big[3]
+
+# To select more than one item use the same syntax as before
+# eg,
+
+my_numbers_big[c(3,5)]
+
+# The other major data type is 'Boolean'/logical which is TRUE/FALSE data (must be capitalised)
+# eg. 
+
+my_boolean_vector <- c(FALSE, FALSE, TRUE, FALSE, TRUE)
+
+str(my_boolean_vector)
+
+# You can also specify whether to pick a number with TRUE/FALSE 
+# (You will see why this is so useful later...)
+
+my_numbers_big[c(FALSE, FALSE, TRUE, FALSE, TRUE)]
+
+# or
+
+my_numbers_big[my_boolean_vector]
+
+# You can tell how long a vector is with `length()`
+# This tells you how many seperate items the vector contains 
+
+length(my_numbers_big)
+
+
 # ----------------------------------------------------
-## Part 1 - Matrices, dataframes and lists (oh my) ---
+## Part 2 - Matrices, dataframes and lists (oh my) ---
 # ----------------------------------------------------
 
 # Vectors are *one dimensional*, matrices are *two dimensional*
@@ -148,7 +184,7 @@ my_list <- list(item1 = c("A", "B", "C"),
 my_list$item1
 
 # ---------------------------------------
-## Part 2 - Intro to packages -----------
+## Part 3 - Intro to packages -----------
 # ---------------------------------------
 
 # There are a lot: https://cran.r-project.org/web/packages/available_packages_by_name.html
@@ -182,7 +218,7 @@ readr
 ?read_csv
 
 # ---------------------------------------
-## Part 3 - Getting data into R ---------
+## Part 4 - Getting data into R ---------
 # ---------------------------------------
 
 # Download the `iris.csv` file if you haven't already and save in a folder called `data`

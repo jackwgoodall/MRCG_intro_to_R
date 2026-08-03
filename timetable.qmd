@@ -8,7 +8,7 @@ page-layout: full
 
 | Session | Date | Venue | Scripts | Data | Recordings | Homework | Answers |
 |---------|---------|---------|---------|---------|---------|---------|---------|
-| Introduction | 3rd August | F001 | [download](session_sheets/week_one_session.R){download="week_one_session.R"} | \- | \- | [download](homework_questions/week_one_homework.R){download="week_one_homework.R"} | \- |
+| Introduction | 3rd August | F001 | [download](session_sheets/week_one_session.R){download="week_one_session.R"} | \- | [Video](https://lshtm.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=e21b206d-2ade-4c48-8937-b49b01161f26) | [download](homework_questions/week_one_homework.R){download="week_one_homework.R"} | \- |
 | Object types and getting data into R | 10th August | Rees | [download](session_sheets/week_two_session.R){download="week_two_session.R"} | [csv](data/iris.csv){download="iris.csv"} / [xlsx](data/iris.xlsx){download="iris.xlsx"} | \- | [download](homework_questions/week_two_homework.R){download="week_two_homework.R"} | \- |
 | Data cleaning and the tidyverse | 17th August | Rees | \- | \- | \- | \- | \- |
 | More tidyverse & basic statistical analysis | 24th August | Rees | \- | \- | \- | \- | \- |
