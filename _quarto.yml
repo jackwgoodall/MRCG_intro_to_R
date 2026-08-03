@@ -2,9 +2,9 @@ project:
   type: website
   
   resources:
-    - "1. session_sheets/*.R"
-    - "2. homework_questions/*.R"
-    - "3. homework_answers/*"
+    - "session_sheets/*.R"
+    - "homework_questions/*.R"
+    - "homework_answers/*"
     - "data/**"
 
 website:
@@ -12,9 +12,11 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: About
+        text: Start here
       - href: timetable.qmd
         text: Timetable
+      - href: course_outline.qmd
+        text: Course outline
       - href: resources.qmd
         text: Resources
       - href: stats_explained.qmd

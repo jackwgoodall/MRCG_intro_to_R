@@ -1,6 +1,103 @@
 ---
 title: ""
 format: lshtm-mrcg-html
+toc: true
+toc-title: "On this page"
 ---
 
-{{< include README.md >}}
+# Introduction to R
+
+## Following this course remotely
+
+Everything you need is on this website, and none of it expires. You can work through the course at your own pace, in your own time, and the materials stay here after the course ends.
+
+This page explains how.
+
+::: callout-tip
+## The short version
+
+Each week: watch the recording, download that session's script and follow along in RStudio, then do the homework and check it against the answers when they go up. Everything lives on the [Timetable](timetable.qmd) page.
+:::
+
+------------------------------------------------------------------------
+
+## Before you start
+
+You need two free pieces of software installed, in this order:
+
+1.  **R**: the language itself. [Download R](https://cran.r-project.org/)
+2.  **RStudio**: the window you actually work in. [Download RStudio](https://posit.co/downloads)
+
+If any of that is unfamiliar, there is a [setup video](https://lshtm.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=6aa307c8-f329-486c-8194-b4960091f4cf) walking through the whole process. It is worth doing this before the first session rather than during it.
+
+All the setup links are also kept on the [Resources](resources.qmd) page.
+
+------------------------------------------------------------------------
+
+## Each week, in four steps
+
+Everything below is on the [**Timetable**](timetable.qmd) page, laid out one row per session.
+
+### 1. Watch the recording
+
+Recordings appear the **day after** the live session date. The Timetable has a link in the *Recordings* column for each week.
+
+### 2. Download the session script
+
+The *Scripts* column gives you the `.R` file we work through together. Save it somewhere sensible and open it in RStudio.
+
+These scripts are written to be followed along with — they have gaps in them for you to fill in as you go. You will get much more out of the recording if you have the script open and are typing alongside it rather than just watching.
+
+### 3. Get the data, where a session needs it
+
+Some sessions use a dataset. Where they do, the *Data* column has the file. Put it in a folder called `data` inside your project folder, so the file paths in the scripts work without editing.
+
+### 4. Do the homework
+
+The *Homework* column has a set of exercises for that week. They are designed to take **no more than an hour**, and often much less.
+
+Answers go up in the *Answers* column each week — try the questions before looking. Getting stuck for a few minutes is where most of the learning happens.
+
+------------------------------------------------------------------------
+
+## Getting a certificate
+
+Anyone following the course remotely can earn a **course completion certificate**. To qualify you need to:
+
+- watch **all** of the session recordings, and
+- send me a **completed set of homework exercises**
+
+There is no deadline and no exam. Send them to [jack.goodall@lshtm.ac.uk](mailto:jack.goodall@lshtm.ac.uk) whenever you are done.
+
+------------------------------------------------------------------------
+
+## Where everything is
+
+| Page | What is on it |
+|------------------------------------|------------------------------------|
+| [**Timetable**](timetable.qmd) | The weekly table — scripts, data, recordings, homework and answers. Your main destination each week. |
+| [**Course outline**](course_outline.qmd) | Who the course is for, why R is worth learning, and the week-by-week plan for all ten sessions. |
+| [**Resources**](resources.qmd) | Setup links, the feedback form, and further reading for statistics and for making figures. |
+| [**Statistics refresher**](stats_explained.qmd) | A short explainer for the statistical ideas the course leans on. Optional, but there if you want it. |
+
+------------------------------------------------------------------------
+
+## Working at your own pace
+
+A few things worth knowing if you are not in the room.
+
+**You will not fall behind.** The material stays up permanently and the sessions build on each other in order, so a gap of a few weeks costs you nothing.
+
+**Type the code out rather than copying it.** It is slower, and that is rather the point — the errors you make while typing are the ones you learn to read.
+
+**Expect to get stuck.** Everyone does, constantly. Error messages are the normal condition of writing code, read them, fix them and try not to beat yourself up. 
+
+**Resist asking an LLM to write it for you.** It will produce something that works and teach you nothing. Using one to explain an error you are enountering can be useful if you really try and understand the answer rather than just accepting it.  LLMs make errors *all the time* and you need to understand enough to spot them. 
+
+------------------------------------------------------------------------
+
+## Tell me how this is going
+
+Following a course through recordings will suit some people much better than others, and I would like to make this course the most useful for the largest number of people. 
+
+If you have suggestions for how the remote version could work better — the pacing, the scripts, the homework, anything at all — there is an [anonymous feedback form](https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=oaKtcild7U6xlPh0V3cUnuSVmI9t539Mu7XmsjCdKGdUQ1k3WFdINTBZMFdUSTEwVkJaNFJIOFczNS4u). It genuinely does get read, and where I can make improvements I will. 

@@ -1,0 +1,12 @@
+---
+title: ""
+format: lshtm-mrcg-html
+toc: true
+toc-depth: 2
+---
+
+{{< include README.md >}}
+
+------------------------------------------------------------------------
+
+New here? The [how to follow this course](index.qmd) page explains how to work through the material remotely, and the [Timetable](timetable.qmd) has everything for each week.
