@@ -134,7 +134,7 @@ my_confused_number <- "5"
 my_confused_number + 3
 
 # Question 5 
-# Use a function to find out what type of object this is
+# Use a function to find out what type of object 'my_confused_number' is
 # ----------------------------------------
 
 
