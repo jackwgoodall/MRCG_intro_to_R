@@ -117,26 +117,113 @@ The output of step 4 is the **p-value**.
 
 A p-value is the probability of getting a result at least as extreme as yours, **assuming the null hypothesis is true**.
 
+That sentence is doing a lot of work, so here it is worked example with a coin.
+
+**Someone hands you a coin and claims it is biased.** You flip it 100 times and get **63 heads**.
+
+Is that suspicious? It is more than 50. But you would not expect *exactly* 50 either, even from a perfectly fair coin. So the question is not "did we get 50?", it is **"is 63 sufficiently more than 50 that we should doubt the fairness of this coin?"**
+
+One (slightly involved) way to answer this would be to build you own probability distribution:
+
+**Step 1: build the world where nothing is going on.** Take 1000 coins you *know* are fair. Flip each of them 100 times and write down how many heads each ones give
+
+**Step 2: plot what those fair coins did.**
+
+**Step 3: mark the extremes.** Take the 25 highest results and the 25 lowest. These results are the most extreme **5%** of results that a fair coin will give you. 
+
 ```{r}
 #| label: fig-pvalue
-#| fig-cap: "The p-value is the shaded area — the proportion of possible results at least as extreme as the one you got. Here the observed statistic is 2.1, with 20 degrees of freedom."
-x    <- seq(-4, 4, length.out = 600)
-df_t <- data.frame(x = x, y = dt(x, df = 20))
-obs  <- 2.1
+#| fig-height: 3.9
+#| fig-cap: "One thousand coins we know to be fair, each flipped 100 times. Every bar counts how many of those coins gave that many heads. The shaded bars at each end are the most extreme 5% of fair-coin results."
+set.seed(4)
 
-ggplot(df_t, aes(x, y)) +
-  geom_area(data = subset(df_t, x >=  obs), fill = teal, alpha = 0.75) +
-  geom_area(data = subset(df_t, x <= -obs), fill = teal, alpha = 0.75) +
-  geom_line(linewidth = 0.9, colour = "grey25") +
-  geom_vline(xintercept = c(-obs, obs), linetype = "dashed", colour = accent) +
-  annotate("text", x =  3.1, y = 0.06, label = "p/2", colour = teal, fontface = "bold") +
-  annotate("text", x = -3.1, y = 0.06, label = "p/2", colour = teal, fontface = "bold") +
-  annotate("text", x = 0, y = 0.2,
-           label = "what we'd expect\nif nothing were going on",
-           colour = "grey35", size = 3.4) +
-  labs(title = "A p-value is an area under a curve",
-       x = "some test statistic", y = "probability density")
+n_coins  <- 1000   # fair coins to test
+n_flips  <- 100    # flips each
+observed <- 63     # heads from the suspect coin
+
+# Flip 1000 coins we KNOW are fair, 100 times each, and count the heads.
+# sample() picks a 0 or a 1 for each flip; summing them counts the heads.
+fair_heads <- replicate(n_coins, sum(sample(c(0, 1), n_flips, replace = TRUE)))
+
+# The 25 highest and 25 lowest results mark off the most extreme 5%
+sorted_heads <- sort(fair_heads)
+lo_cut <- sorted_heads[25]
+hi_cut <- sorted_heads[n_coins - 24]
+n_shaded <- sum(fair_heads <= lo_cut | fair_heads >= hi_cut)
+
+# How often did a fair coin land at least as far from 50 as ours did?
+p_emp <- mean(abs(fair_heads - 50) >= abs(observed - 50))
+
+bars <- as.data.frame(table(heads = fair_heads), stringsAsFactors = FALSE)
+bars$heads <- as.numeric(bars$heads)
+bars$region <- ifelse(bars$heads <= lo_cut | bars$heads >= hi_cut,
+                      "the extreme ends", "the middle")
+
+ggplot(bars, aes(x = heads, y = Freq, fill = region)) +
+  geom_col(width = 0.92) +
+  geom_vline(xintercept = observed, colour = accent, linewidth = 1) +
+  annotate("text", x = observed, y = max(bars$Freq) * 0.85,
+           label = paste0("our coin\n", observed, " heads"),
+           colour = accent, size = 3.5, hjust = -0.15, lineheight = 0.95) +
+  scale_fill_manual(values = c("the extreme ends" = teal,
+                               "the middle" = "#c9d6d7")) +
+  labs(
+    title = "What 1000 fair coins actually do",
+    subtitle = sprintf(
+      "Fair coins gave %d heads or fewer, or %d or more, just %d times out of 1000 (%.1f%%)",
+      lo_cut, hi_cut, n_shaded, 100 * n_shaded / n_coins),
+    x = "heads in 100 flips", y = "number of fair coins", fill = NULL
+  ) +
+  theme(legend.position = "bottom")
 ```
+
+**Step 4: see where our coin lands.** Fair coins strayed below `r lo_cut` heads or above `r hi_cut` heads only about 5% of the time. Our coin gave 63. It is out past the shaded cutoff, in territory fair coins rarely reach.
+
+Being precise about it: of the 1000 fair coins, `r sum(abs(fair_heads - 50) >= abs(observed - 50))` were at least as far from 50 as ours was. That proportion  (**`r sprintf("%.3f", p_emp)`**) is the p-value.
+
+So you interpretation here could be "if my coin really was fair I would only see a result this extreme `r paste0(sprintf("%.1f", p_emp*100), "%")` of the time."
+
+Now of 1000 coin flips is only an approximation (although it is a good one) of this distribution - you really want a proper analytical distrubtion (the binomial distribition in this case).  See the call out box below if you want more details on this.
+
+::: {.callout-note collapse="true"}
+## The binomial distribution
+
+We flipped 1000 coins to find out what fair coins do. We did not have to.
+
+Counting how many times something either happens or does not, over a fixed number of tries, is common enough to have its own name: the **binomial distribution**. It needs only two numbers.
+
+- **How many tries.** Here, 100 flips.
+- **The chance of "yes" each try.** Here, 0.5, because the coin is fair.
+
+From those two alone you can work out the answer exactly, with no simulating. The average number of heads is 100 × 0.5 = **50**, and the typical wobble around that average is **5** heads.
+
+Josh Starmer explains this nicely: [here](https://www.google.com/search?q=statquest+binomial+distribution&rlz=1C5AJCO_enGB1203GB1204&oq=statquest+the+binomial+dis&gs_lcrp=EgZjaHJvbWUqCAgBEAAYFhgeMgYIABBFGDkyCAgBEAAYFhgeMg0IAhAAGIYDGIAEGIoFMgcIAxAAGO8FMgcIBBAAGO8FMgcIBRAAGO8F0gEINjkwMGowajeoAgCwAgA&sourceid=chrome&source=chrome.ob&ie=UTF-8#:~:text=The%20Binomial%20Distribution%20and%20Test,348.5k%2B%20views%20%C2%B7%207%20years%20ago)
+
+```{r}
+#| label: fig-binomial
+#| fig-height: 3.4
+#| fig-cap: "The bars are our 1000 simulated fair coins. The dots are what the binomial distribution says the answer is exactly. The simulation is a slightly lumpy version of the formula."
+exact <- data.frame(heads = 25:75)
+exact$expected <- n_coins * dbinom(exact$heads, size = n_flips, prob = 0.5)
+
+ggplot(bars, aes(x = heads, y = Freq)) +
+  geom_col(fill = "#c9d6d7", width = 0.92) +
+  geom_point(data = exact, aes(x = heads, y = expected),
+             colour = accent, size = 1.5) +
+  labs(title = "Simulation versus the exact answer",
+       x = "heads in 100 flips", y = "number of fair coins")
+```
+
+R will do the whole test for you in one line:
+
+`binom.test(63, 100)`
+
+which reports **p = 0.012** — the exact version of the `r sprintf("%.3f", p_emp)` our thousand coins estimated. Run the simulation again with different coins and you would get a slightly different estimate each time; the formula gives the same exact answer every time.
+
+The simulation and the formula answer the same question. The formula is exact and instant. The simulation is approximate, but you can *see* it.
+
+And this is not only about coins. The binomial turns up whenever you count how many out of a fixed number: how many patients recovered out of 40, how many bed nets were still in use after a year out of 200, how many cultures grew out of 96 wells. Coins are just the tidiest example.
+:::
 
 **It is not** the probability that your hypothesis is wrong. It is not the probability the result was chance. And it is definitely not a measure of how big or important the effect is; with a large enough sample, a trivially small difference earns a tiny p-value, and a really important result can hide within noisy data.
 
@@ -890,38 +977,47 @@ data.frame(
 
 By default a t-test asks "is there *any* difference". A one-sided test asks "is A specifically **less** than B" — and earns a smaller p-value for it, because it only counts extreme results in one direction.
 
+Back to the coin for a moment, because it makes the choice obvious. Asking "is this coin *biased at all*?" means counting fair coins that landed far from 50 in **either** direction. Asking "is this coin biased **towards heads**?" means counting only the ones that landed high.
+
 ```{r}
 #| label: fig-sided
-#| fig-cap: "Two-sided tests count extreme results in both tails; one-sided tests count only one. This is why a one-sided p-value is half the size."
-mk <- function(side) {
-  d <- data.frame(x = x, y = dt(x, 20))
-  keep <- if (side == "Two-sided") subset(d, x >= obs | x <= -obs) else subset(d, x <= -obs)
-  keep$panel <- side
-  # The two tails are disjoint. Without a grouping variable the shading geom
-  # joins them into a single polygon straight across the middle of the curve,
-  # so label which tail each point belongs to.
-  keep$tail  <- ifelse(keep$x < 0, "left", "right")
-  d$panel <- side
-  list(all = d, shade = keep)
-}
-a <- mk("Two-sided"); b <- mk("One-sided (less)")
+#| fig-height: 3.7
+#| fig-cap: "The very same 1000 fair coins from earlier. The only thing that changes is which results you are allowed to count against yours."
+# Reuses `fair_heads` and `observed` from the p-value figure above, so these are
+# literally the same 1000 fair coins
+gap <- abs(observed - 50)
 
-# Two-sided first: it is the default, and the one-sided panel reads as
-# "the same thing, but only counting one end"
-lev     <- c("Two-sided", "One-sided (less)")
-all_d   <- rbind(a$all,   b$all)
-shade_d <- rbind(a$shade, b$shade)
-all_d$panel   <- factor(all_d$panel,   levels = lev)
-shade_d$panel <- factor(shade_d$panel, levels = lev)
+lev <- c("Biased at all? Count both ends",
+         "Biased towards heads? Count one end")
 
-ggplot(all_d, aes(x, y)) +
-  geom_ribbon(data = shade_d, aes(ymin = 0, ymax = y, group = tail),
-              fill = teal, alpha = 0.75) +
-  geom_line(colour = "grey25", linewidth = 0.9) +
+sided <- rbind(
+  transform(bars, panel = lev[1], hit = abs(heads - 50) >= gap),
+  transform(bars, panel = lev[2], hit = heads >= observed)
+)
+sided$panel <- factor(sided$panel, levels = lev)
+sided$counted <- ifelse(sided$hit, "counted against us", "not counted")
+
+n_two <- sum(abs(fair_heads - 50) >= gap)
+n_one <- sum(fair_heads >= observed)
+n_all <- length(fair_heads)
+
+ggplot(sided, aes(x = heads, y = Freq, fill = counted)) +
+  geom_col(width = 0.92) +
+  geom_vline(xintercept = observed, colour = accent, linewidth = 0.8) +
   facet_wrap(~panel) +
-  labs(title = "Where the p-value comes from",
-       x = "test statistic", y = "density")
+  scale_fill_manual(values = c("counted against us" = teal,
+                               "not counted" = "#c9d6d7")) +
+  labs(
+    title = "One-sided or two-sided is a decision about what counts as extreme",
+    subtitle = sprintf(
+      "Counting both ends gives %d of %d coins (p = %.3f). Counting only the high end gives %d (p = %.3f).",
+      n_two, n_all, n_two / n_all, n_one, n_one / n_all),
+    x = "heads in 100 flips", y = "number of fair coins", fill = NULL
+  ) +
+  theme(legend.position = "bottom")
 ```
+
+The one-sided p-value is roughly half the two-sided one, because it stops counting one of the two ways of being surprising.
 
 Only ever use a one-sided test if you decided the direction **before** looking at the data. Choosing afterwards is how you talk yourself into a result.
 
