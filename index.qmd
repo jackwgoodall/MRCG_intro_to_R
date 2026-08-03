@@ -40,7 +40,7 @@ Everything below is on the [**Timetable**](timetable.qmd) page, laid out one row
 
 ### 1. Watch the recording
 
-Recordings appear the **day after** the live session date. The Timetable has a link in the *Recordings* column for each week.
+Recordings appear the day after the live session date. The Timetable has a link in the *Recordings* column for each week.
 
 ### 2. Download the session script
 
@@ -54,7 +54,7 @@ Some sessions use a dataset. Where they do, the *Data* column has the file. Put 
 
 ### 4. Do the homework
 
-The *Homework* column has a set of exercises for that week. They are designed to take **no more than an hour**, and often much less.
+The *Homework* column has a set of exercises for that week. They are designed to take no more than an hour, and often much less.
 
 Answers go up in the *Answers* column each week — try the questions before looking. Getting stuck for a few minutes is where most of the learning happens.
 
@@ -62,10 +62,10 @@ Answers go up in the *Answers* column each week — try the questions before loo
 
 ## Getting a certificate
 
-Anyone following the course remotely can earn a **course completion certificate**. To qualify you need to:
+Anyone following the course remotely can earn a course completion certificate. To qualify you need to:
 
-- watch **all** of the session recordings, and
-- send me a **completed set of homework exercises**
+- watch all of the session recordings, and
+- send me a completed set of homework exercises
 
 There is no deadline and no exam. Send them to [jack.goodall@lshtm.ac.uk](mailto:jack.goodall@lshtm.ac.uk) whenever you are done.
 
