@@ -35,21 +35,8 @@
 
 # ----------------------------------------
 
+
 # Question 5
-# Print only the "world" item using a number
-# ----------------------------------------
-
-
-# ----------------------------------------
-
-# Question 6
-# Print only the "world" item using TRUE/FALSE 
-# ----------------------------------------
-
-
-# ----------------------------------------
-
-# Question 7 
 # Make a vector with the numbers 1 to 10 called `one_to_ten`
 # Check what type of object this is
 # ----------------------------------------
@@ -57,14 +44,14 @@
 
 # ----------------------------------------
 
-# Question 8 
+# Question 6
 # Multiply each number in this vector by two 
 # ----------------------------------------
 
 
 # ----------------------------------------
 
-# Question 9
+# Question 7
 # Make a vector with the numbers 11 to 20 called `eleven_to_twenty`
 # Multiply the two vectors `one_to_ten` and eleven_to_twenty` together
 # ----------------------------------------
@@ -72,7 +59,7 @@
 
 # ----------------------------------------
 
-# Question 10
+# Question 8
 # Make a vector with just the numbers 1-3 called `one_to_three`
 # Try to multiply this vector with `one_to_ten`
 # Can you figure out what R has done here? 
