@@ -1,0 +1,29 @@
+---
+title: ""
+format: lshtm-mrcg-html
+toc: false
+---
+
+# Homework answers
+
+Worked answers to each week's exercises, with an explanation of why each one is right rather than just the code.
+
+A new set goes up after each session. They are also linked from the *Answers* column of the [Timetable](timetable.qmd).
+
+::: callout-warning
+## Have a proper go first
+
+These are much more useful after you have tried the questions and got stuck than before. Being stuck for ten minutes is doing more for you than reading the answer will.
+:::
+
+| Week | Session | Answers |
+|-----------------|--------------------------|-----------------------------|
+| 1 | Introduction | [Week one answers](homework_answers/week_one_answers.qmd) |
+| 2 | Object types and getting data into R | *to follow* |
+| 3 | Data cleaning and the tidyverse | *to follow* |
+| 4 | More tidyverse & basic statistical analysis | *to follow* |
+| 5 | Visualisation with ggplot | *to follow* |
+
+------------------------------------------------------------------------
+
+There is usually more than one correct way to write something in R. If your code reached the right answer by a different route, it is not wrong — and if you found a neater way than mine, do tell me.

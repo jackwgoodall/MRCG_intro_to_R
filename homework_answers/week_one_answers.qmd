@@ -1,0 +1,234 @@
+---
+title: ""
+format: lshtm-mrcg-html
+toc: true
+toc-depth: 2
+execute:
+  echo: true
+  warning: true
+  message: true
+---
+
+# Week one answers
+
+These are the answers to the [week one homework](../homework_questions/week_one_homework.R). Every code block below has actually been run, so what you see underneath it is exactly what R prints.
+
+There is very often more than one right way to do something in R. If your code produced the correct answer by a different route, it is not wrong.
+
+::: callout-tip
+## Read the explanations, not just the code
+
+The code is the smaller half of this page. The point of each question was the idea behind it — what an object is, what a vector is, what R does when things do not line up. Those are what the rest of the course is built on.
+:::
+
+------------------------------------------------------------------------
+
+## Question 1
+
+> Calculate 3 to the power of 5. Save the answer as an object `three_power_five`
+
+```{r}
+three_power_five <- 3^5
+
+three_power_five
+```
+
+The `^` symbol raises a number to a power, so `3^5` means 3 × 3 × 3 × 3 × 3.
+
+The `<-` arrow is the important part here. Without it, R works out the answer, prints it to the console, and then forgets it. With it, the answer is stored under a name and appears in your Environment pane, ready to use again.
+
+Writing the object's name on its own line, as in the second line above, tells R to print it. `print(three_power_five)` does exactly the same thing — the shorter version is just habit.
+
+------------------------------------------------------------------------
+
+## Question 2
+
+> Calculate the square root of your answer to Question 1. Use the object you made to do this
+
+```{r}
+sqrt(three_power_five)
+```
+
+`sqrt()` is a **function**. The value you want it to work on goes inside the brackets.
+
+The point of this question was to use the object rather than retyping 243. That matters more than it looks: if you later decide Question 1 should have been `3^6`, you change it in one place and everything downstream follows. Retyping numbers by hand is how analyses quietly drift out of step with themselves.
+
+------------------------------------------------------------------------
+
+## Question 3
+
+> What type of object is `three_power_five`?
+
+```{r}
+str(three_power_five)
+```
+
+`str()` reports the **str**ucture of an object. Here it tells us `num` — a number.
+
+More precisely R calls this a *double*, meaning a number that is allowed to have a decimal part, even when it does not happen to have one. R treats almost every number this way unless you specifically ask otherwise.
+
+Object type matters far more than it might seem. It decides what R will let you do. A number can be multiplied; a character cannot, even if it looks like a number. `str()` is the quickest way to find out what you are actually holding, and it will save you a lot of confusion later.
+
+------------------------------------------------------------------------
+
+## Question 4
+
+> Make a character vector which is two items long. The first item should be `"hello"` and the second `"world"`. Call it `hello_world_vector`
+
+```{r}
+hello_world_vector <- c("hello", "world")
+
+hello_world_vector
+```
+
+`c()` combines things into a **vector**. Think of it as "combine". It is probably the function you will type most often in R.
+
+The double quotes are what make these characters rather than object names. Without quotes, R would go looking for objects called `hello` and `world`, fail to find them, and give you an error.
+
+Notice that R prints `[1]` at the start of the line. That is not part of your data — it is R telling you that the first item shown is item number 1. With longer vectors that wrap across several lines, those markers tell you where you are.
+
+------------------------------------------------------------------------
+
+## Question 5
+
+> Print only the `"world"` item using a number
+
+```{r}
+hello_world_vector[2]
+```
+
+Square brackets pull items out of a vector by **position**. `"world"` is the second item, so `[2]` retrieves it.
+
+R counts from 1. Many other programming languages count from 0, so if you have met one of those before, this is a common source of off-by-one confusion.
+
+------------------------------------------------------------------------
+
+## Question 6
+
+> Print only the `"world"` item using TRUE/FALSE
+
+```{r}
+hello_world_vector[c(FALSE, TRUE)]
+```
+
+This is the same square brackets, but fed a different kind of instruction. Instead of saying *which position*, you supply one `TRUE` or `FALSE` per item, and R keeps the ones marked `TRUE`.
+
+This looks like a fussy way to get at "world" — and for this example it is. But it becomes one of the most useful things in R. Once you can write a condition that produces `TRUE` and `FALSE` for every row of a dataset, you can use it to select exactly the rows you want:
+
+```{r}
+my_numbers <- c(4, 8, 15, 16, 23, 42)
+
+my_numbers > 15          # a TRUE/FALSE for every item
+
+my_numbers[my_numbers > 15]   # keep only the TRUEs
+```
+
+That is filtering, and it is the same idea you will meet again in week 3 wearing a tidyverse costume.
+
+::: callout-note
+## Note the difference between `=` and `==`
+
+A single `=` assigns a value. A double `==` asks a question: *is this equal to that?* and answers `TRUE` or `FALSE`.
+
+Mixing them up is one of the most common early mistakes, and the error messages it produces are rarely helpful about it.
+:::
+
+------------------------------------------------------------------------
+
+## Question 7
+
+> Make a vector with the numbers 1 to 10 called `one_to_ten`. Check what type of object this is
+
+```{r}
+one_to_ten <- 1:10
+
+one_to_ten
+
+str(one_to_ten)
+```
+
+The colon `:` builds a run of consecutive whole numbers. `c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)` gives exactly the same result with far more typing.
+
+`str()` reports `int` this time, for *integer* — a whole number. The colon operator produces integers, whereas typing `3^5` in Question 1 gave a `num`. In everyday use the difference rarely matters, since R converts between them as needed.
+
+------------------------------------------------------------------------
+
+## Question 8
+
+> Multiply each number in this vector by two
+
+```{r}
+one_to_ten * 2
+```
+
+This is one of the things that makes R pleasant for data work. You do not have to write a loop, or repeat yourself ten times. You say "multiply this by two" and R applies it to every element.
+
+This behaviour is called **vectorisation**, and nearly everything in R works this way. Whether your vector has 10 numbers or 10 million, the code is identical.
+
+Note that `one_to_ten` itself has not changed. R made a new answer and printed it. To keep it you would need to assign it: `doubled <- one_to_ten * 2`.
+
+------------------------------------------------------------------------
+
+## Question 9
+
+> Make a vector with the numbers 11 to 20 called `eleven_to_twenty`. Multiply the two vectors together
+
+```{r}
+eleven_to_twenty <- 11:20
+
+one_to_ten * eleven_to_twenty
+```
+
+When two vectors of the **same length** are multiplied, R works element by element: the first item of one by the first item of the other, the second by the second, and so on.
+
+So the first answer is 1 × 11 = 11, the second is 2 × 12 = 24, and the last is 10 × 20 = 200.
+
+This is not how multiplying vectors works in mathematics, where you would be thinking about dot products or matrix multiplication. R's default is the simple element-by-element version, which is almost always what you want with data.
+
+------------------------------------------------------------------------
+
+## Question 10
+
+> Make a vector with just the numbers 1-3 called `one_to_three`. Try to multiply this with `one_to_ten`. Can you figure out what R has done here?
+
+```{r}
+one_to_three <- 1:3
+
+one_to_ten * one_to_three
+```
+
+**R has reused the short vector to make up the difference.** This is called **recycling**.
+
+Ten numbers needed a partner each, but only three were supplied, so R went back to the beginning of the short vector and kept going:
+
+| `one_to_ten`            | 1   | 2   | 3   | 4     | 5     | 6     | 7     | 8     | 9     | 10    |
+|----------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+| `one_to_three` recycled | 1   | 2   | 3   | **1** | **2** | **3** | **1** | **2** | **3** | **1** |
+| result                  | 1   | 4   | 9   | 4     | 10    | 18    | 7     | 16    | 27    | 10    |
+
+The warning appears because 10 does not divide evenly by 3, so the recycling ran out part-way through and R finished on an incomplete pass. That untidy ending is what it is complaining about.
+
+::: callout-important
+## This is the one to remember from this week
+
+Recycling is genuinely useful. `one_to_ten * 2` in Question 8 worked precisely because R recycled that single `2` across all ten items — you have been relying on it already without noticing.
+
+But it is also a real hazard. Notice that R **gave you an answer anyway**. It warned, but it did not stop. If two columns of your data are accidentally different lengths, R may well recycle one of them and hand you a full set of numbers that are quietly, invisibly wrong.
+
+And if the lengths happen to divide evenly — say 10 and 5 — you get **no warning at all**.
+
+So: read warnings. A warning is not an error, and R will carry on regardless, but it is R telling you something did not go the way you probably intended.
+:::
+
+------------------------------------------------------------------------
+
+## If something did not work
+
+A few things worth checking when code will not run:
+
+- **Spelling and capitalisation.** R thinks `one_to_ten` and `One_to_ten` are two entirely different things.
+- **Unclosed brackets.** If the console shows a `+` instead of a `>`, R is still waiting for you to finish. Press <kbd>Esc</kbd> to escape and start again.
+- **Missing quotes.** `"hello"` is a piece of text; `hello` is the name of an object R will go looking for.
+- **Assignment.** If an object is missing from your Environment pane, check you used `<-` rather than only printing the answer.
+
+Still stuck? Bring it to the start of the next session — the first ten minutes are set aside for exactly this.
