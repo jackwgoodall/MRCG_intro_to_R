@@ -16,14 +16,14 @@ website:
         text: Start here
       - href: timetable.qmd
         text: Timetable
-      - href: answers.qmd
-        text: Answers
       - href: course_outline.qmd
         text: Course outline
       - href: resources.qmd
         text: Resources
       - href: stats_explained.qmd
         text: Statistics Refresher
+      - href: answers.qmd
+        text: Homework Answers
 
 format:
   lshtm-mrcg-html:
