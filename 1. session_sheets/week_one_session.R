@@ -29,13 +29,12 @@
 # Notice how some have empty brackets after them? 
 # These are functions and the number you want to evaluate goes into the function eg: 
 
-sqrt(100)
+sqrt(500)
 
 # Question 1: 
 ##  Find the square root of 5 times 3
 # ----------------------------------------
-
-
+sqrt(5*3)
 # ----------------------------------------
 
 # All the output that is currently going into the Console is not being saved. 
@@ -43,6 +42,7 @@ sqrt(100)
 # eg 
 
 my_sum <- 4 + 5 / 3
+
 
 # Either running this or printing it will do the same thing:: 
 
@@ -53,8 +53,8 @@ print(my_sum)
 ## Question 2 
 # Save the output of your sum from question 1 as "my_next_sum" and output this to the console
 # ----------------------------------------
-my_next_sum <- 
-
+my_next_sum <- sqrt(5*3)
+print(my_next_sum)
 # ----------------------------------------
 
 # R doesn't really care about spaces. If you can put a single space
@@ -82,7 +82,7 @@ print(space)
 my_gappy_sum <- 5 + 4
 print(my_gappy_sum)
 
-my gappy sum <- 5 + 4
+my.gappy.sum <- 5 + 4
 print(my gappy sum)
 
 # (Do you spot the warning that R is trying to give you?)
@@ -106,7 +106,7 @@ rm(no_gaps)
 # (Without just looking at the environment)
 # ----------------------------------------
 
-
+ls()
 # ----------------------------------------
 
 # The "type" of object is important as it determines what R will do (or not do with it)
@@ -121,7 +121,7 @@ print("hello world")
 # Question 4
 # Save the phrase "hello world" as an object called `my_phrase`
 # ----------------------------------------
-my_phrase <- 
+my_phrase <- "hello world"
 
 # ----------------------------------------
 
@@ -129,7 +129,7 @@ my_phrase <-
 # which will prevent you doing any "maths" with it
 # eg.
 
-my_confused_number <- "5"
+my_confused_number <- 5
 
 my_confused_number + 3
 
