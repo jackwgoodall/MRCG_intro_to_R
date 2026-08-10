@@ -7,6 +7,10 @@
 # -----------------------------
 
 # You can select a certain element of a vector using square brackets [ ]
+# You made this last week - if you have reset your session you can recreate it 
+# by "uncommenting" this line:
+# my_numbers_big <- c(10, 20, 30, 40, 50)
+
 # To select the 3rd item you can do: 
 
 my_numbers_big[3]
@@ -16,7 +20,7 @@ my_numbers_big[3]
 
 my_numbers_big[c(3,5)]
 
-# The other major data type is 'Boolean'/logical which is TRUE/FALSE data (must be capitalised)
+# Another major data type is 'Boolean'/logical which is TRUE/FALSE data (must be capitalised)
 # eg. 
 
 my_boolean_vector <- c(FALSE, FALSE, TRUE, FALSE, TRUE)
@@ -33,7 +37,7 @@ my_numbers_big[c(FALSE, FALSE, TRUE, FALSE, TRUE)]
 my_numbers_big[my_boolean_vector]
 
 # You can tell how long a vector is with `length()`
-# This tells you how many seperate items the vector contains 
+# This tells you how many separate items the vector contains 
 
 length(my_numbers_big)
 
@@ -116,7 +120,7 @@ rm(clear_matrix)
 
 # ----------------------------------------
 
-# Dataframes are fancy matrices 
+# Dataframes are fancy matrices - they can hold different *types* of data
 # You can make them fresh like this 
 # data.frame(col1 = ..., col2 = ....) 
 # eg 
@@ -128,7 +132,7 @@ my_data_frame <- data.frame(col1 = c("A", "B", "C", "D", "E", "F"),
 
 data_frame_from_matrix <- as.data.frame(my_matrix) 
 
-data_frame_from_matrix # note this doesn't have any column names as matrices never do.... 
+data_frame_from_matrix # note this doesn't have any column names as matrices don't have to.... 
 
 # You can see the column names with colnames()
 
