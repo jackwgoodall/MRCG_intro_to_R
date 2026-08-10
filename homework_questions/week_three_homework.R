@@ -2,6 +2,40 @@
 # Homework - Week 3 --------
 # -----------------------------------
 
+# Question 8
+# Using the `iris` dataframe from the lesson, select only the `Sepal.Width` column
+# (There are several ways you can do this - by preference is with the $ operator
+# but the choice is yours)
+# ----------------------------------------
+
+
+# ----------------------------------------
+
+# Question 9
+# Expand this to make a vector of TRUE/FALSE for when `Sepal.Width` is greater than 3
+# ----------------------------------------
+
+# Question 10
+# Now use this to select only the rows where the `Sepal.Width` is greater than 3
+# ----------------------------------------
+
+
+# ----------------------------------------
+
+# Question 11
+# A tricky one to end with! 
+# An & sign can be used to return TRUE only when *both* conditions are met 
+# Eg (4 > 3) & (4 > 5) will return FALSE as only the first condition is TRUE
+# Use this to select only the rows where `Sepal.Width` is greater than 3 AND `Petal.Width` 
+# is less than 1.5
+# ----------------------------------------
+
+
+
+# ----------------------------------------
+
+
+
 # For the homework you will be working with the 'births' datset from the Epi Package
 # For each answer include both the code and final answer
 

@@ -48,7 +48,7 @@ bigger_matrix <-
 # ----------------------------------------
 
 # Question 6
-# Make a new vector called `col4` with the numbers 10-12
+# Make a new vector called `col4` with the letters A, B and C
 # ----------------------------------------
 
 
@@ -64,34 +64,25 @@ bigger_matrix <-
 # ----------------------------------------
 
 # Question 8
-# Using the `iris` dataframe from the lesson, select only the `Sepal.Width` column
-# (There are several ways you can do this - by preference is with the $ operator
-# but the choice is yours)
+# Use str() and the dollar operator ($) to find what data type
+# col3 is in `bigger_df`
 # ----------------------------------------
 
 
 # ----------------------------------------
 
 # Question 9
-# Expand this to make a vector of TRUE/FALSE for when `Sepal.Width` is greater than 3
+# Replace the "B" from `bigger_df` with "Z"
+# Save this as `bigger_df_two`
+# ----------------------------------------
+
+
 # ----------------------------------------
 
 # Question 10
-# Now use this to select only the rows where the `Sepal.Width` is greater than 3
+# Try to multiple the whole data frame by three 
+# Read the error output and write why this doesn't work
 # ----------------------------------------
 
-
+#
 # ----------------------------------------
-
-# Question 11
-# A tricky one to end with! 
-# An & sign can be used to return TRUE only when *both* conditions are met 
-# Eg (4 > 3) & (4 > 5) will return FALSE as only the first condition is TRUE
-# Use this to select only the rows where `Sepal.Width` is greater than 3 AND `Petal.Width` 
-# is less than 1.5
-# ----------------------------------------
-
-
-
-# ----------------------------------------
-
