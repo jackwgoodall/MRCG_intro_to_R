@@ -2,6 +2,104 @@
 # Introduction to R - Week 3 --------
 # -----------------------------------
 
+# ---------------------------------------
+## Part 3 - Intro to packages -----------
+# ---------------------------------------
+
+# There are a lot: https://cran.r-project.org/web/packages/available_packages_by_name.html
+
+# Download a package (note the quotes)
+
+installed.packages("readr") # You only need to do this once
+
+# Then load it 
+
+library(readr) # You need to do this every time you start R
+
+# putting a question mark first will tell you what the package is 
+# in the help -----> 
+
+?readr 
+
+# `vignette()` will give you some examples about how this is used
+# (note the quotation marks)
+vignette("readr")
+
+# Putting two colons after it will bring up a list of all of the functions 
+# that package contains (useful if you forget the exact name of the function
+# you need!)
+# Type two colons after this:
+
+readr
+
+# Typing a question mark before the function tells you how to use it
+
+?read_csv
+
+# ---------------------------------------
+## Part 4 - Getting data into R ---------
+# ---------------------------------------
+
+# Download the `iris.csv` file if you haven't already and save in a folder called `data`
+
+# Using the inbuilt load function (which uses readr) ----> 
+
+# You can copy and paste the output here: 
+
+iris <- read_csv(file = "data/iris.csv") # this will only work if you have save this is a folder called `data`.  
+# getwd() tells you where your project is located (if this isn't working you might not
+# be where you think you are!)
+
+# Click on the iris.xlsx to see how this can be done the same with a excel 
+# file (just with a different packahge)
+
+# We can look at the first few rows using `head()`
+
+head(iris)
+
+# Or the bottom few rows with `tail()`
+
+tail(iris)
+
+# We can change how many we see by changing `head(df, n = x)`
+
+head(iris, n = 10)
+
+# Question 6 
+# Can you select the `Sepal.Length` column three other ways? 
+# ----------------------------------------
+# 1st way
+
+
+# 2nd way
+
+
+# 3rd way
+
+
+# ----------------------------------------
+
+# If we ask R whether a condition is met it will reply with TRUE/FALSE
+# The most useful here are `==` (exactly equal to), > (greater than) or < (less than)
+# eg 
+
+4 < 5
+
+# We can use this to make a vector of TRUEs and FALSEs 
+# eg 
+
+iris$Species == "versicolor"
+
+# We see here that the middle chunk are all "veriscolor" (look at the dataframe in the viewer
+# to confirm this)
+
+# We can use this to subset our dataframe to only the "versicolor" species
+# eg 
+
+iris[(iris$Species == "versicolor"), ]    # Note I've wrapped the `iris$Species == "versicolor"` in brackets 
+# These aren't actually needed here - I've used them to make the
+# code easier to read
+
 # Using the dataset iris, that we met last week
 # We are going to cover how to:
 # 1. explore and summarise this data
