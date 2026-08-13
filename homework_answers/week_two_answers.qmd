@@ -1,0 +1,192 @@
+---
+title: ""
+format: lshtm-mrcg-html
+toc: true
+toc-depth: 2
+execute:
+  echo: true
+  warning: true
+  message: true
+  error: true
+---
+
+# Week two answers
+
+These are the answers to the [week two homework](../homework_questions/week_two_homework.R).
+
+::: callout-tip
+## Questions from last week
+
+If you did the first version of the homework questions (no longer available for download) then some of these questions will be repetition. Sorry about that - but repeating things in R is no bad thing!
+:::
+
+------------------------------------------------------------------------
+
+## Question 1
+
+> The character vector c("hello", "world") is provided
+>
+> Print only the `"world"` item using a number
+
+```{r}
+hello_world_vector <- c("hello", "world")
+hello_world_vector[2]
+```
+
+Square brackets pull items out of a vector by **position**. `"world"` is the second item, so `[2]` retrieves it.
+
+R counts from 1. Many other programming languages count from 0, so if you have met one of those before, this is a common source of off-by-one confusion.
+
+------------------------------------------------------------------------
+
+## Question 2
+
+> Print only the `"world"` item using TRUE/FALSE
+
+```{r}
+hello_world_vector[c(FALSE, TRUE)]
+```
+
+This is the same square brackets, but fed a different kind of instruction. Instead of saying *which position*, you supply one `TRUE` or `FALSE` per item, and R keeps the ones marked `TRUE`.
+
+This looks like a fiddly way to get at "world" — and for this example it is. But it becomes one of the most useful things in R. Once you can write a condition that produces `TRUE` and `FALSE` for every row of a dataset, you can use it to select exactly the rows you want:
+
+```{r}
+my_numbers <- c(4, 8, 15, 16, 23, 42)
+
+my_numbers > 15          # a TRUE/FALSE for every item
+
+my_numbers[my_numbers > 15]   # keep only the TRUEs
+```
+
+------------------------------------------------------------------------
+
+## Question 3
+
+> Make a matrix with the numbers 1-9 that three rows and three columns
+>
+> Call it `square_matrix`
+
+```{r}
+square_matrix <- matrix(1:9, ncol = 3)
+
+square_matrix
+```
+
+You can see here how `nrow` or `ncol` would have come to exactly the same thing as this is square. This of course is not true with matrices with differing numbers of rows and columns. Experiment with some different combinations to make sure you understand what R is doing.
+
+------------------------------------------------------------------------
+
+## Question 4
+
+> Multiple everything in the matrix by 10 and save it as `bigger_matrix`
+
+```{r}
+bigger_matrix <- square_matrix * 10
+```
+
+Since everything in this matrix is numeric (matrices must contain all of the same datatype) R has no problem multiplying everything by `10`. R will also happily multiply together two matrices which have the same dimensions. Anything else will likely give you an error.
+
+::: callout-important
+## Matrix multiplication
+
+R here is *not* doing "matrix multiplication". You might have learnt matrix multiplication before, and if so you likely remember it being quite complicated!
+
+There is a good explanation here if helpful: https://www.mathsisfun.com/algebra/matrix-multiplying.html
+
+If you *do* need to do this then R uses the syntax %\*% to do 'proper' matrix. However, unless you have a specific reason to need matrix multiplication, R is probably behaving here how you would expect it to.
+:::
+
+------------------------------------------------------------------------
+
+## Question 5
+
+> Turn this matrix into a dataframe called `bigger_df`
+
+```{r}
+bigger_df <- as.data.frame(bigger_matrix)
+```
+
+We need `as.data.frame()` rather than the plain `data.frame()` as we are taking something that already exists and getting R to treat it *as* a dataframe
+
+------------------------------------------------------------------------
+
+## Question 6
+
+> Give the dataframe the column names `col1`, `col2` and `col3`
+
+```{r}
+colnames(bigger_df) <- c("col1", "col2", "col3")
+```
+
+Remember, anything we select we can change.
+
+------------------------------------------------------------------------
+
+## Question 7
+
+> Make a new vector called `col4` with the letters A, B and C
+
+```{r}
+col4 <- c("A", "B", "C")
+```
+
+Remember the quotation marks around the letters. Without these R will go looking for objects called `A`, `B` and `C` in your environment, and of course will be unable to find them
+
+------------------------------------------------------------------------
+
+## Question 8
+
+> Use cbind to add `col4` onto the end `bigger_df` and save the result as `even_bigger_df`
+>
+> Check that the col names go col1-col4, it would be easy to make them col4 then col1-col3 - can you see how?
+
+```{r}
+even_bigger_df <- cbind(bigger_df, col4)
+
+colnames(even_bigger_df)
+```
+
+Writing `cbind(bigger_df, col4)` and `cbind(col4, bigger_df)` looks like it should make the same thing, however R (quite helpfully) respects the order of the the elements you provide when making the combined dataframe.
+
+------------------------------------------------------------------------
+
+## Question 9
+
+> Use str() and the dollar operator (\$) to find what data type col3 is in `bigger_df`
+
+```{r}
+str(bigger_df$col3)
+```
+
+This is `numeric` type data as you would expect. If you don't use the `$` then R will tell you the structure of all of your columns one-by-one (which might be what you want, but can be quite a long output in a big dataframe)
+
+------------------------------------------------------------------------
+
+## Question 10
+
+> Replace the "B" from `even_bigger_df` with "Z" Save this as `even_bigger_df_two`
+
+```{r}
+even_bigger_df_two <- even_bigger_df
+
+even_bigger_df_two[2,4] <- "Z"
+```
+
+The easiest way to do this is in *two stages*. Make a new dataframe and then redefine the "B" as a "Z".
+
+You might have tried something like: `even_bigger_df_two <- even_bigger_df[2,4] <- "Z"`
+
+And you would have found that this just makes `even_bigger_df_two` a single "Z"...
+
+------------------------------------------------------------------------
+
+## Question 11
+
+> Try to multiple the whole data frame by three Read the error output and write why this doesn't work
+
+```{r}
+even_bigger_df_two * 3
+```
+
+We now have characters in the mix which we can't do maths with. If you try this with the earlier dataframe (`bigger_df`) this will work fine as this only contains numbers.

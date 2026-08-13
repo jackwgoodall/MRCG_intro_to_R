@@ -33,28 +33,28 @@ bigger_matrix <-
   
 # ----------------------------------------
 
-# Question 3
+# Question 5
 # Turn this matrix into a dataframe called `bigger_df`
 # ----------------------------------------
 
 
 # ----------------------------------------
 
-# Question 5
+# Question 6
 # Give the dataframe the column names `col1`, `col2` and `col3`
 # ----------------------------------------
 
 
 # ----------------------------------------
 
-# Question 6
+# Question 7
 # Make a new vector called `col4` with the letters A, B and C
 # ----------------------------------------
 
 
 # ----------------------------------------
 
-# Question 7
+# Question 8
 # Use cbind to add `col4` onto the end `bigger_df` and save the result as `even_bigger_df`
 # (Check that the col names go col1-col4, it would be easy to make them col4 then col1-col3 - 
 # can you see how?)
@@ -63,7 +63,7 @@ bigger_matrix <-
 
 # ----------------------------------------
 
-# Question 8
+# Question 9
 # Use str() and the dollar operator ($) to find what data type
 # col3 is in `bigger_df`
 # ----------------------------------------
@@ -71,15 +71,15 @@ bigger_matrix <-
 
 # ----------------------------------------
 
-# Question 9
-# Replace the "B" from `bigger_df` with "Z"
-# Save this as `bigger_df_two`
-# ----------------------------------------
-
-
-# ----------------------------------------
-
 # Question 10
+# Replace the "B" from `even_bigger_df` with "Z"
+# Save this as `even_bigger_df_two`
+# ----------------------------------------
+
+
+# ----------------------------------------
+
+# Question 11
 # Try to multiple the whole data frame by three 
 # Read the error output and write why this doesn't work
 # ----------------------------------------

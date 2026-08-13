@@ -30,11 +30,13 @@ The confirmed plan for the upcoming two weeks will be show on the [Timetable pag
 
 - Introduction to objects and vectors
 
-### Week 2: How to get data into R
+### Week 2: More complex object types
 
 - More objects: matrices, dataframes and lists
 
 - Selecting and changing items in base R
+
+### Week 3: Packages and the tidyverse
 
 - An into to packages
 
@@ -42,11 +44,9 @@ The confirmed plan for the upcoming two weeks will be show on the [Timetable pag
 
   - Importing for excel/csv
 
-### Week 3: Datacleaning and the tidyverse
-
 - Basic tools for data cleaning
 
-  - Data summarise
+  - Data summarising
 
   - Basic visualisations for outliers and data structure
 

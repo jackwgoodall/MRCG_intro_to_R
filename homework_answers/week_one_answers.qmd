@@ -93,10 +93,9 @@ Notice that R prints `[1]` at the start of the line. That is not part of your da
 
 ::: callout-important
 # This is not included in recent versions of the week one homework
-This is from an earlier version of this homework and has been retained
-in case anyone is still working through that. 
-If you have recently downloaded this you can ignore this
-::: 
+
+This is from an earlier version of this homework and has been retained in case anyone is still working through that. If you have recently downloaded this you can ignore this
+:::
 
 > Print only the `"world"` item using a number
 
@@ -114,8 +113,9 @@ R counts from 1. Many other programming languages count from 0, so if you have m
 
 ::: callout-important
 # This is also not included in recent versions of the week one homework
+
 See above
-::: 
+:::
 
 > Print only the `"world"` item using TRUE/FALSE
 
@@ -214,7 +214,7 @@ one_to_ten * one_to_three
 Ten numbers needed a partner each, but only three were supplied, so R went back to the beginning of the short vector and kept going:
 
 | `one_to_ten`            | 1   | 2   | 3   | 4     | 5     | 6     | 7     | 8     | 9     | 10    |
-|----------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
 | `one_to_three` recycled | 1   | 2   | 3   | **1** | **2** | **3** | **1** | **2** | **3** | **1** |
 | result                  | 1   | 4   | 9   | 4     | 10    | 18    | 7     | 16    | 27    | 10    |
 
