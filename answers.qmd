@@ -17,7 +17,7 @@ These are much more useful after you have tried the questions and got stuck than
 :::
 
 | Week | Session | Answers |
-|------------------|--------------------------|-----------------------------|
+|----|----|----|
 | 1 | Introduction | [Week one answers](homework_answers/week_one_answers.qmd) |
 | 2 | More complex object types | [Week two answers](homework_answers/week_two_answers.qmd) |
 | 3 | Data cleaning and the tidyverse | *to follow* |

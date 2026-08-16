@@ -2,6 +2,102 @@
 # Introduction to R - Week 4 --------
 # -----------------------------------
 
+# --------------------------------------------
+## Part 3 - Pivoting data --------------------
+# --------------------------------------------
+
+# data set will either be in "long" or "wide" format, depending on how the original
+# data collection form has been structured
+# wide format is when each variable has it's own column (like in our iris_df data set)
+# we can use the command pivot_longer() to switch to long format
+
+iris_df_id <- iris_df |> 
+  mutate(flower_id = row_number(), .before = Sepal.Length) # adding a unique id for each observation
+
+iris_df_long <- iris_df_id |> 
+  pivot_longer(
+    cols = Sepal.Length:Petal.Width,  # Columns to gather
+    names_to = "Flower_part",         # New column name for measurement types
+    values_to = "Value"               # New column name for the numerical values
+  )
+# in the new "long" format dataset, the same data is there, however each observation
+# now has 4 rows as the variables (sepal length/width and petal length/width) 
+# are shown under a single heading/column "Flower_part"
+# we will see in the ggplot session why you might want to order data like this
+
+iris_df_wide <- iris_df_long |> 
+  pivot_wider(
+    names_from = Flower_part,         # Where column headers come from
+    values_from = Value               # Where cell numbers come from
+  )
+# Generally pivot_longer() arranges a data set with more rows and fewer columns,
+# pivot_wider() arranges data sets to fewer rows and more columns
+
+
+# ---------------------------------------- 
+## Part 4 - joint dataframes together ----
+# ----------------------------------------
+
+# For our research studies we often have multiple data sets that need combining
+# To join data from 2 or more sources you need a matching key across all data sets
+# This may be the unique participant id or a date etc
+
+species_info <- tibble(
+  Species = c("setosa", "virginica", "sibirica"),
+  Common_Name = c("Bristle-pointed iris_df", "Virginia iris_df", "Siberian iris_df"),
+  Native_Climate = c("Subarctic", "Subtropical", "Subarctic")
+)
+
+# There are a few types of join we can do 
+# First look at the iris_df dataset and check how many columns it has:
+# ----------------------------------------
+
+
+
+# ----------------------------------------
+
+## LEFT JOIN 
+# This takes dataset (A) and joins dataset (B) onto it by any of a specified column(s)
+# It retains all of dataset (A) and only those of (B) which have a match in (A)
+# Try this and check the number of rows and the count of species
+# ----------------------------------------
+iris_df_left_joined <- iris_df |>
+  left_join(species_info, by = "Species")
+
+
+# ----------------------------------------
+
+## RIGHT JOIN 
+# This does the same but now all of (B) is retained
+# Try this and check the number of rows and count of species
+# ----------------------------------------
+iris_df_right_joined <- iris_df |>
+  right_join(species_info, by = "Species")
+
+table(iris_df_right_joined$Species)
+# ----------------------------------------
+
+## INNER JOIN
+# This joins only when the joining column features in *both* dataframes
+# Try this and check the number of rows and count of species
+# ----------------------------------------
+iris_df_inner_joined <- iris_df |>
+  inner_join(species_info, by = "Species")
+
+table(iris_df_inner_joined$Species)
+# ----------------------------------------
+
+## FULL JOIN 
+# This joins where it is able but retains all columns from both datasets 
+# Try this and check the number of rows and count of species
+# ----------------------------------------
+iris_df_full_joined <- iris_df |>
+  full_join(species_info, by = "Species")
+
+table(iris_df_full_joined$Species)
+# ----------------------------------------
+
+
 # ----------------------------------------
 ## Part 1 - basis statistical analysis ---
 # ----------------------------------------
