@@ -157,71 +157,10 @@ boxplot(iris_df[, c('Petal.Width', 'Petal.Length')])
 # a transparent way to correct errors such as this. eg. we could write:
 
 # JG 17/08/2026 - spotted implausible value, unable to confirm original so changed to NA:
-iris_df$Petal.Length[iris_df$Petal.Length == '69'] <- NA
+iris_df$Petal.Length[iris_df$Petal.Length == 69] <- NA
 
 # rechecking our dataset
 plot(iris_df$Petal.Length)
 plot(iris_df$Petal.Width~iris_df$Petal.Length)
 boxplot(iris_df[, c('Petal.Width', 'Petal.Length')])
-
-# ---------------------------------------
-## Part 2 - Welcome to the tidyverse ----
-# ---------------------------------------
-
-# Question 3
-# Install and load the tidyverse package 
-# ----------------------------------------
-
-
-# ----------------------------------------
-
-iris_df_long_sepal <- iris_df |>              # 'assign' (<-) new output to iris_df_1, |> means 'pipe'
-              filter(Sepal.Length > 5.5)      # filtering for variables with sepal length > 5.5
-
-iris_df_long_petal_versicolor <- iris_df |>
-              filter(Species == "versicolor" & Petal.Length > 1.2)  
-
-iris_df_summary <- iris_df |> 
-                group_by(Species) |>
-                summarise(
-                      avg_sepal_length = mean(Sepal.Length),
-                      sample_count = n())
-
-print(iris_df_summary) #The above code creates a new dataframe in the environment
-                    #this code prints it out in the console
-
-# Question 4
-# Can you modify this code so that it excludes all the `virginica`?
-# ----------------------------------------
-iris_df_summary_no_virginica <- iris_df |> 
-                             group_by(Species) |>
-                             summarise(
-                                    avg_sepal_length = mean(Sepal.Length),
-                                    sample_count = n())
-
-# ----------------------------------------
-
-# back to the main iris_df dataset
-
-iris_df_sorted <- iris_df |>      #arranging the dataset by ascending order of sepal length
-  arrange(Sepal.Length)
-
-iris_df_sorted_desc <- iris_df |>    #arranging the dataset by descending order of sepal length
-  arrange(desc(Sepal.Length))
-
-iris_df_multi_sort <- iris_df |>          # 2-step arrange, descending sepal length but within species
-  arrange(Species, desc(Sepal.Length))
-
-# note arrange() changes the order of the rows without changes which rows are present
-
-# For the iris_df dataset the petal length is currently measured in cm, we want to change this to mm
-# for this we use mutate(), this command affects columns without changing rows
-
-iris_df_mutated <- iris_df |> 
-  mutate(Petal.Length.mm = Petal.Length * 10)
-
-iris_df_mutated <- iris_df_mutated |> 
-  relocate(Petal.Length.mm, .after = Petal.Length)
-# relocating the new column after the original to aid comparison
-
 
