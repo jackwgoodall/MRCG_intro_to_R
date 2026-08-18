@@ -44,19 +44,21 @@ Recordings appear the day after the live session date. The Timetable has a link 
 
 ### 2. Download the session script
 
-The *Scripts* column gives you the `.R` file we work through together. Save it somewhere sensible and open it in RStudio.
+Set up an R project for the course ([watch this video](https://lshtm.cloud.panopto.eu/Panopto/Pages/Viewer.aspx?id=6aa307c8-f329-486c-8194-b4960091f4cf) to see how)
 
-These scripts are written to be followed along with — they have gaps in them for you to fill in as you go. You will get much more out of the recording if you have the script open and are typing alongside it rather than just watching.
+The *Scripts* column gives you the `.R` file we work through together. Save it somewhere sensible (I suggest putting it in a `scripts` folder in a dedicated R project) and open it in RStudio.
+
+These scripts are written to be followed along with and they have gaps in them for you to fill in as you go. You will get much more out of the recording if you have the script open and are typing alongside it rather than just watching.
 
 ### 3. Get the data, where a session needs it
 
-Some sessions use a dataset. Where they do, the *Data* column has the file. Put it in a folder called `data` inside your project folder, so the file paths in the scripts work without editing.
+Some sessions use a dataset. Where they do, the *Data* column of the timetable has the file. Put it in a folder called `data` inside your project folder, so the file paths in the scripts work without editing.
 
 ### 4. Do the homework
 
 The *Homework* column has a set of exercises for that week. They are designed to take no more than an hour, and often much less.
 
-Answers go up in the *Answers* column each week — try the questions before looking. Getting stuck for a few minutes is where most of the learning happens.
+Answers go up in the *Answers* column each week. Do try the questions before looking. Getting stuck for a few minutes is where most of the learning happens.
 
 ------------------------------------------------------------------------
 
@@ -67,7 +69,7 @@ Any **member of the MRC The Gambia** who is following the course remotely can ea
 - watch all of the session recordings, and
 - send me a completed set of homework exercises when you are finished
 
-There is no deadline and no exam. Send them to [jack.goodall@lshtm.ac.uk](mailto:jack.goodall@lshtm.ac.uk) whenever you are done.
+There is no deadline and no exam. Send them to [jack.goodall\@lshtm.ac.uk](mailto:jack.goodall@lshtm.ac.uk) whenever you are done.
 
 ------------------------------------------------------------------------
 
@@ -88,16 +90,16 @@ A few things worth knowing if you are not in the room.
 
 **You will not fall behind.** The material stays up permanently and the sessions build on each other in order, so a gap of a few weeks costs you nothing.
 
-**Type the code out rather than copying it.** It is slower, and that is rather the point — the errors you make while typing are the ones you learn to read.
+**Type the code out rather than copying it.** It is slower, and that is rather the point. The errors you make while typing are the ones you learn to read.
 
-**Expect to get stuck.** Everyone does, constantly. Error messages are the normal condition of writing code, read them, fix them and try not to beat yourself up. 
+**Expect to get stuck.** Everyone does, constantly. Error messages are the normal condition of writing code, read them, fix them and try not to beat yourself up.
 
-**Resist asking an LLM to write it for you.** It will produce something that works and teach you nothing. Using one to explain an error you are enountering can be useful if you really try and understand the answer rather than just accepting it.  LLMs make errors *all the time* and you need to understand enough to spot them. 
+**Resist asking an LLM to write it for you.** It will produce something that works and teach you nothing. Using one to explain an error you are encountering can be useful if you really try and understand the answer rather than just accepting it. LLMs make errors *all the time* and you need to understand enough to spot them.
 
 ------------------------------------------------------------------------
 
 ## Tell me how this is going
 
-Following a course through recordings will suit some people much better than others, and I would like to make this course the most useful for the largest number of people. 
+Following a course through recordings will suit some people much better than others, and I would like to make this course the most useful for the largest number of people.
 
-If you have suggestions for how the remote version could work better — the pacing, the scripts, the homework, anything at all — there is an [anonymous feedback form](https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=oaKtcild7U6xlPh0V3cUnuSVmI9t539Mu7XmsjCdKGdUQ1k3WFdINTBZMFdUSTEwVkJaNFJIOFczNS4u). It genuinely does get read, and where I can make improvements I will. 
+If you have suggestions for how the remote version could work better — the pacing, the scripts, the homework, anything at all — there is an [anonymous feedback form](https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=oaKtcild7U6xlPh0V3cUnuSVmI9t539Mu7XmsjCdKGdUQ1k3WFdINTBZMFdUSTEwVkJaNFJIOFczNS4u). It genuinely does get read, and where I can make improvements I will.
