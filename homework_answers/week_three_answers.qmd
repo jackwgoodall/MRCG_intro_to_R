@@ -18,7 +18,6 @@ There is very often more than one right way to do something in R. If your code p
 ```{r}
 #| label: setup
 #| include: false
-library(Epi)
 iris <- datasets::iris
 ```
 
