@@ -20,7 +20,7 @@ These are much more useful after you have tried the questions and got stuck than
 |----|----|----|
 | 1 | Introduction | [Week one answers](homework_answers/week_one_answers.qmd) |
 | 2 | More complex object types | [Week two answers](homework_answers/week_two_answers.qmd) |
-| 3 | Data cleaning and the tidyverse | *to follow* |
+| 3 | Data cleaning and the tidyverse | [Week three answers](homework_answers/week_three_answers.qmd) |
 | 4 | More tidyverse & basic statistical analysis | *to follow* |
 | 5 | Visualisation with ggplot | *to follow* |
 

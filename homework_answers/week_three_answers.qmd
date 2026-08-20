@@ -1,0 +1,346 @@
+---
+title: ""
+format: lshtm-mrcg-html
+toc: true
+toc-depth: 2
+execute:
+  echo: true
+  warning: true
+  message: true
+---
+
+# Week three answers
+
+These are the answers to the [week three homework](../homework_questions/week_three_homework.R). Every code block has actually been run, so what you see underneath it is exactly what R prints.
+
+There is very often more than one right way to do something in R. If your code produced the correct answer by a different route, it is not wrong.
+
+```{r}
+#| label: setup
+#| include: false
+library(Epi)
+iris <- datasets::iris
+```
+
+::: callout-tip
+## Two ideas run through this whole sheet
+
+**Questions 1 to 4** are about using TRUE/FALSE to pull out the bits of data you want. That one idea underlies almost all data cleaning you will ever do.
+
+**Questions 5 to 10** are about meeting a dataset you have never seen before and working out what is in it — including what is *missing* from it.
+:::
+
+------------------------------------------------------------------------
+
+## Question 1
+
+> Using the `iris` dataframe from the lesson, select only the `Sepal.Width` column
+
+```{r}
+iris$Sepal.Width
+```
+
+The `$` operator pulls a single column out of a dataframe by name. Everything before the `$` is the dataframe, everything after it is the column.
+
+What comes back is a plain **vector** of 150 numbers. The column has been lifted out of the table, and it no longer knows anything about the other columns or which flower each number belonged to.
+
+As you know there are other ways to do the same thing, and you will meet all of them eventually:
+
+```{r}
+#| results: hide
+iris[, "Sepal.Width"]     # leave the row slot empty = all rows
+iris[["Sepal.Width"]]     # double square brackets, by name
+
+```
+
+The `$` is the one to reach for by default: it is the shortest, and RStudio will autocomplete column names after you type it, which quietly saves you a great many typos.
+
+------------------------------------------------------------------------
+
+## Question 2
+
+> Make a vector of TRUE/FALSE for when `Sepal.Width` is greater than 3
+
+```{r}
+iris$Sepal.Width > 3
+```
+
+Asking a question of a whole vector gives you an answer for every single element; 150 questions asked and answered at once. This is vectorisation again, the same behaviour you met in week one.
+
+The result is a logical vector: 150 values, each either `TRUE` or `FALSE`, lined up in exactly the same order as the original column. The first flower has a sepal width of 2.6, so the first answer is `FALSE`.
+
+A quick way to count them, rather than squinting at the output:
+
+```{r}
+sum(iris$Sepal.Width > 3)
+```
+
+`sum()` on a logical vector works because R counts `TRUE` as 1 and `FALSE` as 0. So summing gives you the number of `TRUE`s — `r sum(iris$Sepal.Width > 3)` flowers. This is a useful trick and worth remembering.
+
+------------------------------------------------------------------------
+
+## Question 3
+
+> Now use this to select only the entries where `Sepal.Width` is greater than 3
+
+```{r}
+iris$Sepal.Width[iris$Sepal.Width > 3]
+```
+
+This is what we are building up to. Square brackets take that logical vector and keep only the entries marked `TRUE`, discarding the rest.
+
+It looks repetitive to write `iris$Sepal.Width` twice, and it is, but the two halves are doing different jobs:
+
+- **outside** the brackets: *where are you starting from?*
+- **inside** the brackets: *which of them do you want to keep?*
+
+Read it as "from Sepal.Width, keep the ones where Sepal.Width is more than 3".
+
+You should get `r sum(iris$Sepal.Width > 3)` values back. This is the same number as the count in Question 2, which is a good way to check you have not gone wrong.
+
+------------------------------------------------------------------------
+
+## Question 4
+
+> Use `&` to select only the rows where `Sepal.Width` is greater than 3 **and** `Petal.Width` is less than 1.5
+
+```{r}
+iris[iris$Sepal.Width > 3 & iris$Petal.Width < 1.5, ]
+```
+
+Two things changed here, and the second one is easy to miss.
+
+First, the **`&`.** It combines two logical vectors into one, giving `TRUE` only where *both* are `TRUE`.
+
+(There is also `|` (a vertical bar), which gives `TRUE` where *either* is true.)
+
+Second, and more importantly is the comma**.** In Question 3 the square brackets held one thing, because a vector only has one dimension. A dataframe has **two**, so its brackets need `[rows, columns]`. We put the condition in the **row** slot and left the column slot empty, which means "all columns".
+
+That trailing comma before the closing bracket is doing real work. Leave it out and R will think you are asking for columns, and complain.
+
+```{r}
+nrow(iris[iris$Sepal.Width > 3 & iris$Petal.Width < 1.5, ])
+```
+
+`r nrow(iris[iris$Sepal.Width > 3 & iris$Petal.Width < 1.5, ])` flowers meet both conditions — fewer than the `r sum(iris$Sepal.Width > 3)` that met the first one alone, which is what you would expect. Adding conditions with `&` can only ever narrow things down.
+
+## Question 5
+
+> Install and load the package called `Epi`
+
+```{r}
+#| eval: false
+install.packages("Epi")   # once per computer, ever
+
+library(Epi)              # once per R session
+```
+
+These two lines do different things, and the difference catches almost everyone out at least once.
+
+**`install.packages()`** downloads the package onto your computer. You do this **once**. It is not needed again unless you change computer or update R.
+
+**`library()`** loads an already-installed package into your current session, making its functions available. You need this **every time you open R**. Restart R and it is gone again.
+
+This is why most people call `install.packages()` in the console rather than in your script. If you leave it in a script, every future run re-downloads a package that is already there. This is slow, and irritating for you or anyone else running your code.
+
+Note the quotes: `install.packages("Epi")` needs them, `library(Epi)` does not. There is no good reason for this inconsistency; it is just how R is.
+
+------------------------------------------------------------------------
+
+## Question 6
+
+> Load the `births` dataset with `data(births)`. How many rows and how many columns does it have?
+
+```{r}
+data(births)
+
+dim(births)
+```
+
+`dim()` gives dimensions, always in the order **rows first, then columns**. So this dataset has `r nrow(births)` rows and `r ncol(births)` columns.
+
+Each row is one baby. Every dataset you meet should prompt this question "what is one row?" before you do anything else with it.
+
+If you want them separately:
+
+```{r}
+nrow(births)
+ncol(births)
+```
+
+Some packages ship with example datasets like this one, which is handy for practising on realistic data. `data()` on its own, with empty brackets, will list everything currently available to you.
+
+------------------------------------------------------------------------
+
+## Question 7
+
+> What type of variable is in each column? Which are logical (True/False), which are numerical?
+
+```{r}
+str(births)
+```
+
+The honest answer is that **every column is numeric** `str()` reports `int` or `num` for all eight of them. R has no idea that some of them are really yes/no questions.
+
+That is what the hint was pointing at. These three are logical *in meaning* but stored as numbers:
+
+| Column    | What it really is                 | How it is coded |
+|-----------|-----------------------------------|-----------------|
+| `lowbw`   | Was the baby under 2500 g?        | 0 = no, 1 = yes |
+| `preterm` | Was gestation under 37 weeks?     | 0 = no, 1 = yes |
+| `hyp`     | Did the mother have hypertension? | 0 = no, 1 = yes |
+
+`sex` is different again. It is a **category**, not a yes/no, coded 1 for male and 2 for female. It is not logical and it is not really a number either. Nothing stops you calculating `mean(births$sex)`, and R will happily return about 1.47, which means precisely nothing.
+
+The genuinely numeric columns are `bweight` (grams), `gestwks` (weeks), `matage` (years) and `id`. And `id` is a label that happens to be made of digits; averaging it would be just as meaningless as averaging `sex`.
+
+::: callout-important
+## This is why `str()` is the first thing to run
+
+R will let you do arithmetic on anything stored as a number, whether or not that arithmetic makes any sense. Knowing that `hyp` is a 0/1 indicator rather than a measurement is your job, not R's.
+
+In week 4 you will convert columns like these into **factors**, which is R's way of being told "this is a category, please stop treating it as a number".
+:::
+
+------------------------------------------------------------------------
+
+## Question 8
+
+> What is the range, interquartile range, mean and median of birth weights?
+
+```{r}
+range(births$bweight)
+
+IQR(births$bweight)
+
+mean(births$bweight)
+
+median(births$bweight)
+```
+
+Or all at once, which is usually how you would actually do it:
+
+```{r}
+summary(births$bweight)
+```
+
+Weights are in **grams**, so the lightest baby was around 0.6 kg and the heaviest around 4.6 kg.
+
+Two things worth reading out of these numbers.
+
+**The mean sits below the median.** `r round(mean(births$bweight))` g against `r round(median(births$bweight))` g. That gap is the signature of a **left skew** i.e. a tail of very small babies dragging the average down, while the median barely notices them. Lots of data looks like this.
+
+**`range()` returns two numbers, not one.** It gives you the minimum and maximum, not the distance between them. If you want that single number, ask for `diff(range(births$bweight))`, which is `r diff(range(births$bweight))` g.
+
+The IQR is the width of the middle half of the data: the distance from the 25th to the 75th percentile. Unlike the range, it ignores the extremes entirely, which makes it far more stable. One unusually tiny baby changes the range completely and the IQR hardly at all.
+
+------------------------------------------------------------------------
+
+## Question 9
+
+> How many babies are born preterm?
+
+```{r}
+table(births$preterm)
+```
+
+`table()` counts how many times each value appears. There were **`r sum(births$preterm == 1, na.rm = TRUE)` preterm babies** and `r sum(births$preterm == 0, na.rm = TRUE)` born at term.
+
+But look carefully, because those two numbers do not add up to `r nrow(births)`.
+
+```{r}
+sum(is.na(births$preterm))
+```
+
+**`r sum(is.na(births$preterm))` babies have no `preterm` value at all.** Their gestation was never recorded, so R has no way of knowing whether they were preterm, and stores `NA`, "not available".
+
+`table()` hides missing values by default, which is exactly the sort of helpfulness that gets people into trouble. You have to ask it not to:
+
+```{r}
+table(births$preterm, useNA = "ifany")
+```
+
+Notice too what happens if you try the obvious thing:
+
+```{r}
+sum(births$preterm)
+```
+
+`NA` here is not an error, just `NA`. R is being strict: it cannot tell you the total when it does not know all the values. Adding `na.rm = TRUE` tells it to ignore them and get on with it:
+
+```{r}
+sum(births$preterm, na.rm = TRUE)
+```
+
+::: callout-important
+## Always ask where the missing values are
+
+`summary(births)` will show you an `NA's` count for every column that has any. It is worth running on every new dataset, before anything else.
+
+Here it would tell you that `gestwks` and `preterm` each have `r sum(is.na(births$preterm))` missing and that they are the *same* `r sum(is.na(births$preterm))` babies, because `preterm` was worked out from `gestwks`. If you do not know the gestation, you cannot know whether it was under 37 weeks.
+:::
+
+------------------------------------------------------------------------
+
+## Question 10
+
+> Create a new dataframe of only preterm births, saved as `preterm_births`. For those babies, what is the range, IQR, mean and median birth weight?
+
+This is where the missing values bite, so it is worth doing carefully.
+
+```{r}
+preterm_births <- births[births$preterm == 1, ]
+
+nrow(preterm_births)
+```
+
+That should say `r sum(births$preterm == 1, na.rm = TRUE)`, but it says `r nrow(births[births$preterm == 1, ])`. We have picked up `r sum(is.na(births$preterm))` extra rows we did not ask for.
+
+```{r}
+tail(preterm_births)
+```
+
+**Rows of pure `NA`.** Here is why. For those `r sum(is.na(births$preterm))` babies, `preterm` is `NA`, so the question `NA == 1` cannot be answered — the result is `NA`, neither `TRUE` nor `FALSE`. And when you hand base R's square brackets an `NA`, it does not skip the row. It gives you a row of nothing.
+
+Two ways to fix it. In base R, say so explicitly:
+
+```{r}
+preterm_births <- births[which(births$preterm == 1), ]
+
+nrow(preterm_births)
+```
+
+`which()` returns the *positions* of the `TRUE`s and quietly drops the `NA`s, so only real rows survive.
+
+The `tidyverse` has a good solution to this - we will meet this next week.
+
+Now the summary:
+
+```{r}
+summary(preterm_births$bweight)
+
+IQR(preterm_births$bweight)
+```
+
+Compare that with the whole dataset. Mean birth weight among preterm babies is about `r round(mean(preterm_births$bweight))` g, against `r round(mean(births$bweight))` g overall — well over a kilogram lighter, which is exactly what you would expect and a reassuring sign that the `preterm` column means what we think it does.
+
+::: callout-important
+## The lesson of this question
+
+Had you not checked `nrow()`, you would have carried on with `r nrow(births[births$preterm == 1, ])` rows believing you had `r sum(births$preterm == 1, na.rm = TRUE)`, and every mean you calculated afterwards would have been quietly built on ten rows of nothing.
+
+R did not warn you. It did exactly what you asked.
+
+So: after any step that filters or joins your data, **check how many rows you have left** and ask whether that is the number you expected. It takes seconds and it catches an enormous proportion of real analysis errors.
+:::
+
+------------------------------------------------------------------------
+
+## If something did not work
+
+- **`could not find function "data"` or `object 'births' not found`** — you have not run `library(Epi)` in this session. Installing is not the same as loading.
+- **`undefined columns selected`** — a missing comma inside `[ ]` on a dataframe. R needs `[rows, columns]`.
+- **`NA` where you expected a number** — a missing value somewhere in the column. Try `na.rm = TRUE`.
+- **More rows than you expected after filtering** — almost always `NA`s, as in Question 10. Use `which()` or `filter()`.
+
+Still stuck? Bring it to the start of the next session.

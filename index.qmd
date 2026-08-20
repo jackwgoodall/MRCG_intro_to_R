@@ -76,7 +76,7 @@ There is no deadline and no exam. Send them to [jack.goodall\@lshtm.ac.uk](mailt
 ## Where everything is
 
 | Page | What is on it |
-|------------------------------------|------------------------------------|
+|----|----|
 | [**Timetable**](timetable.qmd) | The weekly table — scripts, data, recordings, homework and answers. Your main destination each week. |
 | [**Course outline**](course_outline.qmd) | Who the course is for, why R is worth learning, and the week-by-week plan for all ten sessions. |
 | [**Resources**](resources.qmd) | Setup links, the feedback form, and further reading for statistics and for making figures. |

@@ -3,17 +3,25 @@
 # -----------------------------------
 
 # ---------------------------------------
-## Part 2 - Welcome to the tidyverse ----
+## Part 1 - Welcome to the tidyverse ----
 # ---------------------------------------
 
-# Question 3
+# Question 1
 # Install and load the tidyverse package 
 # ----------------------------------------
 
 
 # ----------------------------------------
 
-iris_df_long_sepal <- iris_df |>              # 'assign' (<-) new output to iris_df_1, |> means 'pipe'
+# The tidyverse uses the pipe to make sequential changes to a dataframe
+# You can either use the tidyverse's own pipe (%>%) or the relative new 
+# native R pipe (|>) 
+# These both do the same thing and you will see both in other people's code - 
+# Just pick your favourite... 
+
+# Filter
+
+iris_df |>                        # |> means 'pipe'
   filter(Sepal.Length > 5.5)      # filtering for variables with sepal length > 5.5
 
 iris_df_long_petal_versicolor <- iris_df |>
