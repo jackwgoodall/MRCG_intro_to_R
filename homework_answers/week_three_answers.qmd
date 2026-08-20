@@ -156,8 +156,12 @@ load("../data/births.Rdata")
 > Load the `births` dataset with `data(births)`. How many rows and how many columns does it have?
 
 ```{r}
+#| eval: false 
 data(births)
 
+```
+
+```{r}
 dim(births)
 ```
 
