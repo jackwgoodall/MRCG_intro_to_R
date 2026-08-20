@@ -24,8 +24,6 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with:
-          # stats_explained.qmd also renders to PDF, which needs a LaTeX
-          # installation. Without this the build fails at the PDF step.
           tinytex: true
 
       # stats_explained.qmd contains live R chunks, so the runner needs R and
