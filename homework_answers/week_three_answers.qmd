@@ -149,6 +149,11 @@ Note the quotes: `install.packages("Epi")` needs them, `library(Epi)` does not. 
 
 ## Question 6
 
+```{r}
+#| echo: false
+load("../data/births.Rdata")
+```
+
 > Load the `births` dataset with `data(births)`. How many rows and how many columns does it have?
 
 ```{r}
