@@ -49,7 +49,6 @@ jobs:
             any::broom
             any::scales
             any::patchwork
-            # used by the week three answers page (the `births` dataset)
             any::Epi
 
       - name: Render site
