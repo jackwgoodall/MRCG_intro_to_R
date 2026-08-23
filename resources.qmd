@@ -35,6 +35,10 @@ This is not intended as a statistics course - if you are feeling a little rusty 
 
 [Statistical Rethinking](https://xcelab.net/rm/) - a lecture series and text book on Bayesian statistics and causal inference.
 
+## Data manipulation 
+
+[Tidyverse Presentation](slides/tidyverse_slides.qmd)
+
 ## Making figures
 
 [The ggplot2 page](https://ggplot2.tidyverse.org/articles/ggplot2.html)

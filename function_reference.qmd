@@ -1,0 +1,296 @@
+---
+title: ""
+format: lshtm-mrcg-html
+toc: true
+toc-depth: 2
+---
+
+# Function reference
+
+Everything we have used so far, in one place. This is a lookup sheet rather than a tutorial. It is here for when you know roughly what you want to do but cannot remember what the thing is called. (This happens all the time - you are only human).
+
+The **Week** column tells you where it first appeared, so you know which session sheet to go back to.
+
+::: callout-tip
+## The fastest way to find a function you have forgotten
+
+Type a package name followed by two colons — `readr::` — and RStudio will list everything in it. Type `?` before any function name for its help page.
+
+You are not expected to memorise this page. Nobody memorises this page. But the more you use these functions the more of them will just spring to mind when you need them.
+:::
+
+------------------------------------------------------------------------
+
+## Getting help
+
+| What you want                 | How                      | Week |
+|-------------------------------|--------------------------|------|
+| Help on a function            | `?mean`                  | 3    |
+| Help on a package             | `?readr`                 | 3    |
+| Worked examples for a package | `vignette("readr")`      | 3    |
+| List everything in a package  | type `readr::` and pause | 3    |
+| Where is R working from?      | `getwd()`                | 3    |
+
+------------------------------------------------------------------------
+
+## Operators
+
+Not functions, but you use them constantly.
+
+### Arithmetic
+
+| Operator        | Does                            | Week |
+|-----------------|---------------------------------|------|
+| `+` `-` `*` `/` | Add, subtract, multiply, divide | 1    |
+| `^`             | Raise to a power — `3^5` is 243 | 1    |
+| `( )`           | Force the order of operations   | 1    |
+
+### Comparison — these all return `TRUE` or `FALSE`
+
+| Operator | Asks                     | Week |
+|----------|--------------------------|------|
+| `==`     | Is it exactly equal to?  | 1    |
+| `>` `<`  | Greater than, less than  | 3    |
+| `>=`     | Greater than or equal to | 4    |
+| `!=`     | Is it *not* equal to?    | 4    |
+
+### Combining conditions
+
+| Operator | Means                   | Week |
+|----------|-------------------------|------|
+| `&`      | AND — both must be true | 3    |
+| `|`      | OR — either can be true | 3    |
+
+### Everything else
+
+| Operator | Means | Week |
+|----------------------------|----------------------------|-----------------|
+| `<-` | Assign: save this under that name | 1 |
+| `:` | A run of whole numbers — `1:10` | 1 |
+| `$` | Pull one column out of a dataframe — `iris_df$Species` | 2 |
+| `~` | "Explained by" — `Petal.Width ~ Petal.Length` | 3 |
+| `::` | Take this function from that package — `dplyr::filter()` | 3 |
+| `|>` or `%>%` | The pipe: send the thing on the left into the function on the right | 4 |
+
+::: callout-important
+## `=` is not `==`
+
+A single `=` assigns a value. A double `==` asks a question. Mixing them up is the most common early mistake in R, and the error messages are rarely helpful about it.
+:::
+
+------------------------------------------------------------------------
+
+## Making objects
+
+| Function | What it does | Week |
+|----------------------------|----------------------------|-----------------|
+| `c()` | Combine items into a **vector** — `c(1, 2, 3)` | 1 |
+| `matrix()` | Build a 2-D matrix — `matrix(1:10, ncol = 2)` | 2 |
+| `data.frame()` | Build a dataframe (columns may be different types) | 2 |
+| `list()` | Hold things of different lengths together | 2 |
+| `tibble()` | The tidyverse's version of a dataframe | 4 |
+| `cbind()` / `rbind()` | Glue vectors together as columns / as rows | 2 |
+| `as.data.frame()` | Convert something into a dataframe | 2 |
+
+## Inspecting objects
+
+| Function | What it does | Week |
+|----------------------------|----------------------------|-----------------|
+| `str()` | **The one to run first.** What type is this, and what is in it? | 1 |
+| `print()` | Print to the console (typing the name alone does the same) | 1 |
+| `length()` | How many items in a vector? | 2 |
+| `dim()` | Rows and columns of a dataframe, in that order | 3 |
+| `nrow()` / `ncol()` | Rows only / columns only | 3 |
+| `colnames()` | The column names — can also be used to *set* them | 2 |
+| `head()` / `tail()` | First / last few rows — `head(iris_df, n = 10)` | 3 |
+| `ls()` | List everything in your environment | 1 |
+| `rm()` | Delete an object | 1 |
+
+------------------------------------------------------------------------
+
+## Selecting parts of things
+
+Square brackets change meaning depending on what you put inside them.
+
+| Pattern | Gets you | Week |
+|----------------------------|----------------------------|-----------------|
+| `x[3]` | The third item of a vector | 2 |
+| `x[c(3, 5)]` | The third and fifth items | 2 |
+| `x[c(FALSE, TRUE)]` | The items marked `TRUE` | 2 |
+| `x[x > 5]` | The items where the condition is true | 3 |
+| `m[2, 1]` | Row 2, column 1 of a matrix or dataframe | 2 |
+| `df[ , 1]` | All rows, column 1 — an empty slot means "all of them" | 2 |
+| `df[df$age > 50, ]` | All the rows meeting a condition | 3 |
+| `df$column` | One column, by name | 2 |
+| `my_list$item` | One item out of a list | 2 |
+
+::: callout-warning
+## The comma matters
+
+A vector has one dimension, so its brackets take one thing: `x[3]`.
+
+A dataframe has two, so its brackets take `[rows, columns]`. Forget the comma and R will think you are asking for columns, and complain.
+:::
+
+Anything you can select, you can also change:
+
+``` r
+clear_matrix[2, 1] <- "B1 modified"
+
+iris_df$Species[iris_df$Species == "Setosi"] <- "setosa"
+
+iris_df$Petal.Length[iris_df$Petal.Length == 69] <- NA
+```
+
+That last pattern is how you correct an error in your data **transparently** — the original file stays untouched, and your script records exactly what you changed and why.
+
+------------------------------------------------------------------------
+
+## Exploring and summarising
+
+| Function | What it does | Week |
+|----------------------------|----------------------------|-----------------|
+| `summary()` | Sensible summary of anything — the quickest look at a dataset | 3 |
+| `mean()` / `median()` | Average / middle value | 3 |
+| `min()` / `max()` | Smallest / largest | 3 |
+| `range()` | Min and max together (two numbers, not the gap between them) | 3 |
+| `IQR()` | Interquartile range — the width of the middle half | 3 |
+| `sum()` | Add up. On `TRUE`/`FALSE` this counts the `TRUE`s | 3 |
+| `table()` | Count how many of each value | 3 |
+| `unique()` | Which distinct values appear? | 3 |
+| `is.na()` | Is this value missing? Returns `TRUE`/`FALSE` | 3 |
+| `which()` | The *positions* of the `TRUE`s — and it ignores `NA`s | 3 |
+| `sqrt()` `log()` `exp()` `log10()` | Square root, natural log, exponent, log base 10 | 1 |
+| `all()` | Are all of these `TRUE`? | 1 |
+
+::: callout-important
+## `na.rm = TRUE`
+
+If a column contains any missing values, `mean()`, `sum()`, `median()` and friends all return `NA`. That is R refusing to guess.
+
+Add `na.rm = TRUE` to tell it to ignore the missing values and carry on:
+
+``` r
+mean(iris_df$Petal.Length, na.rm = TRUE)
+```
+
+Only do this once you know *why* the values are missing.
+:::
+
+------------------------------------------------------------------------
+
+## Packages
+
+| Function | What it does | Week |
+|----------------------------|----------------------------|-----------------|
+| `install.packages("readr")` | Download it. **Once per computer.** Note the quotes | 3 |
+| `library(readr)` | Load it. **Every session.** No quotes | 3 |
+| `data(births)` | Load a dataset that came bundled with a package | 3 |
+
+Packages so far: **readr** (reading files), **tidyverse** (which brings **dplyr** and **tidyr** with it), and **Epi** (for the `births` data in the week 3 homework).
+
+## Getting data in
+
+| Function | What it does | Week |
+|----------------------------|----------------------------|-----------------|
+| `read_csv("data/iris.csv")` | Read a CSV file — from **readr** | 3 |
+| `getwd()` | Where R thinks it is, for when a file path will not work | 3 |
+
+------------------------------------------------------------------------
+
+## Tidyverse verbs
+
+All of these take a dataframe and hand back a dataframe, which is why they chain together with the pipe.
+
+See the presentation for some visualisations of these: here.
+
+| Function       | What it does                                     | Week |
+|----------------|--------------------------------------------------|------|
+| `filter()`     | Keep the **rows** that meet a condition          | 4    |
+| `mutate()`     | Make a new **column**, or change an existing one | 4    |
+| `case_when()`  | Build a column conditionally, inside `mutate()`  | 4    |
+| `summarise()`  | Collapse many rows down into one summary row     | 4    |
+| `group_by()`   | Do the next thing separately for each group      | 4    |
+| `row_number()` | 1, 2, 3… useful for giving each row an id        | 4    |
+
+A worked chain:
+
+``` r
+iris_df |>
+  filter(Species != "versicolor") |>
+  group_by(Species) |>
+  summarise(mean_sepal_length = mean(Sepal.Length),
+            min_sepal_length  = min(Sepal.Length))
+```
+
+Read the pipe as **"and then"**.
+
+::: callout-note
+## Two ways to do the same thing
+
+`filter(Sepal.Length > 5.5)` and `iris_df[iris_df$Sepal.Length > 5.5, ]` do the same job.
+
+The tidyverse version is easier to read; the base R version turns up constantly in other people's older code. It is worth being able to read both, even if you only write one.
+:::
+
+## Reshaping
+
+| Function         | What it does                            | Week |
+|------------------|-----------------------------------------|------|
+| `pivot_longer()` | Wide to long — more rows, fewer columns | 4    |
+| `pivot_wider()`  | Long to wide — fewer rows, more columns | 4    |
+
+## Joining
+
+Joins need a shared column to match on: `by = "Species"`.
+
+| Function       | Keeps                             | Week |
+|----------------|-----------------------------------|------|
+| `left_join()`  | Everything in the left dataframe  | 4    |
+| `right_join()` | Everything in the right dataframe | 4    |
+| `inner_join()` | Only the rows found in **both**   | 4    |
+| `full_join()`  | Everything from both              | 4    |
+
+The week 4 sheet works through `left_join()` in full; the other three follow exactly the same pattern and differ only in which rows they keep.
+
+::: callout-warning
+## Count your rows after every join
+
+A join is the easiest place in all of R to silently gain or lose data. Check `nrow()` before and after, every time, and ask whether the number is what you expected.
+:::
+
+------------------------------------------------------------------------
+
+## Quick plots
+
+These are base R plots — fast and ugly, for looking at your own data while you work rather than for showing anyone.
+
+| Function | What it does | Week |
+|----------------------------|----------------------------|-----------------|
+| `plot(x)` | Plot values against their position — good for spotting outliers | 3 |
+| `plot(y ~ x)` | Scatter plot of y against x | 3 |
+| `boxplot()` | Boxplot of one or more columns | 3 |
+
+``` r
+plot(iris_df$Petal.Length)
+plot(iris_df$Petal.Width ~ iris_df$Petal.Length)
+boxplot(iris_df[, c("Petal.Width", "Petal.Length")])
+```
+
+Week 5 is entirely about **ggplot2**, which is what you use for plots that end up in a paper.
+
+------------------------------------------------------------------------
+
+## The three that will save you most often
+
+If you take only three things from this page:
+
+**`str()`** — run it on everything, before you do anything else. Most confusing errors come from an object not being the type you assumed it was.
+
+**`summary()`** — the fastest way to see the shape of a dataset, including how many values are missing from each column.
+
+**`nrow()`** — after any filter or join, check the number of rows is what you expected. This catches an enormous proportion of real analysis mistakes, and takes two seconds.
+
+------------------------------------------------------------------------
+
+*This page covers only the material we have done so far. I will add to this each week.*
