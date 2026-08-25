@@ -5,21 +5,21 @@ toc: true
 toc-depth: 2
 ---
 
-Who is this for?
+## Who is this for?
 
 This is an introductory course on how to use the R programming language.
 
-It is aimed at anyone who has either never used R before or considers themselves a beginner. As the course goes on the topics get more complicated and specialised. Those who consider themselves already proficient may wish to join for some of these later sessions.
+It is aimed at anyone who has either never used R before or considers themselves a beginner. As the course goes on the topics get more complicated and specialised.
 
 Although there will be some refreshers on basic statistical concepts, this course is about R, not statistics.
 
-Why use R?
+## Why use R?
 
 R is an incredibly powerful data analysis tool. Almost any analysis you can dream up can be performed using R. It will do everything from identifying missing data to performing advance machine learning. You can easily create tables and publication ready figures, with far more flexibility and customisation than you could with more standard tools.
 
 R is open source and widely used. The scripts you create to perform your analyses document clearly the steps and decisions you have made. This makes it easy to collaborate on analyses, trace back where any mistakes may have occurred, and ultimately to publish the fruits of your labour. Many journals now insist on you sharing you analysis code; this is good both for transparency and for the advancement of science.
 
-The structure
+## The structure
 
 This will be a 10 week course starting with the basics and working up to regression models and advanced figure creation.
 
@@ -29,7 +29,7 @@ The course will be dynamically structured around the needs and proficiency of th
 
 The confirmed plan for the upcoming two weeks will be show on the Timetable page, along with the answers to the previous homework exercises and the session recordings.
 
-Week 1: Introduction
+# Week 1: Introduction
 
 A guided tour of R studio and how to customise it
 
@@ -37,13 +37,13 @@ R as a fancy calculator
 
 Introduction to objects and vectors
 
-Week 2: More complex object types
+# Week 2: More complex object types
 
 More objects: matrices, dataframes and lists
 
 Selecting and changing items in base R
 
-Week 3: Packages and the tidyverse
+# Week 3: Packages and the tidyverse
 
 An into to packages
 
@@ -63,7 +63,7 @@ Introduction to the tidyverse
 
 The concept of tidy data (one variable per column, one observation per row)
 
-The power of the pipe (|> / %>%) and why it helps makes code readable
+The power of the pipe (\|\> / %\>%) and why it helps makes code readable
 
 The core dplyr verbs: filter, select, mutate, arrange, summarise, group_by
 
@@ -71,7 +71,7 @@ Reshaping with pivot_longer / pivot_wider
 
 Joining tables with left_join (research data almost always spans multiple files)
 
-Week 4: Basic statistical analysis
+# Week 4: Basic statistical analysis
 
 T-test
 
@@ -81,7 +81,7 @@ Correlation
 
 Non-parametric tests
 
-Week 5: Visualisation with ggplot2
+# Week 5: Visualisation with ggplot2
 
 The grammar of graphics: data → aesthetics → geoms
 
@@ -91,7 +91,7 @@ Faceting for subgroups Scales, labels, and themes to get to publication-ready
 
 ggsave() with sensible dimensions/DPI for journal submission
 
-Week 6: Consolidation and a gentle introduction to functions
+# Week 6: Consolidation and a gentle introduction to functions
 
 Recap and catch-up on weeks 1–5
 
@@ -99,9 +99,9 @@ Writing your own functions (the DRY principle: don't repeat yourself)
 
 A short combined practical: import → clean → plot, end-to-end
 
-Week 7: Linear regression
+# Week 7: Linear regression
 
-lm() and formula syntax (y ~ x1 + x2)
+lm() and formula syntax (y \~ x1 + x2)
 
 Interpreting coefficients, confidence intervals, and p-values
 
@@ -111,7 +111,7 @@ Assumptions and diagnostics via residual plots
 
 Tidy output with broom (tidy, glance, augment) and gtsummary::tbl_regression() for a clean results table
 
-Week 8: Logistic regression & GLMs
+# Week 8: Logistic regression & GLMs
 
 Binary outcomes with glm(..., family = binomial)
 
@@ -119,13 +119,13 @@ Odds ratios and how to interpret them (exponentiating coefficients)
 
 A second GLM — Poisson for counts/rates, with offsets
 
-Week 9: Extending the model (we'll take a vote closer to the time)
+# Week 9: Extending the model (we'll take a vote closer to the time)
 
 Option A: Survival analysis (survival, survminer): Kaplan–Meier curves, the log-rank test, and an intro to Cox proportional hazards.
 
 Option B: Multilevel / mixed models (lme4): a gentle intro to clustered or repeated data (random intercepts).
 
-Week 10: Reproducible reporting & mini-project
+# Week 10: Reproducible reporting & mini-project
 
 Quarto (a markdown engine) in more depth: parameters, cross-references, figures and tables in one document
 
@@ -134,8 +134,6 @@ RStudio Projects and here() for portable file paths; sensible folder structure
 Reproducibility: sessionInfo()
 
 A small end-to-end capstone (import → clean → visualise → model → render a report)
-
-
 
 ------------------------------------------------------------------------
 

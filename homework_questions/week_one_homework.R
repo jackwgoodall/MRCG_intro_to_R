@@ -27,9 +27,10 @@
 # ----------------------------------------
 
 # Question 4 
-# Make a character vector which is two items long
+# Make a character vector which is *two items long*
 # The first item should be "hello" and the second should be "world"
 # Call this vector `hello_world_vector`
+# Note how this is different from the hello_world_phrase we made in the session
 # ----------------------------------------
 
 
