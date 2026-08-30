@@ -6,6 +6,8 @@ project:
     - "homework_questions/*.R"
     # .R only — the .qmd answer pages in this folder are rendered, not copied raw
     - "homework_answers/*.R"
+    # .R only — DATA_SPEC.md is instructor notes and must not be published
+    - "break_project/*.R"
     - "data/**"
 
 website:
@@ -18,6 +20,8 @@ website:
         text: Timetable
       - href: course_outline.qmd
         text: Course outline
+      - href: break_project.qmd
+        text: Break Project
       - href: function_reference.qmd
         text: Function Reference
       - href: resources.qmd

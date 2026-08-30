@@ -129,7 +129,7 @@ One (slightly involved) way to answer this would be to build you own probability
 
 **Step 2: plot what those fair coins did.**
 
-**Step 3: mark the extremes.** Take the 25 highest results and the 25 lowest. These results are the most extreme **5%** of results that a fair coin will give you. 
+**Step 3: mark the extremes.** Take the 25 highest results and the 25 lowest. These results are the most extreme **5%** of results that a fair coin will give you.
 
 ```{r}
 #| label: fig-pvalue
@@ -179,11 +179,11 @@ ggplot(bars, aes(x = heads, y = Freq, fill = region)) +
 
 **Step 4: see where our coin lands.** Fair coins strayed below `r lo_cut` heads or above `r hi_cut` heads only about 5% of the time. Our coin gave 63. It is out past the shaded cutoff, in territory fair coins rarely reach.
 
-Being precise about it: of the 1000 fair coins, `r sum(abs(fair_heads - 50) >= abs(observed - 50))` were at least as far from 50 as ours was. That proportion  (**`r sprintf("%.3f", p_emp)`**) is the p-value.
+Being precise about it: of the 1000 fair coins, `r sum(abs(fair_heads - 50) >= abs(observed - 50))` were at least as far from 50 as ours was. That proportion (**`r sprintf("%.3f", p_emp)`**) is the p-value.
 
 So you interpretation here could be "if my coin really was fair I would only see a result this extreme `r paste0(sprintf("%.1f", p_emp*100), "%")` of the time."
 
-Now of 1000 coin flips is only an approximation (although it is a good one) of this distribution - you really want a proper analytical distrubtion (the binomial distribition in this case).  See the call out box below if you want more details on this.
+Now of 1000 coin flips is only an approximation (although it is a good one) of this distribution - you really want a proper analytical distrubtion (the binomial distribition in this case). See the call out box below if you want more details on this.
 
 ::: {.callout-note collapse="true"}
 ## The binomial distribution

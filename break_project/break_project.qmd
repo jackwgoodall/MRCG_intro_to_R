@@ -1,0 +1,162 @@
+---
+title: ""
+format: lshtm-mrcg-html
+toc: true
+toc-depth: 2
+---
+
+# Break project: a survey that needs cleaning
+
+There are two weeks with no session. This project is here if you want something to keep your hand in, and it pulls together everything from weeks 1 to 5.
+
+It is not marked and there is no deadline. Do as much of it as you find useful.
+
+If you have your own dataset you would prefer to work on then do that.
+
+::: callout-tip
+## What you will need
+
+- The data file: [u5_malaria](../data/u5_malaria.csv){download="u5_malaria.csv"}[.csv](data/u5_malaria.csv){download="sunu_survey.csv"}
+
+You can do this in your "Intro to R" project, or make a fresh one as you prefer.
+
+Put the CSV in a `data` folder and make a new R script in R studio.
+:::
+
+------------------------------------------------------------------------
+
+## The scenario
+
+This is a completely fictional dataset that I have created for this exercise.
+
+You have been handed the data from a cross-sectional malaria and anaemia survey of 250 children under five, carried out across five sites in the rainy season of 2025.
+
+Each row is one child. For each of them the field team recorded age, sex, height, mid-upper arm circumference (muac), temperature, haemoglobin, a malaria rapid diagnostic test result, and whether the child slept under a bednet.
+
+The team have gone home. Nobody is available to answer questions about it. Your job is to work out whether the data can be trusted, fix what can be fixed, and produce a first look at what it shows.
+
+::: callout-warning
+## This data has problems in it
+
+Some are obvious. Some are not. Some will not produce an error message at all. R will hand you a perfectly reasonable-looking number that just happens to be wrong.
+:::
+
+------------------------------------------------------------------------
+
+## What you are aiming for
+
+By the end you should have:
+
+1.  A **cleaned dataframe** you would be willing to put your name to
+2.  A **record of every change you made**, and why (in reproducible R code)
+3.  A **summary table** of the key measurements, by village
+4.  **One good plot**, properly labelled
+
+That second one matters as much as the rest. An analysis nobody can retrace is not an analysis anyone is going to trust.
+
+------------------------------------------------------------------------
+
+## Stage 1: Import
+
+Spend some time making sure the columns are the right data type.
+
+The easiest way to do this is using the built in import function in R studio, altering the columns that need to be altered and then copying the code it gives you. We did this in week 3 using `readr`
+
+Then get to know the dataset. Find out:
+
+- How many children are in the survey?
+- How many columns, and what is each one?
+- Are all the numeric columns actually stored as numbers?
+
+## Stage 2: Explore
+
+Run `summary()` on the whole dataframe and make sure the output makes sense to you.
+
+For each numeric column ask yourself: **is this a possible value for a child under five?** You know roughly how tall a child could plausibly be. You know what a human temperature is etc. Trust your common sense.
+
+For the text columns, `table()` and `unique()` will tell you which values actually appear. Look for the same thing recorded more than one way (i.e. typos!) or duplications.
+
+Then plot the numeric columns quickly with `plot()` or `boxplot()`. A single absurd value is far easier to see than to read.
+
+::: callout-note
+## Two questions worth asking of every column
+
+**"Could this value happen?"** — a temperature of 3.7°C could not.
+
+**"Should this value be here?"** — a seven-year-old could weigh 20 kg, but they should not turn up in a dataset that only includes under-fives...
+:::
+
+## Stage 3: Clean
+
+Now fix what you found. Some ground rules:
+
+**Never edit the CSV.** Every change happens in your script, so it can be read, checked and undone.
+
+**Comment every change** with what you did and why, in the style we used in week 3:
+
+``` r
+# JG 08/09/2026 - height of 4.7 cm is impossible, looks like metres.
+# Cannot confirm with the field team, so set to NA.
+```
+
+**Prefer `NA` to guessing.** If a value is impossible and you cannot be sure what it should have been, `NA` is the honest answer. Correcting an obvious unit error is defensible; inventing a plausible number is not.
+
+**Do not delete whole children** because one field is unusable. If the haemoglobin is wrong, fix the haemoglobin, the rest of that child's data is still perfectly good.
+
+Things to deal with, roughly in order of how hard they are to spot:
+
+- Any column that came in as the wrong data type
+- Impossible values in the numeric columns
+- Values clearly recorded in the wrong unit
+- Category names recorded inconsistently
+- Anything appearing twice
+- Missing data that has been written as something other than as `NA`
+
+## Stage 4: Summarise
+
+With a dataframe you trust, produce:
+
+- The **mean, minimum and maximum** for each of the main measurements
+- The **number of children in each village**
+- **Mean haemoglobin split by malaria test result** — this is the interesting one
+
+Add a new column while you are here: children with haemoglobin below 11 g/dL are considered **anaemic**. Use `mutate()` and `case_when()` to flag them, then find out how many there are.
+
+::: callout-important
+## Compare before and after
+
+Work out the mean haemoglobin *before* your cleaning and *after* it.
+
+If the number moved, you have just demonstrated why the cleaning mattered. Write down both figures.
+:::
+
+## Stage 5: Plot
+
+Make one good figure using ggplot2. Something that shows haemoglobin against malaria test result is the obvious choice, but do feel free to make other plots if you wish.
+
+The [ggplot cheatsheet](https://opensource.posit.co/resources/cheatsheets/data-visualization/) might help.
+
+Whatever you pick, it must have:
+
+- A title that says what the figure shows
+- Axis labels a reader would understand, **with units**
+- A sensible choice of colours
+- A theme that is not the grey default
+
+Then look at it and ask whether it actually tells the reader anything.
+
+------------------------------------------------------------------------
+
+## If you want to go further
+
+- Are there age differences between the RDT-positive and RDT-negative children?
+- Does **bednet use** differ by site?
+- Make your plot into a **faceted** version, one panel per village (we have not done this - but it isn't hard - see the instructions [here](https://ggplot2-book.org/facet.html)).
+
+------------------------------------------------------------------------
+
+## A last word
+
+I've made up this dataset, but nothing in it is unrealistic. Every error in this file is one I have seen in a real dataset - usually more than once, and usually after an analysis had already been run.
+
+The skill you are practising here is not really R. It is the habit of not trusting a dataset until you have looked at it.

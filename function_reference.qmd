@@ -64,7 +64,7 @@ Not functions, but you use them constantly.
 ### Everything else
 
 | Operator | Means | Week |
-|----------------------------|----------------------------|-----------------|
+|----|----|----|
 | `<-` | Assign: save this under that name | 1 |
 | `:` | A run of whole numbers — `1:10` | 1 |
 | `$` | Pull one column out of a dataframe — `iris_df$Species` | 2 |
@@ -83,7 +83,7 @@ A single `=` assigns a value. A double `==` asks a question. Mixing them up is t
 ## Making objects
 
 | Function | What it does | Week |
-|----------------------------|----------------------------|-----------------|
+|----|----|----|
 | `c()` | Combine items into a **vector** — `c(1, 2, 3)` | 1 |
 | `matrix()` | Build a 2-D matrix — `matrix(1:10, ncol = 2)` | 2 |
 | `data.frame()` | Build a dataframe (columns may be different types) | 2 |
@@ -95,7 +95,7 @@ A single `=` assigns a value. A double `==` asks a question. Mixing them up is t
 ## Inspecting objects
 
 | Function | What it does | Week |
-|----------------------------|----------------------------|-----------------|
+|----|----|----|
 | `str()` | **The one to run first.** What type is this, and what is in it? | 1 |
 | `print()` | Print to the console (typing the name alone does the same) | 1 |
 | `length()` | How many items in a vector? | 2 |
@@ -113,7 +113,7 @@ A single `=` assigns a value. A double `==` asks a question. Mixing them up is t
 Square brackets change meaning depending on what you put inside them.
 
 | Pattern | Gets you | Week |
-|----------------------------|----------------------------|-----------------|
+|----|----|----|
 | `x[3]` | The third item of a vector | 2 |
 | `x[c(3, 5)]` | The third and fifth items | 2 |
 | `x[c(FALSE, TRUE)]` | The items marked `TRUE` | 2 |
@@ -149,7 +149,7 @@ That last pattern is how you correct an error in your data **transparently** —
 ## Exploring and summarising
 
 | Function | What it does | Week |
-|----------------------------|----------------------------|-----------------|
+|----|----|----|
 | `summary()` | Sensible summary of anything — the quickest look at a dataset | 3 |
 | `mean()` / `median()` | Average / middle value | 3 |
 | `min()` / `max()` | Smallest / largest | 3 |
@@ -182,7 +182,7 @@ Only do this once you know *why* the values are missing.
 ## Packages
 
 | Function | What it does | Week |
-|----------------------------|----------------------------|-----------------|
+|----|----|----|
 | `install.packages("readr")` | Download it. **Once per computer.** Note the quotes | 3 |
 | `library(readr)` | Load it. **Every session.** No quotes | 3 |
 | `data(births)` | Load a dataset that came bundled with a package | 3 |
@@ -192,7 +192,7 @@ Packages so far: **readr** (reading files), **tidyverse** (which brings **dplyr*
 ## Getting data in
 
 | Function | What it does | Week |
-|----------------------------|----------------------------|-----------------|
+|----|----|----|
 | `read_csv("data/iris.csv")` | Read a CSV file — from **readr** | 3 |
 | `getwd()` | Where R thinks it is, for when a file path will not work | 3 |
 
@@ -266,7 +266,7 @@ A join is the easiest place in all of R to silently gain or lose data. Check `nr
 These are base R plots — fast and ugly, for looking at your own data while you work rather than for showing anyone.
 
 | Function | What it does | Week |
-|----------------------------|----------------------------|-----------------|
+|----|----|----|
 | `plot(x)` | Plot values against their position — good for spotting outliers | 3 |
 | `plot(y ~ x)` | Scatter plot of y against x | 3 |
 | `boxplot()` | Boxplot of one or more columns | 3 |
