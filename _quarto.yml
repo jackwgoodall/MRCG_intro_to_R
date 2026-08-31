@@ -20,7 +20,7 @@ website:
         text: Timetable
       - href: course_outline.qmd
         text: Course outline
-      - href: break_project.qmd
+      - href: break_project/break_project.qmd
         text: Break Project
       - href: function_reference.qmd
         text: Function Reference

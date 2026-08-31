@@ -14,11 +14,11 @@ It is not marked and there is no deadline. Do as much of it as you find useful.
 If you have your own dataset you would prefer to work on then do that.
 
 ::: callout-tip
-## What you will need
+## Setup
 
-- The data file: [u5_malaria](../data/u5_malaria.csv){download="u5_malaria.csv"}[.csv](data/u5_malaria.csv){download="sunu_survey.csv"}
+Download the data file: [u5_malaria](../data/u5_malaria.csv){download="u5_malaria.csv"}[.csv](data/u5_malaria.csv){download="sunu_survey.csv"}
 
-You can do this in your "Intro to R" project, or make a fresh one as you prefer.
+You can do this in your "Intro to R" project, or make a fresh project as you prefer.
 
 Put the CSV in a `data` folder and make a new R script in R studio.
 :::
@@ -27,11 +27,23 @@ Put the CSV in a `data` folder and make a new R script in R studio.
 
 ## The scenario
 
-This is a completely fictional dataset that I have created for this exercise.
-
 You have been handed the data from a cross-sectional malaria and anaemia survey of 250 children under five, carried out across five sites in the rainy season of 2025.
 
-Each row is one child. For each of them the field team recorded age, sex, height, mid-upper arm circumference (muac), temperature, haemoglobin, a malaria rapid diagnostic test result, and whether the child slept under a bednet.
+Each row is one child. For each of them the field team recorded for following items:
+
+| Column name | Meaning | Units |
+|----|----|----|
+| `child_id` | A unique ID for each child | \- |
+| `visit_date` | Visit Date | \- |
+| `site` | Which site the child was recruited from | \- |
+| `age_months` | Age | Months |
+| `sex` | Sex | \- |
+| `height_cm` | Height | centimeters |
+| `muac` | Mid-Upper Arm Circumference | centimeters |
+| `bednet` | Did the parents report the child slept under a bednet last night | \- |
+| `rdt_result` | Rapid diganostic test for malaria | \- |
+| `temp` | Tympanic temperature | °C |
+| `hb_gdl` | Haemoglobin | grams/decilitre |
 
 The team have gone home. Nobody is available to answer questions about it. Your job is to work out whether the data can be trusted, fix what can be fixed, and produce a first look at what it shows.
 
@@ -60,7 +72,11 @@ That second one matters as much as the rest. An analysis nobody can retrace is n
 
 Spend some time making sure the columns are the right data type.
 
-The easiest way to do this is using the built in import function in R studio, altering the columns that need to be altered and then copying the code it gives you. We did this in week 3 using `readr`
+The easiest way to do this is using the built in `Import Dataset` function in R studio, altering the columns that need to be altered and then copying the code it gives you. We did this in week 3 using `readr` package.
+
+You can also change the column type after you have imported the dataset (we covered this in week 5 before plotting).
+
+Once you have imported the dataset save an unaltered version of this as eg `u5_malaria_raw` so you can go back at the end and see the difference the data cleaning process has made.
 
 Then get to know the dataset. Find out:
 
@@ -70,20 +86,22 @@ Then get to know the dataset. Find out:
 
 ## Stage 2: Explore
 
+Explore the dataframe using R commands rather than just eyeballing. This dataset is small enough you can look through it 'manually' but many dataframes are not - and that is what we are practicing for.
+
 Run `summary()` on the whole dataframe and make sure the output makes sense to you.
 
-For each numeric column ask yourself: **is this a possible value for a child under five?** You know roughly how tall a child could plausibly be. You know what a human temperature is etc. Trust your common sense.
+For each numeric column ask yourself: **is this a possible value for a child under five?** You know roughly how tall a child could plausibly be. You know what a reasonable human temperature is etc. Trust your common sense.
 
-For the text columns, `table()` and `unique()` will tell you which values actually appear. Look for the same thing recorded more than one way (i.e. typos!) or duplications.
+For the text columns, `table()` and `unique()` will tell you which values actually appear. Look for the same thing recorded more than one way (i.e. typos!). `duplicated()` will tell you if any values are duplicated. It is very likely that some columns will have duplicated values (eg. two children might have the same height) but some should not be.
 
 Then plot the numeric columns quickly with `plot()` or `boxplot()`. A single absurd value is far easier to see than to read.
 
 ::: callout-note
 ## Two questions worth asking of every column
 
-**"Could this value happen?"** — a temperature of 3.7°C could not.
+**"Could this value happen?"** — a temperature of 39.7°C is high but possible; 3.97°C is not possible.
 
-**"Should this value be here?"** — a seven-year-old could weigh 20 kg, but they should not turn up in a dataset that only includes under-fives...
+**"Should this value be here?"** — a seven-year-old could weigh 20 kg, but they should not turn up in a dataset that *only includes under-fives.*
 :::
 
 ## Stage 3: Clean
@@ -99,7 +117,7 @@ Now fix what you found. Some ground rules:
 # Cannot confirm with the field team, so set to NA.
 ```
 
-**Prefer `NA` to guessing.** If a value is impossible and you cannot be sure what it should have been, `NA` is the honest answer. Correcting an obvious unit error is defensible; inventing a plausible number is not.
+**Prefer `NA` to guessing.** If a value is impossible and you cannot be sure what it should have been, `NA` is the honest answer. Correcting an obvious unit error is defensible; inventing a plausible number is not. Sometime it is very clear what has happened - in reality you would confirm this with the team - but you can just use your judgement here.
 
 **Do not delete whole children** because one field is unusable. If the haemoglobin is wrong, fix the haemoglobin, the rest of that child's data is still perfectly good.
 
@@ -116,8 +134,8 @@ Things to deal with, roughly in order of how hard they are to spot:
 
 With a dataframe you trust, produce:
 
-- The **mean, minimum and maximum** for each of the main measurements
-- The **number of children in each village**
+- The **mean, minimum and maximum** for each of the main numerical measurements
+- The **number of children at each site**
 - **Mean haemoglobin split by malaria test result** — this is the interesting one
 
 Add a new column while you are here: children with haemoglobin below 11 g/dL are considered **anaemic**. Use `mutate()` and `case_when()` to flag them, then find out how many there are.
@@ -125,7 +143,7 @@ Add a new column while you are here: children with haemoglobin below 11 g/dL are
 ::: callout-important
 ## Compare before and after
 
-Work out the mean haemoglobin *before* your cleaning and *after* it.
+Go back to the `u5_malaraia_raw` dataframe you made at the start and work out the mean haemoglobin *before* your cleaning and *after* it.
 
 If the number moved, you have just demonstrated why the cleaning mattered. Write down both figures.
 :::

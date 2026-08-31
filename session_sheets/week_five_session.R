@@ -35,6 +35,16 @@ library(tidyverse)
 str(iris_df$Sepal.Length)
 str(iris_df$Sepal.Width)
 
+# If they are not in the right type then ggplot won't work properly 
+# They are already correct here, but this changes Sepal.Length to character:
+
+iris_df$Sepal.Length <- as.character(iris_df$Sepal.Length)
+str(iris_df$Sepal.Length)
+
+# ... and back again:
+iris_df$Sepal.Length <- as.numeric(iris_df$Sepal.Length)
+str(iris_df$Sepal.Length)
+
 # --------------------------------
 ## Step 2 - Add the data ---------
 # --------------------------------

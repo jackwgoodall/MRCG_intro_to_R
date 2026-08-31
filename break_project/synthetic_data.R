@@ -37,8 +37,8 @@ muac <- round(if_else(rdt_result == "Positive", rnorm(250, 20, 5),
 temp <- round(if_else(rdt_result == "Positive", rnorm(250, 36.7, 2), 
                       rnorm(250, 36.1, 1)), digits = 1)
 
-hb_gdl <- round(if_else(rdt_result == "Positive", rnorm(250, 8, 2), 
-                        rnorm(250, 10, 1.5)), digits = 1)
+hb_gdl <- round(if_else(rdt_result == "Positive", rnorm(250, 10, 2), 
+                        rnorm(250, 12, 1.5)), digits = 1)
 
 
 ## visit date
