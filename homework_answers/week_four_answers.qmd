@@ -1,0 +1,304 @@
+---
+title: ""
+format: lshtm-mrcg-html
+toc: true
+toc-depth: 2
+execute:
+  echo: true
+  warning: true
+  message: true
+---
+
+# Week four answers
+
+These are the answers to the [week four homework](../homework_questions/week_four_homework.R). Every code block has actually been run, so what you see underneath it is exactly what R prints.
+
+There is very often more than one right way to do something in R. If your code produced the correct answer by a different route, it is not wrong.
+
+```{r}
+#| label: setup
+#| include: false
+library(dplyr)
+load("../data/births.Rdata")
+```
+
+::: callout-tip
+## One idea runs through this whole sheet
+
+Every tidyverse verb takes a dataframe and hands back a dataframe. That is the whole reason they chain together with the pipe.
+
+Once you have noticed that, `filter`, `mutate`, `summarise` and `group_by` stop being four separate things to remember and become four ways of saying the same sentence: "take this data, and then do this to it".
+:::
+
+------------------------------------------------------------------------
+
+## Question 1
+
+> Load the tidyverse, then load the Epi package and the births dataset
+
+```{r}
+#| eval: false
+library(tidyverse)
+
+library(Epi)
+
+data(births)
+```
+
+Nothing new here, but two things are worth saying again.
+
+`library()` needs doing every session. Restart R and all of these are gone. `install.packages()` only needs doing once per computer, which is why it belongs in the console rather than in your script.
+
+Loading `tidyverse` loads several packages at once, including `dplyr`, which is where every verb in this homework lives. You will see a short message listing what it loaded and warning you that `filter()` and `lag()` are now masked. That is normal and not a problem. It just means that when you type `filter()` you get the tidyverse version rather than the one built into R, which is exactly what you want.
+
+------------------------------------------------------------------------
+
+## Question 2
+
+> Using the pipe and `filter()`, keep only the babies with a birthweight over 3000. How many are there?
+
+```{r}
+births |>
+  filter(bweight > 3000) |>
+  nrow()
+```
+
+`r births |> filter(bweight > 3000) |> nrow()` babies out of `r nrow(births)`.
+
+Read the pipe as **"and then"**: take births, and then keep the heavy ones, and then count what is left.
+
+::: callout-note
+## Why you do not need `births$bweight` here
+
+Inside a tidyverse verb you can name columns directly. `filter()` already knows which dataframe it is working on, because you piped it in, so it knows *where* to look for `bweight`.
+
+This is one of the real conveniences of the tidyverse. Compare it with the base R version of the same thing:
+
+``` r
+births[births$bweight > 3000, ]
+```
+:::
+
+------------------------------------------------------------------------
+
+## Question 3
+
+> Now filter for babies who were BOTH preterm AND under 2000 g
+
+```{r}
+births |>
+  filter(preterm == 1, bweight < 2000)
+```
+
+`r births |> filter(preterm == 1, bweight < 2000) |> nrow()` babies meet both conditions.
+
+Splitting it into two filters gives exactly the same answer:
+
+```{r}
+births |>
+  filter(preterm == 1) |>
+  filter(bweight < 2000) |>
+  nrow()
+```
+
+Inside `filter()`, a comma means AND. You can also write it with `&` if you prefer, which is the same operator you used in week three:
+
+```{r}
+#| results: hide
+births |>
+  filter(preterm == 1 & bweight < 2000)
+```
+
+All three are correct. Use whichever reads most cleanly to you. Chaining separate filters is often easiest to follow when the conditions are long, because each line does one thing.
+
+::: callout-important
+## What `filter()` quietly did for you
+
+Ten babies have no `preterm` value recorded. For those, the question `preterm == 1` cannot be answered, so R returns `NA` rather than `TRUE` or `FALSE`.
+
+`filter()` keeps only the rows that are definitely `TRUE`, so it discards those ten without comment. That is almost always what you want, and it is a genuine advantage over the base R square brackets, which would have handed you ten rows of nothing.
+
+It is worth knowing it happened, though. Silently dropping rows is helpful right up until the moment it is not.
+:::
+
+------------------------------------------------------------------------
+
+## Question 4
+
+> `!=` means "does not equal". Use it to keep only the babies who are NOT male
+
+```{r}
+births |>
+  filter(sex != 1) |>
+  nrow()
+```
+
+`r births |> filter(sex != 1) |> nrow()` babies, which is every female in the dataset.
+
+`!=` is the opposite of `==`. The exclamation mark means "not", and you will meet it in other places for the same reason.
+
+For this particular dataset `sex != 1` and `sex == 2` give the same answer, because there are only two values. They are not the same instruction, though. If a third category ever appeared, or if some rows had `NA`, the two would part company. Saying what you mean is worth the extra thought.
+
+------------------------------------------------------------------------
+
+## Question 5
+
+> Use `mutate()` to add a column called `bweight_kg`
+
+```{r}
+births_with_kg <- births |>
+  mutate(bweight_kg = bweight / 1000)
+
+head(births_with_kg)
+```
+
+`mutate()` adds a column. The new name goes on the left of the `=`, the recipe goes on the right.
+
+Two things to notice.
+
+The "recipe" (i.e. "divide by 1000") is applied to the whole column at once. You do not write a loop, and you do not do it 500 times. This is called *vectorisation*, the same behaviour you met in week one when you multiplied a vector by two.
+
+The new column appears at the far right of the dataframe. If you want it somewhere more sensible, `mutate()` can take an `.after` argument: `mutate(bweight_kg = bweight / 1000, .after = bweight)`.
+
+Note also that `births` itself has not changed. `mutate()` builds a new dataframe and hands it back, which is why we saved it as `births_with_kg`. Every verb on this page works that way. If you do not assign the result, R prints it and forgets it.
+
+------------------------------------------------------------------------
+
+## Question 6
+
+> Use `mutate()` with `case_when()` to add a column called `weight_group`
+
+```{r}
+births_grouped <- births |>
+  mutate(weight_group = case_when(bweight <  2500 ~ "Low",
+                                  bweight >= 2500 ~ "Normal",
+                                  TRUE ~ "CHECK!"))
+
+head(births_grouped)
+```
+
+`case_when()` is `mutate()` for conditions. Each line reads "if this, then that", with the `~` separating the test from the result.
+
+The conditions are checked **in order**, and the first one that is true wins. That matters more than it looks. Had we written `bweight < 5000 ~ "Normal"` first, every baby would have come out as Normal, because that condition is true for all of them and nothing after it would ever be reached.
+
+Notice the pairing of `<` and `>=`. Together they cover every possible number with no gap and no overlap. Writing `< 2500` and `> 2500` would have left babies weighing exactly 2500 g falling through to the catch-all.
+
+------------------------------------------------------------------------
+
+## Question 7
+
+> Check your new column worked using `table()`. Did anything come out as "CHECK!"?
+
+```{r}
+table(births_grouped$weight_group)
+```
+
+No. There are only two categories, so every baby matched one of the two real conditions and nothing fell through to the catch-all.
+
+That is the answer you want, and it is worth pausing on why you bothered. The `TRUE ~ "CHECK!"` line is not there to be used. It is there so that if something *had* slipped through, you would see it immediately instead of finding out much later.
+
+What would have ended up there? Any baby whose `bweight` was `NA`. A missing value is neither less than 2500 nor greater than or equal to it, so both tests return `NA` and the row falls through to the catch-all. This dataset has no missing birth weights, so the trap never sprang. Ten missing values in `preterm` are about to matter in Question 10.
+
+::: callout-note
+## A free check on your work
+
+This dataset already has a column called `lowbw`, which the documentation describes as an indicator for birth weight under 2500 g. That is exactly what we just built.
+
+```{r}
+table(births$lowbw)
+```
+
+The counts match, which is a good sign that both the original column and your new one mean what everyone thinks they mean.
+
+Whenever you can derive something that already exists in the data, do it once and compare. Disagreement means either you have misunderstood the variable or the data has a problem, and both are worth knowing about early.
+:::
+
+------------------------------------------------------------------------
+
+## Question 8
+
+> Use `summarise()` to get the mean, minimum and maximum birth weight all in one go
+
+```{r}
+births |>
+  summarise(mean_bweight = mean(bweight),
+            min_bweight  = min(bweight),
+            max_bweight  = max(bweight))
+```
+
+`summarise()` collapses many rows into one. Here 500 babies become a single row of three numbers.
+
+Naming each one is optional but worth doing. Without names you get column headings like `mean(bweight)`, which are awkward to refer to later and look untidy in a report. With names you get something you can use.
+
+Note what `summarise()` returns: a dataframe, not a loose number. That is the pattern again, and it is why you can carry on piping afterwards if you want to.
+
+------------------------------------------------------------------------
+
+## Question 9
+
+> Add `group_by()` so that you get those same three numbers separately for boys and girls
+
+```{r}
+births |>
+  group_by(sex) |>
+  summarise(mean_bweight = mean(bweight),
+            min_bweight  = min(bweight),
+            max_bweight  = max(bweight))
+```
+
+One extra line, and the same summary now runs separately for each group.
+
+This is the piece of the tidyverse that does the most work for you. `group_by()` changes nothing you can see. It quietly attaches a label to the dataframe saying "from here on, treat these as separate piles", and the next verb obeys it.
+
+Boys are heavier than girls on average, by roughly 200 g. Whether that difference means anything is a question for week six.
+
+The one wrinkle is that `sex` is stored as 1 and 2 rather than as words, so the output makes you remember which is which. Converting a column like this into a **factor** with proper labels is exactly the sort of tidying that makes your output readable, and is coming up shortly.
+
+------------------------------------------------------------------------
+
+## Question 10
+
+> Build one chain that starts with births, groups by preterm, and summarises the mean birth weight and the median maternal age
+
+```{r}
+births |>
+  group_by(preterm) |>
+  summarise(mean_bweight  = mean(bweight),
+            median_matage = median(matage))
+```
+
+Everything from this sheet in four lines: start with the data, and then group it, and then summarise it.
+
+Preterm babies weigh very much less than term babies, which is reassuring rather than surprising. It tells you the `preterm` column means what you would expect. Maternal age barely moves between the groups.
+
+**And there are three rows, not two.**
+
+The third is `NA`. Ten babies have no gestation recorded, so their `preterm` status is unknown, and `group_by()` treats "unknown" as a group in its own right. It does not throw them away and it does not pretend they are term babies. It puts them in their own pile and shows you.
+
+This is the same ten babies you met in last week's homework, turning up again in a different guise.
+
+::: callout-important
+## Two verbs, two different habits
+
+This is worth holding onto, because the two behaviours look inconsistent until you see the logic.
+
+`filter(preterm == 1)` **drops** missing values, because it cannot confirm they meet the condition.
+
+`group_by(preterm)` **keeps** them, as a group called `NA`, because it has nothing to check them against.
+
+Both are defensible and both are the sensible default for what that verb is for. But it does mean you cannot assume missing data will be handled the same way at every step of a chain.
+
+The habit that saves you: after any chain, look at how many rows came out and ask whether it is the number you expected.
+:::
+
+------------------------------------------------------------------------
+
+## If something did not work
+
+- **`could not find function "filter"`** or a strange error from it. You have not run `library(tidyverse)` in this session, so you are getting R's built-in `filter()`, which does something entirely different.
+- **`object 'births' not found`**. You need `library(Epi)` before `data(births)`. Installing a package is not the same as loading it.
+- **`object 'bweight' not found`**. You have used a bare column name outside a tidyverse verb. Inside `filter()` or `mutate()` you can write `bweight`; outside them you need `births$bweight`.
+- **Your `case_when()` will not run.** Check for a missing comma at the end of a condition line. Every line except the last needs one.
+- **Everything came out as one category.** Your `case_when()` conditions are in the wrong order, and a broad one earlier in the list is catching everything.
+
+Still stuck? Bring it to the start of the next session.
