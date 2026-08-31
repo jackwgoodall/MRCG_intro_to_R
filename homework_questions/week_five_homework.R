@@ -9,14 +9,27 @@
 
 library(tidyverse)
 
-# Load the iris dataset (same as the session)
-iris <- read_csv(file = "data/iris.csv")
+# We are using the `air` dataset - air quality measurements taken in New York,
+# one row per day across the summer of 1973
+# Download it from the week 5 Data column on the timetable and save it in your
+# `data` folder, then import it here:
+air <- read_csv(file = "data/air.csv")
+
+# The columns are:
+#   Ozone    - ozone concentration, in parts per billion (ppb)
+#   Solar.R  - solar radiation, in Langleys
+#   Wind     - wind speed, in miles per hour
+#   Temp     - temperature, in degrees Fahrenheit
+#   Month    - month, from 5 (May) to 9 (September)
+#   Day      - day of the month
+
+# Have a quick look before you start
+str(air)
 
 # Question 1
-# Make a scatter plot of `Petal.Length` on the x axis and `Petal.Width` on the y axis
-# (We used the Sepal columns in the session - these are the Petal ones)
+# Make a scatter plot of `Temp` on the x axis and `Wind` on the y axis
 # ----------------------------------------
-ggplot(data = iris) +
+ggplot(data = air) +
 
 # ----------------------------------------
 
@@ -29,7 +42,7 @@ ggplot(data = iris) +
 # ----------------------------------------
 
 # Question 3
-# Now make the colour of the points depend on `Species` instead
+# Now make the colour of the points depend on `Month` instead
 # Why did this one have to go somewhere different to Question 2?
 # ----------------------------------------
 
@@ -39,17 +52,16 @@ ggplot(data = iris) +
 # Question 4
 # Take your Question 3 plot and add:
 # - a title and a subtitle
-# - sensible x and y axis labels (with units - the iris measurements are in cm)
-# - a legend title of "Iris species"
-# Save the whole thing as an object called `petal_plot`
+# - sensible x and y axis labels (remember the units above!)
+# - a legend title of "Month"
+# Save the whole thing as an object called `air_plot`
 # ----------------------------------------
-petal_plot <-
+air_plot <-
 
 # ----------------------------------------
 
 # Question 5
-# We only tried theme_minimal() in the session
-# Add theme_bw() to `petal_plot`, then try theme_classic()
+# Add theme_bw() to `air_plot`, then try theme_classic() and theme_minimal()
 # Which do you prefer?
 # (Remember you can add layers onto a saved plot with a + )
 # ----------------------------------------
@@ -58,24 +70,39 @@ petal_plot <-
 # ----------------------------------------
 
 # Question 6
-# Now build your own theme() layer onto `petal_plot` to:
+# Now build your own theme() layer onto `air_plot` to:
 # - make the title bold and size 16
 # - remove the panel background entirely (hint: element_blank())
 # - move the legend to the bottom
 # ----------------------------------------
 
 
+
 # ----------------------------------------
 
 # Question 7
-# Make a box plot with `Species` on the x axis and `Petal.Length` on the y axis
+# We need a categorical variable for the next few plots, so let's make one
+# Use mutate() and case_when() to add a column called `temp_cat` that is:
+#   "Cool"  when Temp is below 65
+#   "Hot"   when Temp is above 80
+#   "Mild"  otherwise
+# Save the result back into `air`
+# (case_when() from week 4 - watch the order of your conditions)
+# ----------------------------------------
+air <- air |>
+  mutate(temp_cat = case_when( ))
+
+# ----------------------------------------
+
+# Question 8
+# Make a box plot with `temp_cat` on the x axis and `Wind` on the y axis
 # Give it a title and a better y axis label
 # ----------------------------------------
 
 
 # ----------------------------------------
 
-# Question 8
+# Question 9
 # Layer the individual points on top of that box plot using geom_jitter()
 # Stop the box plot drawing its outliers, so outlying points aren't plotted twice
 # Only let the points move sideways, not up and down - and not too far
@@ -84,69 +111,41 @@ petal_plot <-
 
 # ----------------------------------------
 
-# Question 9
-# First, make a new column `Petal.Length.cat` that is "Short" when `Petal.Length`
-# is below 2.5, "Long" when it is above 5, and "Medium" otherwise
-# (case_when() from the session - watch the order of your conditions)
-# Then make a bar chart of `Petal.Length.cat` filled by `Species`, showing
-# proportions rather than counts, and choose your own three colours
-# ----------------------------------------
-
-
-# ----------------------------------------
-
 # Question 10
 # A tricky one to end with!
-# We are going to use and air quality dataset taken in New York, one row per day
-# Download this from week 5 data: https://jackwgoodall.github.io/MRCG_intro_to_R/timetable.html
-# Add it to your `data/` folder 
-# Use `readr` to import it as `air`
-# ----------------------------------------
-air <- 
+# We are going to plot how ozone changes over time
 
-  
+# First, filter the data to just Month 5 (May), then make a line plot
+# of `Ozone` (y) against `Day` (x) using geom_line()
 # ----------------------------------------
 
-# Filter it to just Month 5, then use pivot_longer() on the four measurement
-# columns c("Ozone", "Solar.R", "Wind", "Temp") so you get one row per
-# measurement, with the measurement name in a column called `measure` and the
-# number in a column called `value`
-# Complete this code:
-# ----------------------------------------
-air_longer <- air %>%
-  filter( ) %>%
-  pivot_longer( )
 
 # ----------------------------------------
 
-# Now make a line plot of `value` against `Day`, with a different coloured line
-# for each `measure`
-# ----------------------------------------
+# You will see a warning about rows being removed - hold that thought
 
- 
-# ----------------------------------------
-
-# You should find that plot is fairly useless - the four measures are on wildly
-# different scales, so Solar.R flattens everything else
-# facet_wrap() splits a plot into one small panel per group, which fixes this
+# Now go back to the WHOLE dataset (all months) and make the same line plot
+# On its own this is a mess, because the days from different months all land
+# on top of each other
+# facet_wrap() fixes this - it splits a plot into one small panel per group
 # It goes on as its own layer, and the ~ means "split by this variable":
-# Eg  + facet_wrap(~ measure)
+#   Eg   + facet_wrap(~ Month)
 # Add that to your plot
 # ----------------------------------------
 
 
 # ----------------------------------------
 
-# Each panel still shares one y axis, so it is still hard to read
-# Look up the `scales` argument of facet_wrap() and use it to give each panel
+# Each panel still shares one y axis, so they are hard to compare
+# Look up the `scales` argument in facet_wrap() help page and use it to give each panel
 # its own y axis
 # ----------------------------------------
 
 
 # ----------------------------------------
 
-# Finally - R will have warned you about rows being removed
-# Why? (Hint: look at the Ozone column)
+# Finally - about that warning that rows were removed
+# Why is it happening? (Hint: look at the Ozone column with summary())
 # ----------------------------------------
 
 #                                         <--- write your answer here

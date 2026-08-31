@@ -176,7 +176,8 @@ my_plot + # You could type out the whole plot above - this is just a way to keep
 
  # Can you modify this code to add a title and change the y axis? 
  # ----------------------------------------
- 
+ ggplot(data = iris_df) + 
+    geom_boxplot(aes(x = Species, y = Sepal.Width))
  
  # ----------------------------------------
  
@@ -258,36 +259,16 @@ my_plot + # You could type out the whole plot above - this is just a way to keep
  # ------------------------------------------------
  
  # We need a new dataset for this 
- # This is one of R's bundled datasets
- # (It is a time series object which is a bit fiddly - we
- # can make it into a dataframe in the same way we did in week 2)
+ # This makes some basic data that we can use
 
-stock_markets <- as.data.frame(datasets::EuStockMarkets)
+two_lines <- data.frame(type = c(rep("A", 100), rep("B", 100)), 
+                             time = c(1:100, 1:100),
+                             outcome = c(1:100 * 1.2,
+                                         1:100 * 1.8))
  
-stock_markets$time <- time(datasets::EuStockMarkets)
- 
- ggplot(data = stock_markets) + 
-   geom_line(aes(x = time, y = DAX))
+ ggplot(data = two_lines) + 
+   geom_line(aes(x = time, y = outcome, colour = type, group = type))
 
-
- # Use pivot longer on all the stock market columns  (c("DAX", "SMI", "CAC", "FTSE"))
- # Complete this code
- # ----------------------------------------
- stock_markets_longer <- stock_markets %>%
-   pivot_longer(cols = c("DAX", "SMI", "CAC", "FTSE"), 
-                values_to = "amount",
-                names_to = "market")
- # ----------------------------------------
- 
- # Now make a line plot with all four markets on
- # We now need the same line structure as before but now "market" becomes a colour variable
- # with group = market
- # ----------------------------------------
- stock_market_plot <- ggplot(stock_markets_longer) + 
-   geom_line(aes(x = time, y = amount, colour = market))
- 
- 
- # ----------------------------------------
  
  # Add a title 
  # Improve the x and y axis labels and the legend title
