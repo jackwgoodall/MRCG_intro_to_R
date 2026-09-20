@@ -9,15 +9,21 @@ toc-depth: 2
 
 This document works through how I would approach the under-fives malaria survey (`u5_malaria.csv`) dataset.
 
-There is no single correct cleaned dataset. You many have made different decisions on how to handle errors than I have. That's okay. What matters is that every change is in the script and defensible.
+There is no single correct cleaned dataset. You may have made different decisions on how to handle errors than I have. That's okay. What matters is that every change is in the script and defensible.
+
+::: callout-tip
+## Just want the finished script?
+
+If you would rather see this as a plain, un-annotated analysis script (the sort of thing you would actually make for a project), you can [download the simplified version here](example_analysis.R){download="example_analysis.R"}. It does the same cleaning and produces the same figure, without all the explanation.
+:::
 
 ------------------------------------------------------------------------
 
 # Stage 1: Import
 
-You could have gone about this a few ways. The 'easiest' way is to use the in-build importer function in R Studio. Here you can change columns to the correct data type directly which might save you some issues down the line. If you have to change a column type, it is often sensible to explore *why* you needed to do this. The most common reason is that there is some text lurking in a numeric column.
+You could have gone about this a few ways. The 'easiest' way is to use the built-in importer function in R Studio (like we did in week three). Here you can change columns to the correct data type directly which might save you some issues down the line. If you have to change a column type, it is often sensible to explore *why* you needed to do this. The most common reason is that there is some text lurking in a numeric column.
 
-I'm going for the alternative approach here of importing the dataset without making any changes to the data type. This lets can let you see where the errors more clearly (although there might be more faff).
+I'm going for the alternative approach here of importing the dataset without making any changes to the data type. This lets you see the errors more clearly (although there might be more faff).
 
 ```{r}
 library(tidyverse) # this is needed for read_csv
@@ -34,7 +40,7 @@ u5_malaria <- read_csv("../data/u5_malaria.csv")
 u5_malaria <- read_csv("data/u5_malaria.csv")
 ```
 
-Before we start changing things lets save an untouched copy, so the before-and-after comparison in at the end is possible:
+Before we start changing things let's save an untouched copy, so the before-and-after comparison at the end is possible:
 
 ```{r}
 u5_malaria_raw <- u5_malaria
@@ -44,7 +50,7 @@ u5_malaria_raw <- u5_malaria
 
 ## Dataset dimensions
 
-Lets first check the dimensions:
+Let's first check the dimensions:
 
 ```{r}
 dim(u5_malaria)
@@ -54,7 +60,7 @@ dim(u5_malaria)
 
 We can check if any entries are duplicated using the `duplicated()` function. This returns `FALSE` if the entry is seen for the first time and `TRUE` if the value has been seen before. Note that if an entry appears twice the first entry will be `FALSE` (as it hasn't been seen yet) and the next will be `TRUE` as it has.
 
-`duplicated(u5_malaria$child_id)` returns a vector of TRUE/FALSE (which can be very useful) but wrapping this in 'table()' gives you a count which is easier to read.
+`duplicated(u5_malaria$child_id)` returns a vector of TRUE/FALSE (which can be very useful) but wrapping this in `table()` gives you a count which is easier to read.
 
 ```{r}
 table(duplicated(u5_malaria$child_id))
@@ -100,9 +106,10 @@ nrow(u5_malaria)
 u5_malaria[u5_malaria$child_id == "MAL-51",]
 ```
 
-If you want the tidyverse approach you could us the `distinct()` function. However, it is important to check what you are losing when you do this with the steps above first rather than just blinding running this on every dataset:
+If you want the tidyverse approach you could use the `distinct()` function. However, it is important to check what you are losing when you do this with the steps above first rather than just blindly running this on every dataset:
 
 ```{r}
+#| eval: false
 # JG 08/09/2026 - MAL-51 entered three times. Keep the first, drop the copies.
 u5_malaria <- u5_malaria |>
   distinct(child_id, .keep_all = TRUE)
@@ -118,7 +125,7 @@ The next thing to do is to run `str()` on the dataset.
 str(u5_malaria)
 ```
 
-`height_cm` has come in as a **character** column, not a number. That is the fingerprint of a classic error: just one text value is enough to for the entire column to text.
+`height_cm` has come in as a **character** column, not a number. That is the fingerprint of a classic error: just one text value is enough to force the entire column to text.
 
 You *could* just look through the dataset (it will be obvious) but one way to find the problematic entry/entries is by coercing the whole column to be numeric and looking at which ones become NA as a result.
 
@@ -143,13 +150,13 @@ ie. `u5_malaria$height_cm[is.na(as.numeric(u5_malaria$height_cm))] <- NA`
 However, redefining it as numeric will make this entry and NA anyway (which is of course how we found it in the first place), so we can just do this:
 
 ```{r}
-# JG 16/09/2025 the height entry for "MAL-68" was recorded as "this child wasn't at home, we will come back if able later". This has been changed to NA.
+# JG 08/09/2026 the height entry for "MAL-68" was recorded as "this child wasn't at home, we will come back if able later". This has been changed to NA.
 u5_malaria$height_cm <- as.numeric(u5_malaria$height_cm)
 ```
 
-The error above tells us that this conversion coerced some entries to NA, which is what we hoped would happen.
+The warning above tells us that this conversion coerced some entries to NA, which is what we hoped would happen.
 
-Although just converting everything this isn't a number to NA was harmless here, this is a useful process to go through as sometimes you will find entries like `z17` or `thirty-five` which were supposed to be numbers but have been entered as characters. These would need handling differently.
+Although just converting everything that isn't a number to NA was harmless here, this is a useful process to go through as sometimes you will find entries like `z17` or `thirty-five` which were supposed to be numbers but have been entered as characters. These would need handling differently.
 
 ## Summary()
 
@@ -166,7 +173,7 @@ Reading it column by column, the things that should make you worry are:
 - **`muac`** has a maximum of **999**. MUAC does not reach the hundreds and `999` is a commonly used version of NA.
 - **`hb_gdl`** has a maximum of **150** and a mean near 19, when a child's haemoglobin should sit around 10 to 12 g/dL.
 
-Lets taken the one-by-one.
+Let's take them one by one.
 
 ## Numerical fixes
 
@@ -196,7 +203,7 @@ A quick plot makes the point-errors jump out:
 plot(u5_malaria$hb_gdl)
 ```
 
-And it is even clearer when we plot the sites seperatly:
+And it is even clearer when we plot the sites separately:
 
 ```{r}
 boxplot(u5_malaria$hb_gdl ~ u5_malaria$site)
@@ -211,7 +218,7 @@ u5_malaria$hb_gdl[u5_malaria$site == "Brikama"] <-
   u5_malaria$hb_gdl[u5_malaria$site == "Brikama"] / 10
 ```
 
-You may or may not have spotted that these were all Brikama. Even if you didn't see this you could have done something like and got the same output:
+You may or may not have spotted that these were all Brikama. Even if you didn't see this you could have done something like this and got the same output:
 
 `u5_malaria$hb_gdl[u5_malaria$hb_gdl > 400] <-   u5_malaria$hb_gdl[u5_malaria$hb_gdl > 400] / 10`
 
@@ -237,7 +244,7 @@ u5_malaria$muac[u5_malaria$muac == 999] <- NA
 
 The `temp` fix is a judgement call and worth discussing. Correcting 3.71 to 37.1 is defensible because the error is obvious and the intended value is clear. Setting it to `NA` instead would also be defensible choice, and the brief explicitly allows either. What is not defensible is leaving 3.71 in.
 
-While here, `temp` has a maximum of 42.0, which is very high, it is not impossible, so this solution leaves it, but flagging it as "worth querying with the field team" is exactly the right instinct.
+While here, `temp` has a maximum of 42.0, which is very high. It is not impossible, so this solution leaves it, but flagging it as "worth querying with the field team" is exactly the right instinct.
 
 ## Check the row count
 
@@ -245,7 +252,7 @@ While here, `temp` has a maximum of 42.0, which is very high, it is not impossib
 nrow(u5_malaria)
 ```
 
-252 to start, minus the two duplicate rows, gives 250. That is the number the brief promised, which is the confirmation you want before moving on. Nothing here should have removed a whole child for having one bad field, and nothing did. I've run this at the end here, but I would advise doing this after every change you make in the console. It is easy to remove/alter things you didn't mean to in R and it is always much easier to correct a mistake you have just made rather that than work back to it several steps down the line.
+252 to start, minus the two duplicate rows, gives 250. That is the number the brief promised, which is the confirmation you want before moving on. Nothing here should have removed a whole child for having one bad field, and nothing did. I've run this at the end here, but I would advise doing this after every change you make in the console. It is easy to remove/alter things you didn't mean to in R and it is always much easier to correct a mistake you have just made rather than work back to it several steps down the line.
 
 ## Checking text columns
 
@@ -255,7 +262,7 @@ The table() function is the most useful tool here.
 table(u5_malaria$sex)
 ```
 
-Four categories where there should be two. It's pretty clear what has happened here - some people have recorded male participants as "Female" and some as "F" (and the same for male).
+Four categories where there should be two. It's pretty clear what has happened here - some people have recorded female participants as "Female" and some as "F" (and the same for males, as "Male" and "M").
 
 ```{r}
 # JG 08/09/2026 - some coded sex as Male/Female; rest used M/F. Standardised.
@@ -307,7 +314,7 @@ It is worth noticing that MAL-10 was wrong twice, in temperature and in date. A 
 
 ## Final checks
 
-Now we think we have corrected everything lets have one final check of the dataset
+Now we think we have corrected everything let's have one final check of the dataset
 
 ```{r}
 str(u5_malaria)
@@ -441,4 +448,4 @@ There is also a harmless quirk: `write.csv()` saved the row numbers as an unname
 u5_malaria <- u5_malaria[, 2:ncol(u5_malaria)]
 ```
 
-I hope this exercise thas been helpful. If you have any feedback on how it could be improved, please email me: [jack.goodall\@lshtm.ac.uk](mailto:jack.goodall@lshtm.ac.uk).
+I hope this exercise has been helpful. If you have any feedback on how it could be improved, please email me: [jack.goodall\@lshtm.ac.uk](mailto:jack.goodall@lshtm.ac.uk).

@@ -6,6 +6,9 @@ project:
     - "homework_questions/*.R"
     # .R only — the .qmd answer pages in this folder are rendered, not copied raw
     - "homework_answers/*.R"
+    # the clean break-project script, so it can be downloaded from the worked solution
+    # (named explicitly so synthetic_data.R etc. are never copied)
+    - "break_project/example_analysis.R"
     - "data/**"
 
 website:
