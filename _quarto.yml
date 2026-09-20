@@ -21,8 +21,12 @@ website:
         text: Timetable
       - href: course_outline.qmd
         text: Course outline
-      - href: break_project/break_project.qmd
-        text: Break Project
+      - text: Break Project
+        menu:
+          - href: break_project/break_project.qmd
+            text: Instructions
+          - href: break_project/worked_answers.qmd
+            text: Worked answers
       - href: function_reference.qmd
         text: Function Reference
       - href: resources.qmd
