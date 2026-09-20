@@ -25,6 +25,8 @@ format: lshtm-mrcg-html
 
 [Break project instructions](break_project/break_project.qmd)
 
+[Break project worked solutions](break_project/worked_answers.qmd)
+
 ## Statistics
 
 This is not intended as a statistics course - if you are feeling a little rusty on stats here are some suggestions

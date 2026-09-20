@@ -1,0 +1,444 @@
+---
+title: ""
+format: lshtm-mrcg-html
+toc: true
+toc-depth: 2
+---
+
+# Break project: worked solution
+
+This document works through how I would approach the under-fives malaria survey (`u5_malaria.csv`) dataset.
+
+There is no single correct cleaned dataset. You many have made different decisions on how to handle errors than I have. That's okay. What matters is that every change is in the script and defensible.
+
+------------------------------------------------------------------------
+
+# Stage 1: Import
+
+You could have gone about this a few ways. The 'easiest' way is to use the in-build importer function in R Studio. Here you can change columns to the correct data type directly which might save you some issues down the line. If you have to change a column type, it is often sensible to explore *why* you needed to do this. The most common reason is that there is some text lurking in a numeric column.
+
+I'm going for the alternative approach here of importing the dataset without making any changes to the data type. This lets can let you see where the errors more clearly (although there might be more faff).
+
+```{r}
+library(tidyverse) # this is needed for read_csv
+```
+
+```{r}
+#| echo: false
+u5_malaria <- read_csv("../data/u5_malaria.csv")
+```
+
+
+```{r}
+#| eval: false 
+u5_malaria <- read_csv("data/u5_malaria.csv")
+```
+
+Before we start changing things lets save an untouched copy, so the before-and-after comparison in at the end is possible:
+
+```{r}
+u5_malaria_raw <- u5_malaria
+```
+
+# Stage 2: Explore
+
+## Dataset dimensions
+
+Lets first check the dimensions:
+
+```{r}
+dim(u5_malaria)
+```
+
+252 rows, not the 250 the brief promised... there could be lots of reasons for this (including there really being 252 participants and the brief was wrong) but more thought is needed.
+
+We can check if any entries are duplicated using the `duplicated()` function. This returns `FALSE` if the entry is seen for the first time and `TRUE` if the value has been seen before. Note that if an entry appears twice the first entry will be `FALSE` (as it hasn't been seen yet) and the next will be `TRUE` as it has.
+
+`duplicated(u5_malaria$child_id)` returns a vector of TRUE/FALSE (which can be very useful) but wrapping this in 'table()' gives you a count which is easier to read.
+
+```{r}
+table(duplicated(u5_malaria$child_id))
+```
+
+This shows us that there are some duplicated child IDs. We can recycle some of this code to see which ones they are:
+
+```{r}
+u5_malaria$child_id[duplicated(u5_malaria$child_id)]
+```
+
+Okay so we have two duplicated "MAL-51" (meaning three entries in total).
+
+Let's look just at those entries:
+
+```{r}
+u5_malaria[u5_malaria$child_id == "MAL-51",]
+```
+
+These look like they are pure duplicates so we can just remove the additional ones.
+
+Remember that `duplicated()` is `FALSE` for the initial entry and `TRUE` for the follow up ones - we can use this help us out here.
+
+We are now making a change to the dataset so it is good practice to mark this with you details and *why* you are making the change:
+
+```{r}
+# JG 08/09/2026.  There are three fully duplicated entries for participant MAL-51. 
+# Duplicated rows removed from the dataset
+u5_malaria <- u5_malaria[!duplicated(u5_malaria$child_id), ]
+```
+
+The exclamation mark means that we are selecting only those which *are not* duplicated.
+
+We can reassure ourselves that this now has the right number of rows:
+
+```{r}
+nrow(u5_malaria)
+```
+
+...and that we still have a single entry for "MAL-51":
+
+```{r}
+u5_malaria[u5_malaria$child_id == "MAL-51",]
+```
+
+If you want the tidyverse approach you could us the `distinct()` function. However, it is important to check what you are losing when you do this with the steps above first rather than just blinding running this on every dataset:
+
+```{r}
+# JG 08/09/2026 - MAL-51 entered three times. Keep the first, drop the copies.
+u5_malaria <- u5_malaria |>
+  distinct(child_id, .keep_all = TRUE)
+```
+
+`distinct()` on `child_id` keeps one row per child. `.keep_all = TRUE` says keep all the other columns too, rather than reducing the data to a single column of ids.
+
+## str()
+
+The next thing to do is to run `str()` on the dataset.
+
+```{r}
+str(u5_malaria)
+```
+
+`height_cm` has come in as a **character** column, not a number. That is the fingerprint of a classic error: just one text value is enough to for the entire column to text.
+
+You *could* just look through the dataset (it will be obvious) but one way to find the problematic entry/entries is by coercing the whole column to be numeric and looking at which ones become NA as a result.
+
+This code looks complicated but it just the height_cm vector (`u5_malaria$height_cm`) wrapped in the `as.numeric()` function, wrapped in turn in the `is.na` function.
+
+```{r}
+u5_malaria$height_cm[is.na(as.numeric(u5_malaria$height_cm))]
+```
+
+We can see which child this entry was for by slightly adapting the code. Here I have just switched the vector we are looking at from the height_cm vector of the dataset to the child_id vector and kept everything else the same:
+
+```{r}
+u5_malaria$child_id[is.na(as.numeric(u5_malaria$height_cm))]
+```
+
+It looks like they never got round to going back and this should really be "NA".
+
+As always anything we can select we can change so we could just use the code above to change this to NA.
+
+ie. `u5_malaria$height_cm[is.na(as.numeric(u5_malaria$height_cm))] <- NA`
+
+However, redefining it as numeric will make this entry and NA anyway (which is of course how we found it in the first place), so we can just do this:
+
+```{r}
+# JG 16/09/2025 the height entry for "MAL-68" was recorded as "this child wasn't at home, we will come back if able later". This has been changed to NA.
+u5_malaria$height_cm <- as.numeric(u5_malaria$height_cm)
+```
+
+The error above tells us that this conversion coerced some entries to NA, which is what we hoped would happen.
+
+Although just converting everything this isn't a number to NA was harmless here, this is a useful process to go through as sometimes you will find entries like `z17` or `thirty-five` which were supposed to be numbers but have been entered as characters. These would need handling differently.
+
+## Summary()
+
+The next thing to do is to run `summary()` on the whole dataset.
+
+```{r}
+summary(u5_malaria)
+```
+
+Reading it column by column, the things that should make you worry are:
+
+- **`age_months`** has a maximum of **380**. A child of 380 months is nearly 32 years old (and this is an under fives dataset).
+- **`temp`** has a minimum of **3.71**. No living person is that temperature.
+- **`muac`** has a maximum of **999**. MUAC does not reach the hundreds and `999` is a commonly used version of NA.
+- **`hb_gdl`** has a maximum of **150** and a mean near 19, when a child's haemoglobin should sit around 10 to 12 g/dL.
+
+Lets taken the one-by-one.
+
+## Numerical fixes
+
+### Haemoglobin
+
+The haemoglobin problem is clearest split by site:
+
+```{r}
+u5_malaria |>
+  group_by(site) |>
+  summarise(mean_hb = mean(hb_gdl))
+```
+
+| site      | mean_hb   |
+|-----------|-----------|
+| Basse     | 11.7      |
+| Brikama   | **109.7** |
+| Essau     | 11.7      |
+| Farafenni | 11.0      |
+| Kuntaur   | 11.9      |
+
+Brikama stands out by a factor of ten. That is the signature of a unit mix-up: someone recorded Brikama in g/L while everyone else used g/dL. This error is the most consequential one in the file because the numbers are not absurd on their own. `109` is a perfectly ordinary number. It is only wrong in context.
+
+A quick plot makes the point-errors jump out:
+
+```{r}
+plot(u5_malaria$hb_gdl)
+```
+
+And it is even clearer when we plot the sites seperatly:
+
+```{r}
+boxplot(u5_malaria$hb_gdl ~ u5_malaria$site)
+```
+
+What has happened here is that participants in Brikama have been recorded as g/L and not g/dL and hence is a factor of ten out:
+
+```{r}
+# JG 08/09/2026 - Brikama Hb recorded in g/L not g/dL (~10x the other sites).
+# Divide those values by 10 to bring them into g/dL.
+u5_malaria$hb_gdl[u5_malaria$site == "Brikama"] <-
+  u5_malaria$hb_gdl[u5_malaria$site == "Brikama"] / 10
+```
+
+You may or may not have spotted that these were all Brikama. Even if you didn't see this you could have done something like and got the same output:
+
+`u5_malaria$hb_gdl[u5_malaria$hb_gdl > 400] <-   u5_malaria$hb_gdl[u5_malaria$hb_gdl > 400] / 10`
+
+I've picked 400 as a point which is clearly far too high for this to be a real haemoglobin in g/dl (but still lower than any of the real values in g/L) and corrected all of those.
+
+### Age, temperature and muac fixes
+
+This is where a real analysis most often goes wrong. R doesn't give you any errors as it doesn't know what a reasonable human temperature is etc. It is worth noting that you need to bring your scientific knowledge and common sense into this (e.g. knowing what temperatures are impossible, or what the normal range for a muac is).
+
+We can see all of these errors from the summary table, however in a real analysis you should plot them all out too like we did for haemoglobin.
+
+```{r}
+# JG 08/09/2026 - age of 380 months (~32 yrs) impossible in an under-5s survey.
+u5_malaria$age_months[u5_malaria$age_months == 380] <- NA
+
+# JG 08/09/2026 - temp of 3.71 impossible; almost certainly a slipped decimal
+# for 37.1. Clear enough to correct rather than drop.
+u5_malaria$temp[u5_malaria$temp == 3.71] <- 37.1
+
+# JG 08/09/2026 - muac of 999 is a "not measured" code, not a measurement.
+u5_malaria$muac[u5_malaria$muac == 999] <- NA
+```
+
+The `temp` fix is a judgement call and worth discussing. Correcting 3.71 to 37.1 is defensible because the error is obvious and the intended value is clear. Setting it to `NA` instead would also be defensible choice, and the brief explicitly allows either. What is not defensible is leaving 3.71 in.
+
+While here, `temp` has a maximum of 42.0, which is very high, it is not impossible, so this solution leaves it, but flagging it as "worth querying with the field team" is exactly the right instinct.
+
+## Check the row count
+
+```{r}
+nrow(u5_malaria)
+```
+
+252 to start, minus the two duplicate rows, gives 250. That is the number the brief promised, which is the confirmation you want before moving on. Nothing here should have removed a whole child for having one bad field, and nothing did. I've run this at the end here, but I would advise doing this after every change you make in the console. It is easy to remove/alter things you didn't mean to in R and it is always much easier to correct a mistake you have just made rather that than work back to it several steps down the line.
+
+## Checking text columns
+
+The table() function is the most useful tool here.
+
+```{r}
+table(u5_malaria$sex)
+```
+
+Four categories where there should be two. It's pretty clear what has happened here - some people have recorded male participants as "Female" and some as "F" (and the same for male).
+
+```{r}
+# JG 08/09/2026 - some coded sex as Male/Female; rest used M/F. Standardised.
+u5_malaria$sex[u5_malaria$sex == "Male"]   <- "M"
+u5_malaria$sex[u5_malaria$sex == "Female"] <- "F"
+```
+
+If you are a fan of the tidyverse (I'm not really - but I am in a minority) you might reach for `case_when()` or `if_else()` inside `mutate()` instead, which does the job just as well:
+
+```{r}
+u5_malaria <- u5_malaria |>
+  mutate(sex = case_when(sex == "Male"   ~ "M",
+                         sex == "Female" ~ "F",
+                         TRUE ~ sex))
+```
+
+Check it worked:
+
+```{r}
+table(u5_malaria$sex)
+```
+
+Two categories, as it should be.
+
+```{r}
+table(u5_malaria$site)
+table(u5_malaria$bednet)
+table(u5_malaria$rdt_result)
+```
+
+These looks okay.
+
+## Dates
+
+```{r}
+min(u5_malaria$visit_date)
+max(u5_malaria$visit_date)
+```
+
+MAL-10's `visit_date` is 2021-08-05, four years before the survey. It is clearly wrong, but unlike the temperature there is no obvious correct value. It might be a typo for 2025, or the whole record might be suspect. The options are to set it to `NA` or to flag the record and ask. We don't have access to the field team to check so let's set it to `NA`:
+
+```{r}
+# JG 08/09/2026 - visit_date predates the survey by 4 years. Cannot infer the
+# true date, so set to NA and flag for the field team.
+u5_malaria$visit_date[u5_malaria$visit_date < as.Date("2025-01-01")] <- NA
+```
+
+It is worth noticing that MAL-10 was wrong twice, in temperature and in date. A record that is unreliable in one field is a reason to look harder at its other values. I would ask the field team to review this whole record if that was possible.
+
+## Final checks
+
+Now we think we have corrected everything lets have one final check of the dataset
+
+```{r}
+str(u5_malaria)
+summary(u5_malaria)
+```
+
+------------------------------------------------------------------------
+
+# Stage 3: Summarise
+
+```{r}
+u5_malaria |>
+  summarise(mean_hb   = mean(hb_gdl),
+            min_hb    = min(hb_gdl),
+            max_hb    = max(hb_gdl),
+            mean_temp = mean(temp),
+            mean_muac = mean(muac, na.rm = TRUE))
+```
+
+Note the `na.rm = TRUE` on `muac`. Once the three `999`s are `NA`, the mean is `NA` unless you tell R to ignore the missing values.
+
+Children per site:
+
+```{r}
+u5_malaria |>
+  count(site)
+```
+
+Essau is back to 70, the duplicate gone.
+
+The interesting one, haemoglobin by malaria result:
+
+```{r}
+u5_malaria |>
+  group_by(rdt_result) |>
+  summarise(mean_hb = mean(hb_gdl), n = n())
+```
+
+Children who tested positive for malaria have lower haemoglobin on average, by about 1.8 g/dL. That is the expected direction, and a reassuring sign that the cleaned data behaves the way the biology says it should.
+
+The anaemia flag:
+
+```{r}
+u5_malaria <- u5_malaria |>
+  mutate(anaemic = case_when(hb_gdl <  11 ~ "Anaemic",
+                             hb_gdl >= 11 ~ "Not anaemic",
+                             TRUE ~ "CHECK!"))
+
+table(u5_malaria$anaemic)
+
+```
+
+77 of the 250 children are anaemic. The `CHECK!` catch-all caught nothing, which is what you want, but it would have caught any child with a missing haemoglobin. There are none here, so it stays empty. This is there to check you're coding, and can be removed after if you prefer.
+
+### The before-and-after check
+
+```{r}
+mean(u5_malaria_raw$hb_gdl)   # before any cleaning
+
+mean(u5_malaria$hb_gdl)       # after cleaning
+
+```
+
+The raw mean haemoglobin was **19.4 g/dL**, which is clearly wrong. After cleaning it is **11.6 g/dL**, which is exactly where under-fives should sit.
+
+Almost all of that shift comes from twenty Brikama children whose values were ten times too high. Twenty rows out of 250, one silent unit error, and the headline number was nearly double what it should be. Nobody reading a report of "mean haemoglobin 19.4" would have known, unless the person who made it had looked first.
+
+------------------------------------------------------------------------
+
+# Stage 4: Plot
+
+A boxplot of haemoglobin by malaria result:
+
+```{r}
+ggplot(u5_malaria) +
+  geom_boxplot(aes(x = rdt_result, y = hb_gdl, fill = rdt_result),
+               outliers = FALSE) +
+  geom_jitter(aes(x = rdt_result, y = hb_gdl),
+              size = 2, width = 0.2, height = 0, alpha = 0.4) +
+  labs(title = "Haemoglobin measurements by malaria test result",
+       subtitle = "250 children under five, five sites, rainy season 2025",
+       x = "Malaria rapid diagnostic test result",
+       y = "Haemoglobin (g/dL)") +
+  scale_fill_manual(values = c("Negative" = "#685581",
+                               "Positive" = "#6E8155")) +
+  theme_minimal() + 
+  theme(legend.position = "none",
+          panel.grid.major.x = element_blank())
+```
+
+The jittered points over the boxes show the spread honestly, and are the layering idea from week 5.
+
+# Going further
+
+If you wanted to go further with this I think faceting by site would be a good next step.
+
+```{r}
+ggplot(u5_malaria) +
+  geom_boxplot(aes(x = rdt_result, y = hb_gdl, fill = rdt_result)) +
+  facet_wrap(~ site) +
+  labs(title = "Haemoglobin by malaria result, split by site",
+       x = NULL, y = "Haemoglobin (g/dL)") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+Part of the value of this version is that Brikama now looks like everywhere else. If the unit error had not been cleaned, this is the plot that would have exposed it, with one panel on a wildly different scale to the other four.
+
+There are lots of other plots you could make here (looking at bednets, age vs haemoglobin etc.). Do experiment.
+
+------------------------------------------------------------------------
+
+# Summary of every change
+
+The record the brief asks students to keep. A complete one looks like this:
+
+| Column | Change | Rows affected | Reason |
+|------------------|------------------|------------------|------------------|
+| `height_cm` | text set to `NA`, column converted to numeric | 1 (MAL-68) | free-text note in a measurement cell |
+| `age_months` | 380 set to `NA` | 1 (MAL-118) | impossible age for an under-fives survey |
+| `temp` | 3.71 corrected to 37.1 | 1 (MAL-10) | clear slipped decimal |
+| `muac` | 999 set to `NA` | 3 | "not measured" code, not a measurement |
+| `hb_gdl` | Brikama values divided by 10 | 20 | recorded in g/L rather than g/dL |
+| `sex` | Male/Female recoded to M/F | 60 | inconsistent coding at one site |
+| (rows) | duplicate child removed | 2 | MAL-51 entered three times |
+| `visit_date` | set to `NA` | 1 (MAL-10) | date outside the survey window |
+
+There is also a harmless quirk: `write.csv()` saved the row numbers as an unnamed first column, which `read_csv()` will import as `...1`. I've ignored it but you could always remove if you wanted to:
+
+```{r}
+u5_malaria <- u5_malaria[, 2:ncol(u5_malaria)]
+```
+
+I hope this exercise thas been helpful. If you have any feedback on how it could be improved, please email me: [jack.goodall\@lshtm.ac.uk](mailto:jack.goodall@lshtm.ac.uk).

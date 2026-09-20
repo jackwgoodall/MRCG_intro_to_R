@@ -1,0 +1,345 @@
+---
+title: ""
+format: lshtm-mrcg-html
+toc: true
+toc-depth: 2
+execute:
+  echo: true
+  warning: true
+  message: true
+  fig-width: 7
+  fig-height: 4.2
+---
+
+# Week five answers
+
+These are the answers to the [week five homework](../homework_questions/week_five_homework.R). Every plot below has actually been drawn by the code above it, so what you see is what R produces.
+
+There is very often more than one right way to do something in R, and this is especially true of ggplot. If your plot showed the same thing by a different route, or you simply chose different colours, it is not wrong.
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+air <- read_csv("../data/air.csv")
+```
+
+::: callout-tip
+## The one idea behind every plot this week
+
+A ggplot is built up in layers, joined with `+`. You start with `ggplot()`, add a `geom_` to say what kind of plot, and use `aes()` to connect columns of your data to things you can see: the x axis, the y axis, colour.
+
+The single most useful thing to get straight is what goes **inside** `aes()` and what goes **outside** it. Questions 2 and 3 are entirely about that distinction, and it is worth giving them some thought.
+:::
+
+------------------------------------------------------------------------
+
+## Question 1
+
+> Make a scatter plot of `Temp` on the x axis and `Wind` on the y axis
+
+```{r}
+ggplot(data = air) +
+  geom_point(aes(x = Temp, y = Wind))
+```
+
+Three pieces, and every plot this week is a variation on them.
+
+`ggplot(data = air)` on its own draws nothing but a blank grey panel. It just tells ggplot which dataframe to use. `geom_point()` is the layer that adds the points. `aes()` is where you say which column goes on which axis.
+
+The `+` joins the layers. It has to sit at the **end** of a line, not the start of the next one. This is the ggplot equivalent of the pipe, and a very common first mistake is to put the `+` in the wrong place.
+
+The plot itself shows what you would expect from the weather: windier days tend to be cooler, calmer days warmer. No warning appeared here because neither `Temp` nor `Wind` has any missing values. Hold that thought for Question 10.
+
+------------------------------------------------------------------------
+
+## Question 2
+
+> Make every point on that plot the same colour
+
+```{r}
+ggplot(data = air) +
+  geom_point(aes(x = Temp, y = Wind), colour = "cadetblue")
+```
+
+The important thing here is *where* `colour` goes. It is **outside** `aes()`, sitting next to it inside `geom_point()`.
+
+That is because you are not connecting colour to any column of the data. You are just saying "make all the points this one colour". `aes()` is for mappings, connecting something you can see to something in the data. A fixed colour is not a mapping, so it does not belong there.
+
+R knows a surprising number of colour names. `"steelblue"`, `"tomato"`, `"darkgreen"` and hundreds more all work, and you can also use hex codes like `"#0D5257"` if you want an exact shade. See the [Resources](../resources.qmd) page for some ideas on where you can find
+
+------------------------------------------------------------------------
+
+## Question 3
+
+> Now make the colour of the points depend on `Month`. Why did this have to go somewhere different to Question 2?
+
+```{r}
+ggplot(data = air) +
+  geom_point(aes(x = Temp, y = Wind, colour = Month))
+```
+
+This time `colour` is **inside** `aes()`, alongside x and y.
+
+That is the answer to the question. In Question 2 colour was a fixed value, so it went outside. Here colour depends on a column, `Month`, so it is a mapping, and mappings go inside `aes()`. The rule is simple once you have it: **if the thing depends on your data, it goes inside `aes()`. If it is a fixed value, it goes outside.**
+
+There is a second thing worth noticing. `Month` is stored as a number (5 to 9), so ggplot has given you a smooth colour *gradient* and a sliding colour bar, rather than five separate colours with a tidy legend. That is the right behaviour for a number. If you wanted five distinct blocks of colour instead, you would first have to tell R that Month is a category rather than a quantity. You could either change it in the dataset with this line:
+
+`air$month <- as.factor(air$month)`
+
+...or you could put the `as.factor` directly in the plot:\
+
+```{r}
+ggplot(data = air) +
+  geom_point(aes(x = Temp, y = Wind, colour = as.factor(Month))) + 
+  labs(colour = "Month")
+```
+
+Note that you need to change the label for the legend, otherwise it will read "as.factor(Month)", which is fine if you're just exploring the dataset but not ideal for sharing, presenting, publishing etc.
+
+::: callout-note
+## The mistake this question is designed to catch
+
+If you write `colour = "steelblue"` *inside* `aes()`, you do not get steelblue points. You get red points and a legend labelled "steelblue".
+
+That looks baffling until you see why: inside `aes()`, R assumes everything refers to data. It cannot find a column called "steelblue", so it treats the word itself as a one-category variable, invents a colour for that category, and builds a legend for it. The fix is always to move a *fixed* colour outside `aes()`.
+:::
+
+------------------------------------------------------------------------
+
+## Question 4
+
+> Take your Question 3 plot and add a title, subtitle, axis labels with units, and a legend title. Save it as `air_plot`
+
+```{r}
+air_plot <- ggplot(data = air) +
+  geom_point(aes(x = Temp, y = Wind, colour = Month)) +
+  labs(title = "Windier days tend to be cooler",
+       subtitle = "Daily air quality measurements, New York, summer 1973",
+       x = "Temperature (°F)",
+       y = "Wind speed (mph)",
+       colour = "Month")
+
+air_plot
+```
+
+`labs()` is one more layer, added with `+` like the rest. Each label is set by name.
+
+The units matter, and they are the whole reason the homework nagged you about them. "Temperature" alone leaves a reader guessing between Fahrenheit and Celsius, and here it is Fahrenheit, which most (non-American) readers would not assume. A good axis label states the units so nobody has to wonder.
+
+Saving the plot as `air_plot` means we can keep adding to it in the next two questions without retyping all of this. A saved plot is just an object, like any other, and you build on it with `+`.
+
+------------------------------------------------------------------------
+
+## Question 5
+
+> Add `theme_bw()` to `air_plot`, then try `theme_classic()` and `theme_minimal()`
+
+```{r}
+air_plot + theme_bw()
+```
+
+```{r}
+air_plot + theme_minimal()
+```
+
+A `theme_` function restyles the whole plot in one go: the background, the gridlines, the fonts, the border. You do not have to like the grey default, and swapping it out is a single word.
+
+Because `air_plot` is saved, you can try each one just by adding it: `air_plot + theme_classic()`, and so on. Nothing about the data or the points changes, only the surrounding style. Which you prefer is genuinely a matter of taste. `theme_minimal()` and `theme_bw()` are both common choices for something you would put in a report.
+
+------------------------------------------------------------------------
+
+## Question 6
+
+> Build your own `theme()` layer to make the title bold and size 16, remove the panel background, and move the legend to the bottom
+
+```{r}
+air_plot +
+  theme(plot.title = element_text(face = "bold", size = 16),
+        panel.background = element_blank(),
+        legend.position = "bottom")
+```
+
+`theme()` with a lower-case t, and no preset name, is how you change individual elements yourself rather than taking a ready-made set.
+
+Each line targets one part of the plot. The pattern takes some getting used to: you name the element you want to change, then wrap the change in an `element_` function that matches what sort of thing it is.
+
+- `plot.title` is text, so it is changed with `element_text()`.
+- `panel.background` is a rectangle, and `element_blank()` is the special one that means "remove this entirely".
+- `legend.position` is simpler and just takes a word: `"bottom"`, `"top"`, `"left"`, `"right"`, or `"none"` to remove the legend altogether.
+
+You will not remember these names, and you are not meant to. Everyone looks them up. The [theme reference page](https://ggplot2.tidyverse.org/reference/theme.html) lists every element there is.
+
+------------------------------------------------------------------------
+
+## Question 7
+
+> Use `mutate()` and `case_when()` to add a column `temp_cat`: "Cool" below 65, "Hot" above 80, "Mild" otherwise. Save it back into `air`
+
+```{r}
+air <- air |>
+  mutate(temp_cat = case_when(Temp <  65 ~ "Cool",
+                              Temp >  80 ~ "Hot",
+                              TRUE ~ "Mild"))
+
+table(air$temp_cat)
+```
+
+This is week 4's `case_when()` doing exactly the job it did before, and the reason it turns up now is that the next two plots need a *categorical* x axis. None of the columns in `air` is a category, so we make one.
+
+The order of the conditions matters, as always. "Cool" is tested first, then "Hot", and the `TRUE ~ "Mild"` at the end catches everything left over, which is every day between 65 and 80.
+
+Notice we saved the result back into `air` with `air <- air |> ...` which adds this new column into our original dataframe.
+
+------------------------------------------------------------------------
+
+## Question 8
+
+> Make a box plot with `temp_cat` on the x axis and `Wind` on the y axis
+
+```{r}
+ggplot(data = air) +
+  geom_boxplot(aes(x = temp_cat, y = Wind)) +
+  labs(title = "Wind speed by temperature category",
+       x = "Temperature category",
+       y = "Wind speed (mph)")
+```
+
+A boxplot needs a category on one axis and a number on the other, which is why we had to build `temp_cat` first. Swap `geom_point()` for `geom_boxplot()` and the grammar is otherwise identical.
+
+Each box shows the middle half of the data, with the thick line at the median and the whiskers reaching out to the rest. It is a much denser summary than a scatter of points, and it makes it easy to compare groups. Here the cool days do look a little windier on average, which fits the scatter plot back in Question 1.
+
+The categories sit in alphabetical order along the x axis (Cool, Hot, Mild) because that is R's default for a character column. Putting them in a more sensible order, Cool then Mild then Hot, is a factor job for later in the course.
+
+------------------------------------------------------------------------
+
+## Question 9
+
+> Layer the individual points on top of that box plot using `geom_jitter()`
+
+```{r}
+ggplot(data = air) +
+  geom_boxplot(aes(x = temp_cat, y = Wind), outliers = FALSE) +
+  geom_jitter(aes(x = temp_cat, y = Wind), width = 0.2, height = 0)
+```
+
+Two geoms, one plot. This is layering, and it is where ggplot starts to feel powerful. The boxplot goes down first, then the points are drawn on top.
+
+Three details are important here:
+
+`outliers = FALSE` on the boxplot stops it drawing its own outlier points. Without it, the outliers would appear twice, once from the boxplot and once from the points we are adding, which is misleading.
+
+`geom_jitter()` is `geom_point()` with a deliberate wobble added, so that points landing on the same spot are nudged apart and you can see how many there are. On a plain `geom_point()` they would stack invisibly.
+
+`height = 0` is the important. The y axis *is* the wind speed, the actual measurement, so we must not let the points move up or down, or we would be distorting the values. `width = 0.2` lets them spread a little sideways, where the exact horizontal position means nothing anyway. You want this to be wide enough that they are not on top of each other (and so hidden) and narrow enough that it is clear which of the categories the point belongs to.
+
+------------------------------------------------------------------------
+
+## Question 10
+
+> Plot how ozone changes over time
+
+First, just May:
+
+```{r}
+air |>
+  filter(Month == 5) |>
+  ggplot() +
+  geom_line(aes(x = Day, y = Ozone))
+```
+
+`geom_line()` joins the points in order along the x axis, which is what you want for something changing over time. Notice the pipe flowing straight into `ggplot()`: we filter to May and then hand the result to the plot. That works because `filter()` returns a dataframe, exactly what `ggplot()` wants.
+
+You will also have seen a warning that some rows were removed. We come back to that at the very end. It is not an error, and the plot still drew.
+
+Now the whole summer at once:
+
+```{r}
+ggplot(data = air) +
+  geom_line(aes(x = Day, y = Ozone)) +
+  facet_wrap(~ Month)
+```
+
+On its own, a single line across all five months would be a mess, because Day runs 1 to 31 five times over and the lines cross back on themselves. `facet_wrap()` fixes this by splitting the plot into one small panel per month. It is a whole new idea and one of the things that makes ggplot worth learning: one extra layer, and a tangle becomes five clean panels.
+
+The `~ Month` is the same "by this variable" notation you would use elsewhere. Read it as "facet by Month".
+
+The panels are still hard to compare, though, because they all share one y axis stretched to fit the busiest month. Giving each its own:
+
+```{r}
+ggplot(data = air) +
+  geom_line(aes(x = Day, y = Ozone)) +
+  facet_wrap(~ Month, scales = "free_y")
+```
+
+`scales = "free_y"` lets each panel scale its y axis to its own data. Now the shape within each month is readable. The trade-off is that you can no longer compare heights across panels by eye, so it is a choice to make deliberately rather than a default to reach for.
+
+### Making a "proper" data column
+
+I am not expecting you to do this for this homework, however you *could* make a proper data column to put this all onto one plot.\
+We know this dataset shows the dates in 1973 (I gave you that at the start) so we can use this to construct a date column like this:
+
+```{r}
+air <- air |> 
+  mutate(Date = as.Date(paste0("1973-", Month, "-", Day)))
+```
+
+We need to construct something in the data format "YYYY-MM-DD" which is R's default date format (which you can change if needed).
+
+Here the function `paste0` adds custom text and columns together to make a new vector.
+
+We wrap it in `as.Date()` to transform it into a date.
+
+We can then plot:
+
+```{r}
+ggplot(data = air) +
+  geom_line(aes(x = Date, y = Ozone))
+```
+
+### Why the rows were removed
+
+```{r}
+summary(air$Ozone)
+```
+
+There it is: `Ozone` has `r sum(is.na(air$Ozone))` missing values, out of `r nrow(air)` days. `summary()` reports them on the `NA's` line.
+
+`geom_line()` cannot draw through a day it has no reading for, so it drops those days and warns you that it has. That is the warning you saw. It is R being honest rather than R going wrong: it is telling you your data has gaps, which is worth knowing. Those gaps are also why the ozone lines have visible breaks in them.
+
+## Showing the gaps
+
+Again, this is beyond what was asked for the homework, but we could make a new dataset which had only the complete data:
+
+```{r}
+air_complete <- air |> 
+  filter(!is.na(Ozone))
+```
+
+We could then this as a dotted line *behind* the full dataset to join up the missing data:
+
+```{r}
+ggplot() +
+  geom_line(data = air_complete, aes(x = Date, y = Ozone), linetype = 2) + 
+  geom_line(data = air, aes(x = Date, y = Ozone))
+```
+
+A few things to note here which are new:
+
+- There is a different `data =` argument for each `geom_line` - this selects the different datasets
+
+- `linetype = 2` changes the linetype to a dashed line. There are a few other linetypes available.
+
+------------------------------------------------------------------------
+
+## If something did not work
+
+- **Nothing appears, or you get `+` on a new line in the console.** Your `+` is at the start of a line instead of the end of the previous one. ggplot layers join at the end of the line.
+
+- **Red points and a legend named after a colour.** You have put a fixed colour *inside* `aes()`. Move it outside, into `geom_point()` proper.
+
+- **`object 'temp_cat' not found` in Question 8.** You did not save the result of Question 7 back into `air`. Check for the `air <-` at the front.
+
+- **`could not find function "ggplot"`.** You have not run `library(tidyverse)` this session.
+
+- **Points stacked in a line in Question 9.** You used `geom_point()` rather than `geom_jitter()`, so identical values are landing on top of each other.

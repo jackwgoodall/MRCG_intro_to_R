@@ -178,3 +178,7 @@ Then look at it and ask whether it actually tells the reader anything.
 I've made up this dataset, but nothing in it is unrealistic. Every error in this file is one I have seen in a real dataset - usually more than once, and usually after an analysis had already been run.
 
 The skill you are practising here is not really R. It is the habit of not trusting a dataset until you have looked at it.
+
+# Answers
+
+Once you are happy with your answers, you can look through how I would approach this [here](worked_answers.qmd).

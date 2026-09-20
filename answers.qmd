@@ -22,7 +22,7 @@ These are much more useful after you have tried the questions and got stuck than
 | 2 | More complex object types | [Week two answers](homework_answers/week_two_answers.qmd) |
 | 3 | Data cleaning and the tidyverse | [Week three answers](homework_answers/week_three_answers.qmd) |
 | 4 | The tidyverse | [Week four answers](homework_answers/week_four_answers.qmd) |
-| 5 | Visualisation with ggplot | *to follow* |
+| 5 | Visualisation with ggplot | [Week five answers](homework_answers/week_five_answers.qmd) |
 
 ------------------------------------------------------------------------
 
