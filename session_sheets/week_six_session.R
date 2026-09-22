@@ -41,18 +41,18 @@ small_df.long
 iris_df_id <- iris_df |> 
   mutate(flower_id = row_number(), .before = Sepal.Length) # adding a unique id for each observation
 
-iris_df_long <- iris_df_id |> 
+iris_df.long <- iris_df_id |> 
   pivot_longer(
     cols = Sepal.Length:Petal.Width,  # Columns to gather
     names_to = "Flower_part",         # New column name for measurement types
     values_to = "Value"               # New column name for the numerical values
   )
 
-head(iris_df_long, n=20)
+head(iris_df.long, n=20)
 
 # This longform data is especially useful for plotting. eg. 
 
-ggplot(iris_df_long, aes(x = Flower_part, y = Value)) + geom_boxplot()
+ggplot(iris_df.long, aes(x = Flower_part, y = Value)) + geom_boxplot()
 
 # We can convert back in a very similar way 
 # First with our small dataframe 
@@ -61,7 +61,7 @@ small_df.long |>
               values_from = value)
 
 # Then with the iris dataframe 
-iris_df_wide <- iris_df_long |> 
+iris_df.wide <- iris_df.long |> 
   pivot_wider(
     names_from = Flower_part,         # Where column names come from
     values_from = Value               # Where the values come from

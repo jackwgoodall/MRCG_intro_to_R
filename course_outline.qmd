@@ -21,7 +21,7 @@ R is open source and widely used. The scripts you create to perform your analyse
 
 ## The structure
 
-This will be a 10 week course starting with the basics and working up to regression models and advanced figure creation.
+The course is **six core weeks**, starting with the basics and building up to reshaping and combining datasets. There are then **two optional bonus weeks** for anyone who wants to go further, one on basic statistical analysis and one on regression.
 
 We will meet once a week for 60-90 minutes where we will work through some interactive teaching together. Each week there will be some exercises to complete after the session to consolidate you learning. These should take you no more than 1 hour to work through (and often will be much quicker). I will send round the my answers to these each week and we will use the first ten minutes of each session to cover any issues that came up.
 
@@ -29,111 +29,83 @@ The course will be dynamically structured around the needs and proficiency of th
 
 The confirmed plan for the upcoming two weeks will be show on the Timetable page, along with the answers to the previous homework exercises and the session recordings.
 
+## The core weeks
+
 # Week 1: Introduction
 
 A guided tour of R studio and how to customise it
 
 R as a fancy calculator
 
-Introduction to objects and vectors
+Objects and vectors
 
 # Week 2: More complex object types
 
-More objects: matrices, dataframes and lists
+Matrices, dataframes and lists
 
 Selecting and changing items in base R
 
-# Week 3: Packages and the tidyverse
+# Week 3: Data importing and packages
 
-An into to packages
+Installing and loading packages
 
-Accessing data
+Reading data in from CSV and Excel files
 
-Importing for excel/csv
+Exploring and summarising a new dataset
 
-Basic tools for data cleaning
+Spotting outliers and errors, and correcting them safely
 
-Data summarising
+# Week 4: The tidyverse
 
-Basic visualisations for outliers and data structure
+The idea of tidy data (one variable per column, one observation per row)
 
-Correcting errors safely
+The pipe (\|\> / %\>%) and why it helps make code readable
 
-Introduction to the tidyverse
+The core dplyr verbs: filter, mutate, summarise, group_by
 
-The concept of tidy data (one variable per column, one observation per row)
-
-The power of the pipe (\|\> / %\>%) and why it helps makes code readable
-
-The core dplyr verbs: filter, select, mutate, arrange, summarise, group_by
-
-Reshaping with pivot_longer / pivot_wider
-
-Joining tables with left_join (research data almost always spans multiple files)
-
-# Week 4: Basic statistical analysis
-
-T-test
-
-Chi-squared test
-
-Correlation
-
-Non-parametric tests
+Building conditional columns with case_when
 
 # Week 5: Visualisation with ggplot2
 
 The grammar of graphics: data → aesthetics → geoms
 
-Common "geoms" (point, line, histogram, boxplot) and mapping colour/fill/group
+Common "geoms" (point, line, boxplot) and mapping colour, fill and group
 
-Faceting for subgroups Scales, labels, and themes to get to publication-ready
+Titles, labels and themes to get to a publication-ready figure
 
-ggsave() with sensible dimensions/DPI for journal submission
+# Week 6: Reshaping and joining data
 
-# Week 6: Consolidation and a gentle introduction to functions
+Moving between wide and long formats with pivot_longer and pivot_wider
 
-Recap and catch-up on weeks 1–5
+Joining tables that share a key, and the difference between left, right, inner and full joins
 
-Writing your own functions (the DRY principle: don't repeat yourself)
+## The bonus weeks
 
-A short combined practical: import → clean → plot, end-to-end
+These two weeks are optional. This course is about R rather than statistics, so if you already have the analysis skills you need, the first six weeks are a complete introduction on their own. The bonus weeks are here for anyone who wants to see how the tools carry over into a statistical analysis.
 
-# Week 7: Linear regression
+# Bonus week: Statistical analysis
 
-lm() and formula syntax (y \~ x1 + x2)
+Choosing a test to match your question
 
-Interpreting coefficients, confidence intervals, and p-values
+t-tests (one-sample, two-sample and paired), and their non-parametric equivalents
 
-Categorical predictors and a first look at interactions
+Comparing more than two groups with ANOVA
 
-Assumptions and diagnostics via residual plots
+Chi-squared and Fisher's exact tests for counts
 
-Tidy output with broom (tidy, glance, augment) and gtsummary::tbl_regression() for a clean results table
+Correlation
 
-# Week 8: Logistic regression & GLMs
+There is a fuller, code-free explanation of the ideas behind these tests on the [Statistics refresher](stats_explained.qmd) page.
 
-Binary outcomes with glm(..., family = binomial)
+# Bonus week: Regression
 
-Odds ratios and how to interpret them (exponentiating coefficients)
+Fitting a linear model with lm() and reading its output
 
-A second GLM — Poisson for counts/rates, with offsets
+Interpreting coefficients, confidence intervals and p-values
 
-# Week 9: Extending the model (we'll take a vote closer to the time)
+Adding categorical predictors
 
-Option A: Survival analysis (survival, survminer): Kaplan–Meier curves, the log-rank test, and an intro to Cox proportional hazards.
-
-Option B: Multilevel / mixed models (lme4): a gentle intro to clustered or repeated data (random intercepts).
-
-# Week 10: Reproducible reporting & mini-project
-
-Quarto (a markdown engine) in more depth: parameters, cross-references, figures and tables in one document
-
-RStudio Projects and here() for portable file paths; sensible folder structure
-
-Reproducibility: sessionInfo()
-
-A small end-to-end capstone (import → clean → visualise → model → render a report)
+Tidying model output with the broom package
 
 ------------------------------------------------------------------------
 
